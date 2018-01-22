@@ -19,7 +19,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".loggedIn" />
-        <activity android:name=".ListFragmentHolder"></activity>
+        <activity android:name=".ListFragmentHolder" />
+        <activity
+            android:name=".BottomNavigationMenue"
+            android:label="@string/title_activity_bottom_navigation_menue"></activity>
     </application>
 
 </manifest>

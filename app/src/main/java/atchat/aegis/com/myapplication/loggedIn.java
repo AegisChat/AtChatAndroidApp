@@ -60,7 +60,7 @@ public class loggedIn extends AppCompatActivity {
     }
 
     public void goToListFragment(){
-        Intent intent = new Intent(this, ListFragmentHolder.class);
+        Intent intent = new Intent(this, BottomNavigationMenue.class);
         startActivity(intent);
     }
 }
