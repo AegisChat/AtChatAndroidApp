@@ -1,0 +1,75 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+    defaultConfig {
+        applicationId "atchat.aegis.com.myapplication"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/spring.schemas'
+        exclude 'META-INF/spring.tooling'
+        exclude 'META-INF/spring.handlers'
+        exclude 'META-INF/spring.factories'
+//        exclude 'changelog.txt'
+    }
+}
+
+configurations.compile {
+    exclude module: 'spring-core'
+    exclude module: 'spring-web'
+    exclude module: 'spring-aop'
+    exclude module: 'spring-beans'
+    exclude module: 'spring-cache'
+    exclude module: 'spring-context'
+    exclude module: 'spring-core'
+    exclude module: 'spring-dao'
+    exclude module: 'spring-ejp'
+    exclude module: 'spring-expressions'
+    exclude module: 'spring-jca'
+    exclude module: 'spring-transaction'
+    exclude module: 'spring-util'
+    exclude module: 'spring-data'
+    exclude module: 'spring-tx'
+    exclude module: 'commons-logging'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile group: 'org.springframework.data', name: 'spring-data-commons', version: '1.13.7.RELEASE'
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
+    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    compile 'com.android.support:support-v4:26.+'
+    compile 'com.android.support:recyclerview-v7:26.+'
+    testCompile 'junit:junit:4.12'
+}
+repositories {
+    maven {
+        url 'https://repo.spring.io/libs-milestone'
+    }
+}
