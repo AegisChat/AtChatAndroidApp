@@ -12,9 +12,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Text;
 
 import application.Message.EmailPasswordPair;
 import application.Users.User;
@@ -30,12 +32,14 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox rememberMeCheckBox;
     private boolean stateOfRememberMeCheckBox;
     private SharedPreferences.Editor settingsEditor;
+    private TextView badLoginTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        badLoginTextView = (TextView) findViewById(R.id.wrongLogin);
         emailInput = (EditText) findViewById(R.id.emailText);
         passwordInput = (EditText) findViewById(R.id.passwordText);
         sendButton = (Button) findViewById(R.id.sendButton);
@@ -88,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 System.out.println("backgroud activated");
                 System.out.println(loginCred.getEmail());
-                final String url = "http://10.0.2.2:8080/user/login";
+                final String url = "https://javaspringbasiciqwxf.mybluemix.net/user/login";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 User u = restTemplate.postForObject(url, loginCred, User.class);
@@ -133,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
                 String firstName = user.getFirstName();
                 intent.putExtra(INTENT_MESSAGE, firstName);
                 startActivity(intent);
+            }else{
+                badLoginTextView.setText("The email or password you have entered is wrong, please try again");
             }
         }catch(Exception e){
             e.printStackTrace();
