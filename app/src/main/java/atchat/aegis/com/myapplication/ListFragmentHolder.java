@@ -21,6 +21,7 @@ public class ListFragmentHolder extends FragmentActivity implements ListFragment
             ListFragment lf = new ListFragment();
 
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, lf).commit();
+            System.out.println("test");
 
         }
     }
