@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         System.out.println("LoginEmail: " +settings.getString("loginEmail", null));
-        settingsEditor.putString("loginEmail", null);
-        settingsEditor.putString("password", null);
         if(settings.getString("loginEmail", null) != null){
 
             login(sendButton);
