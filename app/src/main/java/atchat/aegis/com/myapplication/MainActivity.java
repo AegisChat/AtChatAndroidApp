@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 System.out.println("backgroud activated");
                 System.out.println(loginCred.getEmail());
-                final String url = "http://10.0.2.2:8080/user/login";
+                final String url = "https://javaspringbasiciqwxf.mybluemix.net/user/login";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 User u = restTemplate.postForObject(url, loginCred, User.class);
