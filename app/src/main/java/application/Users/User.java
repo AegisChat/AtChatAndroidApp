@@ -2,12 +2,11 @@ package application.Users;
 
 
 
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
-
 
 import application.Tag.Tag;
 import application.Message.*;
@@ -15,11 +14,12 @@ import application.Message.*;
 
 public final class User{
 
+
 	private UUID id;
-	
+
 	private String firstName;
 	private String lastName;
-	private String Alias; 
+	private String Alias;
 	private String password;
 	private int rating;
 	private boolean queueState;
@@ -31,26 +31,26 @@ public final class User{
 	private ArrayList<UUID> blocked;
 	private ArrayList<Message> pendingRequests;
 	private ArrayList<Message> sendingRequests;
-	
+
 	private Point location;
-	
+
 
 	private String emailAddress;
-	
+
 
 	private long timeStampEpoch;
-	
+
 	public User() {
 		id = UUID.randomUUID();
 		tags = new ArrayList<Tag>();
-		friends = new ArrayList<FriendHasSharedInfoPair>();			
+		friends = new ArrayList<FriendHasSharedInfoPair>();
 		blocked = new ArrayList<UUID>();
 		pendingRequests = new ArrayList<Message>();
 		sendingRequests = new ArrayList<Message>();
 		pairingDistance = 1;
 		rating = 10;
 	}
-	
+
 	public boolean changeRating(int score) {
 		boolean isLegit = false;
 		if(score >=  1 && score <= 5) {
@@ -71,10 +71,10 @@ public final class User{
 					rating = rating + 2;
 					break;
 			}
-		}	
+		}
 		return isLegit;
 	}
-	
+
 	public boolean isInBlockedList(UUID uuid) {
 		boolean isInBlockedList = false;
 		for(UUID uu : blocked) {
@@ -85,12 +85,12 @@ public final class User{
 		}
 		return isInBlockedList;
 	}
-	
-	
-	
+
+
+
 	public boolean addFriend(UUID newFriendID) {
 		FriendHasSharedInfoPair newFriend = new FriendHasSharedInfoPair();
-		newFriend.setFriendName(newFriendID);
+		newFriend.setFriendID(newFriendID);
 		if(hasFriend(newFriendID)){
 			return false;
 		}else {
@@ -98,7 +98,7 @@ public final class User{
 			return true;
 		}
 	}
-	
+
 	public boolean removeFriend(UUID removeFriend) {
 		if(!hasFriend(removeFriend)){
 			return false;
@@ -107,17 +107,17 @@ public final class User{
 			return true;
 		}
 	}
-	
+
 	public boolean hasFriend(UUID friend) {
 		boolean hasFriend = false;
 		for(FriendHasSharedInfoPair person: friends) {
-			if(person.getFriendName().compareTo(friend) == 0) {
+			if(person.getFriendID().compareTo(friend) == 0) {
 				hasFriend = true;
 			}
 		}
 		return hasFriend;
 	}
-	
+
 	public boolean addBlockedUser(UUID newBlockedUser) {
 		if(hasBlocked(newBlockedUser)){
 			return false;
@@ -126,7 +126,7 @@ public final class User{
 			return true;
 		}
 	}
-	
+
 	public boolean removeBlocked(UUID removeBlocked) {
 		if(!hasBlocked(removeBlocked)){
 			return false;
@@ -135,7 +135,7 @@ public final class User{
 			return true;
 		}
 	}
-	
+
 	public boolean hasBlocked(UUID Blocked) {
 		if(blocked.contains(Blocked)) {
 			return true;
@@ -143,7 +143,7 @@ public final class User{
 			return false;
 		}
 	}
-	
+
 	public boolean addPendingRequest(Message m) {
 		boolean hasPR;
 		if(hasPendingRequest(m)) {
@@ -164,13 +164,13 @@ public final class User{
 				inMessage = it.next();
 				if(inMessage.getID().compareTo(u)== 0) {
 					it.remove();
-					hasPR = true;	
+					hasPR = true;
 				}
-			}	
+			}
 		}
 		return hasPR;
-	}	
-	
+	}
+
 	public boolean removePendingRequest(Message m) {
 		boolean hasPR;
 		if(hasPendingRequest(m)) {
@@ -181,7 +181,7 @@ public final class User{
 		}
 		return hasPR;
 	}
-		
+
 	public boolean hasPendingRequest(Message m) {
 		boolean hasMessage = false;
 		for (Message inMessage: pendingRequests) {
@@ -191,7 +191,7 @@ public final class User{
 		}
 		return hasMessage;
 	}
-	
+
 	public boolean hasPendingRequestById(UUID u) {
 		boolean hasPR = false;
 		for(Message inMessage: pendingRequests) {
@@ -201,7 +201,7 @@ public final class User{
 		}
 		return hasPR;
 	}
-	
+
 	public Message getPendingRequest(UUID messageID) {
 		Message m = null;
 		for (Message inMessage: pendingRequests) {
@@ -211,7 +211,7 @@ public final class User{
 		}
 		return m;
 	}
-	
+
 	public boolean addSendingRequest(Message m) {
 		boolean hasSR;
 		if(hasSendingRequest(m)) {
@@ -232,13 +232,13 @@ public final class User{
 				inMessage = it.next();
 				if(inMessage.getID().compareTo(m)== 0) {
 					it.remove();
-					hasMessage= true;	
+					hasMessage= true;
 				}
-			}			
+			}
 		}
 		return hasMessage;
 	}
-	
+
 	public boolean removeSendingRequest(Message m) {
 		boolean hasSR;
 		if(hasSendingRequest(m)) {
@@ -249,7 +249,7 @@ public final class User{
 		}
 		return hasSR;
 	}
-	
+
 	public boolean hasSendingRequestById(UUID m) {
 		boolean hasMessage = false;
 		for (Message inMessage: sendingRequests) {
@@ -258,8 +258,8 @@ public final class User{
 			}
 		}
 		return hasMessage;
-	}	
-		
+	}
+
 	public boolean hasSendingRequest(Message m) {
 		boolean hasMessage = false;
 		for (Message inMessage: sendingRequests) {
@@ -279,7 +279,7 @@ public final class User{
 		}
 		return m;
 	}
-	
+
 	public boolean hasPendingMessages() {
 		return pendingRequests.isEmpty();
 	}
@@ -303,7 +303,7 @@ public final class User{
 	public void setPendingRequests(ArrayList<Message> pendingRequests) {
 		this.pendingRequests = pendingRequests;
 	}
-	
+
 	public ArrayList<FriendHasSharedInfoPair> getFriends() {
 		return friends;
 	}
@@ -368,6 +368,34 @@ public final class User{
 		this.password = password;
 	}
 
+	public boolean hasTag(Tag newTag) {
+		boolean hasTag = false;
+		Iterator<Tag> it = tags.iterator();
+		while(it.hasNext()) {
+			Tag t = it.next();
+			if(t.equals(newTag))
+				hasTag= true;
+		}
+		return hasTag;
+	}
+
+	public void addTag(List<Tag> newTags) {
+		Iterator<Tag> it = newTags.iterator();
+		while(it.hasNext()) {
+			Tag t = it.next();
+			addTag(t);
+		}
+	}
+
+	public void addTag(Tag newTag) {
+		if(!hasTag(newTag))
+			tags.add(newTag);
+	}
+
+	public void removeTag(Tag tag) {
+		tags.remove(tag);
+	}
+
 	public ArrayList<Tag> getTags() {
 		return tags;
 	}
@@ -422,5 +450,10 @@ public final class User{
 
 	public void setTimeStampEpoch(long timeStampEpoch) {
 		this.timeStampEpoch = timeStampEpoch;
+	}
+
+	@Override
+	public String toString() {
+		return getFirstName();
 	}
 }

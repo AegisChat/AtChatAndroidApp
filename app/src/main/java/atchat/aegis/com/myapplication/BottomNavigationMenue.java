@@ -3,9 +3,12 @@ package atchat.aegis.com.myapplication;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.support.v4.app.FragmentManager;
 
 public class BottomNavigationMenue extends AppCompatActivity {
 
@@ -16,6 +19,7 @@ public class BottomNavigationMenue extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
@@ -30,7 +34,10 @@ public class BottomNavigationMenue extends AppCompatActivity {
                     mTextMessage.setText("Search");
                     return true;
                 case R.id.navigation_Email:
-                    mTextMessage.setText("Email");
+
+                    SettingsFragment settingsFragment = new SettingsFragment();
+                    FragmentManager manager = getSupportFragmentManager();
+                    manager.beginTransaction().replace(R.id.contentLayout, settingsFragment, settingsFragment.getTag()).commit();
                     return true;
             }
             return false;

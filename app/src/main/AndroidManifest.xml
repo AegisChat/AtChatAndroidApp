@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar">
-        <activity android:name=".CreateNewUser_Email_And_Password">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,7 +23,11 @@
         <activity
             android:name=".BottomNavigationMenue"
             android:label="@string/title_activity_bottom_navigation_menue" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".CreateNewUser_Personal_Info"/>
+        <activity android:name=".CreateNewUser_Email_And_Password"/>
+
+
+
     </application>
 
 </manifest>

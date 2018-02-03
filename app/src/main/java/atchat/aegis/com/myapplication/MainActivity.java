@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean stateOfRememberMeCheckBox;
     private SharedPreferences.Editor settingsEditor;
     private TextView badLoginTextView;
+    private Button createAccountButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,16 @@ public class MainActivity extends AppCompatActivity {
         settings = context.getSharedPreferences(FileSettingsName, Context.MODE_PRIVATE);
         settingsEditor = settings.edit();
 
+        createAccountButton = (Button) findViewById(R.id.createAccount);
+        createAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(getApplicationContext(), CreateNewUser_Email_And_Password.class);
+                startActivity(intent);
+            }
+
+        });
         rememberMeCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 System.out.println("backgroud activated");
                 System.out.println(loginCred.getEmail());
-                final String url = "https://javaspringbasiciqwxf.mybluemix.net/user/login";
+                final String url = "https://10.0.2.2:8888/user/login";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 User u = restTemplate.postForObject(url, loginCred, User.class);

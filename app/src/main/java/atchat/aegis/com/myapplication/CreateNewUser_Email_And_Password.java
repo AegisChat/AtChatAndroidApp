@@ -1,14 +1,27 @@
 package atchat.aegis.com.myapplication;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Text;
+
+import java.util.concurrent.ExecutionException;
+
+import application.Message.AcceptedEmailAddressMessage;
+import application.Message.EmailPasswordPair;
+import application.Message.VerifyLoginMessage;
+import application.Users.User;
 
 public class CreateNewUser_Email_And_Password extends AppCompatActivity {
 
@@ -19,8 +32,12 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
     private TextView passwordPrerequisiteUpperTextView;
     private TextView passwordPrerequisiteLowerTextView;
 
+    private TextView verifyEmailAddressTextView;
+
     private EditText emailAddressEditText;
     private EditText passwordEditText;
+
+    private Button nextLoginButton;
 
 //    private EditText emailAddressEditText;
 //    private EditText passwordEditText;
@@ -42,6 +59,10 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_user__email__and__password);
 
+        nextLoginButton = (Button) findViewById(R.id.next_login_button);
+
+        verifyEmailAddressTextView = (TextView) findViewById(R.id.verifyEmail);
+
         emailAddressTextView = (TextView) findViewById(R.id.email_TextView);
         passwordTextView = (TextView) findViewById(R.id.password_TextView);
         passwordPrerequisiteLengthTextView = (TextView) findViewById(R.id.password_not_long_enough);
@@ -53,11 +74,29 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.password_EditText);
 
         passwordTextView.setText("Password");
+        emailAddressTextView.setText("Email Address");
 
         passwordPrerequisiteLengthTextView.setText("Must be at least "+ PASSWORD_LENGTH_REQUIREMENT + " characters long");
         passwordPrerequisiteNumberTextView.setText("Must contain at least one number");
         passwordPrerequisiteUpperTextView.setText("Must contain at least 1 upper case");
         passwordPrerequisiteLowerTextView.setText("Must contain at least 1 lower case");
+
+        emailAddressEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                isProperEmail(emailAddressEditText.getText().toString());
+            }
+        });
 
         passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -79,6 +118,49 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
                 }
             }
         });
+
+        nextLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AcceptedEmailAddressMessage aeam = null;
+                try {
+                    aeam = new VerifyEmailTask(emailAddressEditText.getText().toString()).execute().get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                if(aeam.isEmail()){
+                    verifyEmailAddressTextView.setText("Email exists");
+                }else
+                    verifyEmailAddressTextView.setText("You can make an account");
+
+            }
+        });
+    }
+
+    private class VerifyEmailTask extends AsyncTask<Void, Void, AcceptedEmailAddressMessage> {
+
+        private String email;
+        public VerifyEmailTask (String email){
+            this.email = email;
+        }
+
+        @Override
+        protected AcceptedEmailAddressMessage doInBackground(Void... voids) {
+            AcceptedEmailAddressMessage aeam = null;
+            try {
+                final String url = "http://10.0.2.2:8888/user/verifyEmail";
+                VerifyLoginMessage vlm = new VerifyLoginMessage(email);
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                aeam = restTemplate.postForObject(url, vlm, AcceptedEmailAddressMessage.class);
+            }catch(Exception e){
+                Log.e("MainActivity", e.getMessage(), e);
+            }
+            return aeam;
+        }
     }
 
     private boolean checkPassword(String password){
@@ -143,6 +225,16 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
         return isGoodPassword;
     }
 
+    public boolean isProperEmail(String email){
+        boolean hasProperEmailAddress = false;
+        if(email.contains("@")) {
+            hasProperEmailAddress = true;
+            emailAddressTextView.setTextColor(Color.GREEN);
+        }
 
-
+        if(hasProperEmailAddress == false){
+            emailAddressTextView.setTextColor(Color.RED);
+        }
+        return hasProperEmailAddress;
+    }
 }
