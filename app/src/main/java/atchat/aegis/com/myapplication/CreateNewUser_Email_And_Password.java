@@ -1,5 +1,7 @@
 package atchat.aegis.com.myapplication;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -14,16 +16,17 @@ import android.widget.TextView;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-import org.w3c.dom.Text;
 
 import java.util.concurrent.ExecutionException;
 
 import application.Message.AcceptedEmailAddressMessage;
-import application.Message.EmailPasswordPair;
 import application.Message.VerifyLoginMessage;
-import application.Users.User;
 
 public class CreateNewUser_Email_And_Password extends AppCompatActivity {
+
+    public static final String INTENT_EMAIL = "com.aegis.application.create_user_email";
+    public static final String INTENT_PASSWORD = "com.aegis.application.create_user_password";
+
 
     private TextView emailAddressTextView;
     private TextView passwordTextView;
@@ -47,17 +50,24 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
 
     private String passwordPrerequisiteString;
 
+    private Context context;
     private final String EMAIL_ADDRESS_STRING = "Email Address";
     private final String PASSWORD_STRING = "Password";
     private final String FIRST_NAME_STRING = "First Name";
     private final String LAST_NAME_STRING = "Last Name";
     private final String ALIAS_STRING = "Username";
 
+    private String website;
+
     private final int PASSWORD_LENGTH_REQUIREMENT = 6;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_user__email__and__password);
+
+        website = getString(R.string.localhost);
+
+        context = this;
 
         nextLoginButton = (Button) findViewById(R.id.next_login_button);
 
@@ -132,9 +142,14 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
                 }
 
                 if(aeam.isEmail()){
-                    verifyEmailAddressTextView.setText("Email exists");
-                }else
+                    verifyEmailAddressTextView.setText("Email already exists");
+                }else {
                     verifyEmailAddressTextView.setText("You can make an account");
+                    Intent intent = new Intent(context, CreateNewUser_Personal_Info.class);
+                    intent.putExtra(INTENT_EMAIL, emailAddressEditText.getText().toString());
+                    intent.putExtra(INTENT_PASSWORD, passwordEditText.getText().toString());
+                    startActivity(intent);
+                }
 
             }
         });
@@ -151,7 +166,7 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
         protected AcceptedEmailAddressMessage doInBackground(Void... voids) {
             AcceptedEmailAddressMessage aeam = null;
             try {
-                final String url = "http://10.0.2.2:8888/user/verifyEmail";
+                final String url = website+"user/verifyEmail";
                 VerifyLoginMessage vlm = new VerifyLoginMessage(email);
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());

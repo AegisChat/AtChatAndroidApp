@@ -1,11 +1,11 @@
 package application.Message;
 
-public class EmailPasswordPair extends Message{
+public class EmailPasswordPairMessage extends Message{
 
 	private String email;
 	private String password;
 	
-	public EmailPasswordPair() {
+	public EmailPasswordPairMessage() {
 	}
 
 	public String getEmail() {

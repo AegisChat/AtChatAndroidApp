@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 		property = "type")
 
 @JsonSubTypes({
-		@Type(value = EmailPasswordPair.class),
+		@Type(value = EmailPasswordPairMessage.class),
 		@Type(value = FriendRequestMessage.class),
 		@Type(value = BlockMessage.class),
 		@Type(value = DenyFriendRequestMessage.class),

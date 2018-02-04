@@ -35,9 +35,9 @@ public class BottomNavigationMenue extends AppCompatActivity {
                     return true;
                 case R.id.navigation_Email:
 
-                    SettingsFragment settingsFragment = new SettingsFragment();
-                    FragmentManager manager = getSupportFragmentManager();
-                    manager.beginTransaction().replace(R.id.contentLayout, settingsFragment, settingsFragment.getTag()).commit();
+//                    SettingsFragment settingsFragment = new SettingsFragment();
+//                    FragmentManager manager = getSupportFragmentManager();
+//                    manager.beginTransaction().replace(R.id.contentLayout, settingsFragment, settingsFragment.getTag()).commit();
                     return true;
             }
             return false;

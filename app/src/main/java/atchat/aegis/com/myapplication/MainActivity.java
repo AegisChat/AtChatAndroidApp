@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,9 +15,8 @@ import android.widget.TextView;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-import org.w3c.dom.Text;
 
-import application.Message.EmailPasswordPair;
+import application.Message.EmailPasswordPairMessage;
 import application.Users.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,10 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView badLoginTextView;
     private Button createAccountButton;
 
+    private String website;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        website = getString(R.string.localhost);
 
         badLoginTextView = (TextView) findViewById(R.id.wrongLogin);
         emailInput = (EditText) findViewById(R.id.emailText);
@@ -50,6 +52,17 @@ public class MainActivity extends AppCompatActivity {
         settingsEditor = settings.edit();
 
         createAccountButton = (Button) findViewById(R.id.createAccount);
+
+        Intent createdUserIntent = getIntent();
+        if(createdUserIntent != null){
+            if(createdUserIntent.getStringExtra(CreateNewUser_Personal_Info.INTENT_CREATE_USER_ID) == null) {
+
+            }else if(createdUserIntent.getStringExtra(CreateNewUser_Personal_Info.INTENT_CREATE_USER_ID).equals("From_CreateNewUser_Person_Info")) {
+                emailInput.setText(createdUserIntent.getStringExtra(CreateNewUser_Personal_Info.INTENT_CREATE_USER_EMAIL));
+                passwordInput.setText(createdUserIntent.getStringExtra(CreateNewUser_Personal_Info.INTENT_CREATE_USER_PASSWORD));
+            }
+        }
+
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,40 +89,29 @@ public class MainActivity extends AppCompatActivity {
             login(sendButton);
         }
 
-//        emailInput.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view) {
-//                emailInput.setText("");
-//            }
-//        });
-//
-//        passwordInput.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view){
-//                passwordInput.setText("");
-//            }
-//        });
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                login(view);
+            }
+        });
     }
 
     private class HttpRequestTask extends AsyncTask<Void, Void, User>{
 
-        private EmailPasswordPair loginCred;
-        public HttpRequestTask (EmailPasswordPair epp){
+        private EmailPasswordPairMessage loginCred;
+        public HttpRequestTask (EmailPasswordPairMessage epp){
             loginCred = epp;
         }
 
         @Override
         protected User doInBackground(Void... voids) {
             try {
-                System.out.println("backgroud activated");
                 System.out.println(loginCred.getEmail());
-                final String url = "https://10.0.2.2:8888/user/login";
+                final String url = website+"user/login";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 User u = restTemplate.postForObject(url, loginCred, User.class);
-                if(!u.getPendingRequests().isEmpty()){
-                    System.out.println(u.getPendingRequests().get(0).getClass().getName());
-                }
                 return u;
             }catch(Exception e){
                 Log.e("MainActivity", e.getMessage(), e);
@@ -120,10 +122,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void login(View v){
-        EmailPasswordPair loginCred = new EmailPasswordPair();
+        EmailPasswordPairMessage loginCred = new EmailPasswordPairMessage();
         String email;
         String pass;
         boolean autoLogin = false;
+        Log.d("Login Button Info:", "The Button was hit");
         if (settings.getString("loginEmail", null) != null) {
             email = settings.getString("loginEmail", null);
             pass = settings.getString("password", null);
