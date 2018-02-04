@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import application.Users.LoggedInUserContainer;
+
 public class loggedIn extends AppCompatActivity {
 
     private Button logoutButton;
@@ -22,8 +24,8 @@ public class loggedIn extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.INTENT_MESSAGE);
+        LoggedInUserContainer userContainer = LoggedInUserContainer.getInstance();
+        String message = userContainer.getUser().getAlias();
         TextView text = (TextView) findViewById(R.id.textView);
         text.setText("Hello " + message);
         //Declerations

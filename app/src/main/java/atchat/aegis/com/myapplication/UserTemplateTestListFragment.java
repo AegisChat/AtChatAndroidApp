@@ -1,6 +1,7 @@
 package atchat.aegis.com.myapplication;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,8 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import atchat.aegis.com.myapplication.dummy.DummyContent;
-import atchat.aegis.com.myapplication.dummy.DummyContent.DummyItem;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import application.Message.GetFriendsListMessage;
+import application.Users.LoggedInUserContainer;
+import application.Users.User;
+import application.Users.UserTemplate;
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A fragment representing a list of Items.
@@ -19,25 +30,22 @@ import atchat.aegis.com.myapplication.dummy.DummyContent.DummyItem;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ListFragment extends Fragment {
+public class UserTemplateTestListFragment extends Fragment {
+    private String website;
+    private LoggedInUserContainer loggedInUserContainer;
 
-    // TODO: Customize parameter argument names
+
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
+
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public ListFragment() {
+    public UserTemplateTestListFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ListFragment newInstance(int columnCount) {
-        ListFragment fragment = new ListFragment();
+    public static UserTemplateTestListFragment newInstance(int columnCount) {
+        UserTemplateTestListFragment fragment = new UserTemplateTestListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -47,7 +55,9 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        website = getString(R.string.localhost);
+        loggedInUserContainer = LoggedInUserContainer.getInstance();
+        User user = loggedInUserContainer.getUser();
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -56,7 +66,7 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_usertemplate_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -67,11 +77,35 @@ public class ListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MylistRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            List<UserTemplate> friends = new ArrayList<UserTemplate>();
+            try {
+                friends = new GetUserTemplatesTask().execute().get().getFriends();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            recyclerView.setAdapter(new UserTemplateAdapter(friends, mListener));
         }
         return view;
     }
 
+    public class GetUserTemplatesTask extends AsyncTask<Void, Void, GetFriendsListMessage> {
+
+        private GetFriendsListMessage gfm;
+
+        @Override
+        protected GetFriendsListMessage doInBackground(Void... voids) {
+            final String url = website+"user/getFriendsList";
+            User user = LoggedInUserContainer.getInstance().getUser();
+            GetFriendsListMessage gfm = new GetFriendsListMessage();
+            gfm.setSender(user.getId());
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            GetFriendsListMessage response = restTemplate.postForObject(url, gfm, GetFriendsListMessage.class);
+            return response;
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -102,6 +136,6 @@ public class ListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(UserTemplate userTemplate);
     }
 }

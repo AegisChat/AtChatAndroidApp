@@ -10,9 +10,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.support.v4.app.FragmentManager;
 
-public class BottomNavigationMenue extends AppCompatActivity {
+import application.Users.UserTemplate;
 
-    private TextView mTextMessage;
+public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener{
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -22,16 +22,15 @@ public class BottomNavigationMenue extends AppCompatActivity {
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                    UserTemplateTestListFragment t = new UserTemplateTestListFragment();
+                    FragmentManager manager = getSupportFragmentManager();
+                    manager.beginTransaction().replace(R.id.contentLayout, t).commit();
                     return true;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
                     return true;
                 case R.id.navigation_search:
-                    mTextMessage.setText("Search");
                     return true;
                 case R.id.navigation_Email:
 
@@ -49,10 +48,12 @@ public class BottomNavigationMenue extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation_menue);
-
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
+    @Override
+    public void onListFragmentInteraction(UserTemplate userTemplate) {
+
+    }
 }

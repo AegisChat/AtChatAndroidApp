@@ -17,6 +17,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import application.Message.EmailPasswordPairMessage;
+import application.Users.LoggedInUserContainer;
 import application.Users.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -147,9 +148,11 @@ public class MainActivity extends AppCompatActivity {
                     settingsEditor.putString("password", user.getPassword());
                     settingsEditor.commit();
                 }
+                LoggedInUserContainer userContainer = LoggedInUserContainer.getInstance();
+                userContainer.setUser(user);
                 Intent intent = new Intent(this, loggedIn.class);
-                String firstName = user.getFirstName();
-                intent.putExtra(INTENT_MESSAGE, firstName);
+//                String firstName = user.getFirstName();
+//                intent.putExtra(INTENT_MESSAGE, firstName);
                 startActivity(intent);
             }else{
                 badLoginTextView.setText("The email or password you have entered is wrong, please try again");

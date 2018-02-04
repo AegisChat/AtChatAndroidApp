@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 		property = "type")
 
 @JsonSubTypes({
-		@Type(value = EmailPasswordPairMessage.class),
 		@Type(value = FriendRequestMessage.class),
 		@Type(value = BlockMessage.class),
 		@Type(value = DenyFriendRequestMessage.class),
@@ -22,7 +21,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 		@Type(value = FoundPartnerMessage.class),
 		@Type(value = QueueMessage.class),
 		@Type(value = VerifyLoginMessage.class),
-		@Type(value = AcceptedEmailAddressMessage.class)
+		@Type(value = AcceptedEmailAddressMessage.class),
+		@Type(value = EmailPasswordPairMessage.class),
+		@Type(value = NewUserCreatedMessage.class),
+		@Type(value = GetFriendsListMessage.class)
 })
 
 public abstract class Message implements Cloneable{
