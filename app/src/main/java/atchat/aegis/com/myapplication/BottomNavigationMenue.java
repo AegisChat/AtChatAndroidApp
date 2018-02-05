@@ -1,18 +1,24 @@
 package atchat.aegis.com.myapplication;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.BundleCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.support.v4.app.FragmentManager;
 
+import application.Users.User;
 import application.Users.UserTemplate;
 
-public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener{
+public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener, UserTemplateFragment.OnFragmentInteractionListener{
+
+    private UserTemplate userTemplate;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -54,6 +60,16 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
 
     @Override
     public void onListFragmentInteraction(UserTemplate userTemplate) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userTemplate", userTemplate);
+        UserTemplateFragment utf = new UserTemplateFragment();
+        utf.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, utf).commit();
+        Log.i("UserTemplate", userTemplate.getName());
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }

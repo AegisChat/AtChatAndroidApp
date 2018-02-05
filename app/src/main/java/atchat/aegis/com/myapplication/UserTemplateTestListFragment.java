@@ -41,6 +41,7 @@ public class UserTemplateTestListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
 
     public UserTemplateTestListFragment() {
+
     }
 
     @SuppressWarnings("unused")
@@ -57,6 +58,7 @@ public class UserTemplateTestListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         website = getString(R.string.localhost);
         loggedInUserContainer = LoggedInUserContainer.getInstance();
+
         User user = loggedInUserContainer.getUser();
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);

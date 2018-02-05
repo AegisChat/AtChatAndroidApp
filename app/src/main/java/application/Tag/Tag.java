@@ -1,6 +1,8 @@
 package application.Tag;
 
-public final class Tag {
+import java.io.Serializable;
+
+public final class Tag implements Serializable{
 
 	private String tag;
 

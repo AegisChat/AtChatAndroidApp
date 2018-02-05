@@ -1,11 +1,12 @@
 package application.Users;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import application.Tag.Tag;
 
-public final class UserTemplate {
+public final class UserTemplate implements Serializable {
 
 	private String name;
 	private UUID id;
