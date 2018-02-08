@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,9 @@ public class TextMessangerFragment extends Fragment {
 
     private RecyclerView mMessageRecycler;
     private MessageListAdapter mMessageAdapter;
+    private Button sendButton;
+    private EditText messageInputEditText;
+    private List<TextMessage> messageList;
 
     public TextMessangerFragment() {
 
@@ -42,7 +47,6 @@ public class TextMessangerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -50,7 +54,20 @@ public class TextMessangerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_text_message_list, container, false);;
 
-        List<TextMessage> messageList = new ArrayList<TextMessage>();
+        sendButton = (Button) view.findViewById(R.id.button_chatbox_send);
+        messageInputEditText = (EditText) view.findViewById(R.id.edittext_chatbox);
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SentMessage newMessage = new SentMessage();
+                newMessage.setContext(messageInputEditText.getText().toString());
+                addToMessageList(newMessage);
+                updateMessageAdapter(messageList);
+            }
+        });
+
+        messageList = new ArrayList<TextMessage>();
         SentMessage sm = new SentMessage();
         sm.setContext("Hey this is Frost");
 
@@ -102,6 +119,16 @@ public class TextMessangerFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void addToMessageList(SentMessage message){
+        messageList.add(message);
+    }
+
+    public void updateMessageAdapter(List messageList){
+
+        mMessageRecycler.setAdapter(null);
+        mMessageRecycler.setAdapter(new MessageListAdapter(mMessageRecycler.getContext(), messageList));
     }
 
     /**
