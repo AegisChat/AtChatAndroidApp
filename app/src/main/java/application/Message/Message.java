@@ -24,7 +24,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 		@Type(value = AcceptedEmailAddressMessage.class),
 		@Type(value = EmailPasswordPairMessage.class),
 		@Type(value = NewUserCreatedMessage.class),
-		@Type(value = GetFriendsListMessage.class)
+		@Type(value = GetFriendsListMessage.class),
+		@Type(value = TextMessage.class),
+		@Type(value = SentMessage.class),
+		@Type(value = RecievedMessage.class),
 })
 
 public abstract class Message implements Cloneable{

@@ -16,7 +16,8 @@ import android.support.v4.app.FragmentManager;
 import application.Users.User;
 import application.Users.UserTemplate;
 
-public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener, UserTemplateFragment.OnFragmentInteractionListener{
+public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener, UserTemplateFragment.OnFragmentInteractionListener
+, TextMessangerFragment.OnFragmentInteractionListener{
 
     private UserTemplate userTemplate;
 
@@ -35,6 +36,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
                     manager.beginTransaction().replace(R.id.contentLayout, t).commit();
                     return true;
                 case R.id.navigation_notifications:
+                    TextMessangerFragment tmf = new TextMessangerFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
                     return true;
                 case R.id.navigation_search:
                     return true;
