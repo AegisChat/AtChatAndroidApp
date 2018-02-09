@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
             private boolean state = false;
             @Override
             public void onClick(View view) {
-                state = !state;
-                tagButton.setSelected(state);
-                Log.i("Tag Button", "Button was pressed " + String.valueOf(state));
+                if(tagButton.isPressed()){
+                    tagButton.setPressed(!state);
+                }
             }
         });
 

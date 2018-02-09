@@ -19,7 +19,7 @@ public final class User{
 
 	private String firstName;
 	private String lastName;
-	private String Alias;
+	private String alias;
 	private String password;
 	private int rating;
 	private boolean queueState;
@@ -41,6 +41,22 @@ public final class User{
 	private long timeStampEpoch;
 
 	public User() {
+		id = UUID.randomUUID();
+		tags = new ArrayList<Tag>();
+		friends = new ArrayList<FriendHasSharedInfoPair>();
+		blocked = new ArrayList<UUID>();
+		pendingRequests = new ArrayList<Message>();
+		sendingRequests = new ArrayList<Message>();
+		pairingDistance = 1;
+		rating = 10;
+	}
+
+	public User(String email, String password, String firstName, String lastName, String alias) {
+		this.emailAddress = email;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.alias = alias;
 		id = UUID.randomUUID();
 		tags = new ArrayList<Tag>();
 		friends = new ArrayList<FriendHasSharedInfoPair>();
@@ -345,11 +361,11 @@ public final class User{
 	}
 
 	public String getAlias() {
-		return Alias;
+		return alias;
 	}
 
 	public void setAlias(String alias) {
-		Alias = alias;
+		this.alias = alias;
 	}
 
 	public String getEmailAddress() {
@@ -435,14 +451,6 @@ public final class User{
 
 	public void setRating(int rating) {
 		this.rating = rating;
-	}
-
-	public int getQueueNumber() {
-		return queueNumber;
-	}
-
-	public void setQueueNumber(int queueNumber) {
-		this.queueNumber = queueNumber;
 	}
 
 	public long getTimeStampEpoch() {
