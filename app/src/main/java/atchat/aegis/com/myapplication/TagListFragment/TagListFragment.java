@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import application.Tag.Tag;
@@ -42,7 +43,8 @@ public class TagListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tag_list, container, false);
 
         mTagRecycler = (RecyclerView) view.findViewById(R.id.reyclerview_tag_list);
-        tagList = LoggedInUserContainer.getInstance().getUser().getTags();
+        tagList = new ArrayList<Tag>();
+        setUpTags();
         mTagAdapter = new TagListAdapter(mTagRecycler.getContext(), tagList);
         mTagRecycler.setLayoutManager(new GridLayoutManager(mTagRecycler.getContext(), 3));
         mTagRecycler.setAdapter(mTagAdapter);
@@ -72,6 +74,19 @@ public class TagListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void setUpTags(){
+        tagList.add(new Tag("Movies"));
+        tagList.add(new Tag("Food"));
+        tagList.add(new Tag("Technology"));
+        tagList.add(new Tag("Video Games"));
+        tagList.add(new Tag("Computers"));
+        tagList.add(new Tag("Studying"));
+        tagList.add(new Tag("Cars"));
+        tagList.add(new Tag("Basketball"));
+        tagList.add(new Tag("Baseball"));
+        tagList.add(new Tag("Hockey"));
     }
 
     public interface OnFragmentInteractionListener {
