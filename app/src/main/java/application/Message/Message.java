@@ -34,7 +34,7 @@ public abstract class Message implements Cloneable{
 
 	protected UUID sender;
 	protected UUID recipient;
-	protected final UUID id;
+	protected UUID id;
 
 	public Message() {
 		id = UUID.randomUUID();
@@ -42,6 +42,14 @@ public abstract class Message implements Cloneable{
 
 	public UUID getID() {
 		return id;
+	}
+
+	public void setID(UUID uuid){
+		id= UUID.fromString(uuid.toString());
+	}
+
+	public void setID(String stringID){
+		id= UUID.fromString(stringID);
 	}
 
 	public UUID getSender() {
@@ -66,3 +74,4 @@ public abstract class Message implements Cloneable{
 	}
 
 }
+

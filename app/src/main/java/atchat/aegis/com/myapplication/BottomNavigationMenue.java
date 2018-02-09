@@ -15,9 +15,10 @@ import android.support.v4.app.FragmentManager;
 
 import application.Users.User;
 import application.Users.UserTemplate;
+import atchat.aegis.com.myapplication.TagListFragment.TagListFragment;
 
 public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener, UserTemplateFragment.OnFragmentInteractionListener
-, TextMessangerFragment.OnFragmentInteractionListener{
+, TextMessangerFragment.OnFragmentInteractionListener, TagListFragment.OnFragmentInteractionListener{
 
     private UserTemplate userTemplate;
 
@@ -40,6 +41,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
                     getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
                     return true;
                 case R.id.navigation_search:
+                    TagListFragment tlf = new TagListFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tlf).commit();
                     return true;
                 case R.id.navigation_Email:
 

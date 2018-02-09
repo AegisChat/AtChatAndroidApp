@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="AtChatYellow">#FFFD10</color>
+    <color name="AtChatDarkGrey">#424242</color>
+    <color name="AtChatLightGrey">#616161</color>
 </resources>

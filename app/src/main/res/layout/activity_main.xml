@@ -86,4 +86,13 @@
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1"
         tools:text="Create Account" />
+    <Button
+        android:id="@+id/test_tag_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tag_button"
+        android:textColor="@drawable/tag_color_button"
+        android:text="Button"
+        />
+
 </android.support.constraint.ConstraintLayout>

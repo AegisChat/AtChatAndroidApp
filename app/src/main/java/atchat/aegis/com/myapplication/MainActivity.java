@@ -34,12 +34,26 @@ public class MainActivity extends AppCompatActivity {
     private TextView badLoginTextView;
     private Button createAccountButton;
 
+    private Button tagButton;
+
     private String website;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tagButton = (Button) findViewById(R.id.test_tag_button);
+
+        tagButton.setOnClickListener(new View.OnClickListener() {
+            private boolean state = false;
+            @Override
+            public void onClick(View view) {
+                state = !state;
+                tagButton.setSelected(state);
+                Log.i("Tag Button", "Button was pressed " + String.valueOf(state));
+            }
+        });
 
         website = getString(R.string.localhost);
 

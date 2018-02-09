@@ -393,7 +393,8 @@ public final class User{
 	}
 
 	public void removeTag(Tag tag) {
-		tags.remove(tag);
+		if(hasTag(tag))
+			tags.remove(tag);
 	}
 
 	public ArrayList<Tag> getTags() {
