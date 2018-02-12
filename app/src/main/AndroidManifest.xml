@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,9 +23,12 @@
         <activity android:name=".loggedIn" />
         <activity
             android:name=".BottomNavigationMenue"
-            android:label="@string/title_activity_bottom_navigation_menue" />
-        <activity android:name=".CreateNewUser_Personal_Info"/>
-        <activity android:name=".CreateNewUser_Email_And_Password"/>
+            android:label="@string/title_activity_bottom_navigation_menue"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CreateNewUser_Personal_Info"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CreateNewUser_Email_And_Password"
+            android:screenOrientation="portrait"/>
 
 
 

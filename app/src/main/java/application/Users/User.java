@@ -2,6 +2,8 @@ package application.Users;
 
 
 
+import android.util.Log;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -410,8 +412,22 @@ public final class User{
 
 	public void removeTag(Tag tag) {
 		if(hasTag(tag))
-			tags.remove(tag);
+			tags.remove(indexOfTag(tag));
 	}
+
+	public int indexOfTag(Tag tag){
+		int counter = 0;
+		for(Tag t : tags){
+			if(!t.getTag().toUpperCase().replaceAll("\\s+","").equals(tag.getTag().toUpperCase().replaceAll("\\s+",""))){
+				counter++;
+			}else{
+				break;
+			}
+		}
+		return counter;
+	}
+
+
 
 	public ArrayList<Tag> getTags() {
 		return tags;

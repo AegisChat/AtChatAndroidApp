@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -34,27 +35,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView badLoginTextView;
     private Button createAccountButton;
 
-    private Button tagButton;
-
     private String website;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        tagButton = (Button) findViewById(R.id.test_tag_button);
-
-        tagButton.setOnClickListener(new View.OnClickListener() {
-            private boolean state = false;
-            @Override
-            public void onClick(View view) {
-                if(tagButton.isPressed()){
-                    tagButton.setPressed(!state);
-                }
-            }
-        });
-
+        context = this;
         website = getString(R.string.localhost);
 
         badLoginTextView = (TextView) findViewById(R.id.wrongLogin);
@@ -113,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class HttpRequestTask extends AsyncTask<Void, Void, User>{
-
+        private User user;
         private EmailPasswordPairMessage loginCred;
         public HttpRequestTask (EmailPasswordPairMessage epp){
             loginCred = epp;
@@ -126,12 +114,31 @@ public class MainActivity extends AppCompatActivity {
                 final String url = website+"user/login";
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                User u = restTemplate.postForObject(url, loginCred, User.class);
-                return u;
+                user = restTemplate.postForObject(url, loginCred, User.class);
+                return user;
             }catch(Exception e){
                 Log.e("MainActivity", e.getMessage(), e);
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(User user) {
+            super.onPostExecute(user);
+            if(user == null){
+                Toast.makeText(context, "Wrong Email or password", Toast.LENGTH_LONG).show();
+            }else {
+                if (stateOfRememberMeCheckBox) {
+                    settingsEditor.putString("loginEmail", user.getEmailAddress());
+                    settingsEditor.putString("password", user.getPassword());
+                    settingsEditor.commit();
+                }
+                Toast.makeText(context, "Welcome " + user.getAlias()+"!" , Toast.LENGTH_LONG).show();
+                LoggedInUserContainer userContainer = LoggedInUserContainer.getInstance();
+                userContainer.setUser(user);
+                Intent intent = new Intent(context, loggedIn.class);
+                startActivity(intent);
+            }
         }
     }
 
@@ -141,40 +148,16 @@ public class MainActivity extends AppCompatActivity {
         String email;
         String pass;
         boolean autoLogin = false;
-        Log.d("Login Button Info:", "The Button was hit");
         if (settings.getString("loginEmail", null) != null) {
             email = settings.getString("loginEmail", null);
             pass = settings.getString("password", null);
             loginCred.setEmail(email);
             loginCred.setPassword(pass);
-            System.out.println("Auto-Login: EmailAddress: "+ email +" Password: "+ pass);
             autoLogin = true;
         }else{
             loginCred.setEmail(emailInput.getText().toString());
             loginCred.setPassword(passwordInput.getText().toString());
         }
-
-        try {
-            User user = new HttpRequestTask(loginCred).execute().get();
-            if(user != null) {
-                if (stateOfRememberMeCheckBox) {
-                    settingsEditor.putString("loginEmail", user.getEmailAddress());
-                    settingsEditor.putString("password", user.getPassword());
-                    settingsEditor.commit();
-                }
-                LoggedInUserContainer userContainer = LoggedInUserContainer.getInstance();
-                userContainer.setUser(user);
-                Intent intent = new Intent(this, loggedIn.class);
-//                String firstName = user.getFirstName();
-//                intent.putExtra(INTENT_MESSAGE, firstName);
-                startActivity(intent);
-            }else{
-                badLoginTextView.setText("The email or password you have entered is wrong, please try again");
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
+        new HttpRequestTask(loginCred).execute();
     }
-
 }

@@ -31,7 +31,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Category"
+        android:text="Tags: pick whatever interests  you"
         android:textColor="@color/AtChatLightGrey"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="8dp"
@@ -63,7 +63,7 @@
 
     <EditText
         android:id="@+id/searchview_tagsearch"
-        android:hint="Search for Tag"
+        android:hint="Search/Add Tag"
         android:textColor="@color/AtChatYellow"
         android:background="@android:color/transparent"
         android:layout_gravity="center"

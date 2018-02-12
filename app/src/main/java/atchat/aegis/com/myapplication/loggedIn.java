@@ -3,12 +3,15 @@ package atchat.aegis.com.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import application.DatabaseHelpers.TagDatabaseHelper;
+import application.Tag.Tag;
 import application.Users.LoggedInUserContainer;
 
 public class loggedIn extends AppCompatActivity {
@@ -57,6 +60,7 @@ public class loggedIn extends AppCompatActivity {
         tempEditor.putString("loginEmail", null);
         tempEditor.putString("password", null);
         tempEditor.commit();
+        new DumpDatabase(this).execute();
         Intent logoutIntent = new Intent(this, MainActivity.class);
         startActivity(logoutIntent);
     }
@@ -64,5 +68,21 @@ public class loggedIn extends AppCompatActivity {
     public void goToListFragment(){
         Intent intent = new Intent(this, BottomNavigationMenue.class);
         startActivity(intent);
+    }
+
+    private class DumpDatabase extends AsyncTask<Void, Void, Void>{
+
+        private Context context;
+
+        public DumpDatabase(Context context){
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            TagDatabaseHelper tdb = new TagDatabaseHelper(context);
+            tdb.dumpTable();
+            return null;
+        }
     }
 }
