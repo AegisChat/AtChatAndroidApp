@@ -31,6 +31,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    TagListFragment tlf = new TagListFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tlf).commit();
                     return true;
                 case R.id.navigation_dashboard:
                     UserTemplateTestListFragment t = new UserTemplateTestListFragment();
@@ -38,12 +40,11 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
                     manager.beginTransaction().replace(R.id.contentLayout, t).commit();
                     return true;
                 case R.id.navigation_notifications:
-                    TextMessangerFragment tmf = new TextMessangerFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
+//                    TextMessangerFragment tmf = new TextMessangerFragment();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
                     return true;
                 case R.id.navigation_search:
-                    TagListFragment tlf = new TagListFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tlf).commit();
+
                     return true;
                 case R.id.navigation_Email:
                     SwipeUp sw = new SwipeUp();
