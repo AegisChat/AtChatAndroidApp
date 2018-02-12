@@ -2,13 +2,22 @@ package atchat.aegis.com.myapplication;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import application.Message.UpdatePairingDistanceMessage;
+import application.Users.LoggedInUserContainer;
+import application.Users.User;
 
 
 public class SettingsFragment extends Fragment {
@@ -17,7 +26,8 @@ public class SettingsFragment extends Fragment {
 
     private static SeekBar Distance_Slider;
     private static TextView Distance_Text;
-
+    private User user;
+    private String website;
 
 
     public SettingsFragment() {
@@ -33,6 +43,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        website = getString(R.string.localhost);
+        user = LoggedInUserContainer.getInstance().getUser();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
@@ -112,5 +124,30 @@ public class SettingsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class UpdatePairingDistance extends AsyncTask<Void, Void, Void> {
+
+        private double distance;
+
+        private UpdatePairingDistance(double distance){
+            this.distance = distance;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            UpdatePairingDistanceMessage updm = new UpdatePairingDistanceMessage(distance);
+            updm.setSender(user.getId());
+            final String url = website+"user/updatePairingDistance";
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            try {
+                restTemplate.postForObject(url, updm, User.class);
+            }catch (Exception e){
+
+            }
+            return null;
+        }
     }
 }
