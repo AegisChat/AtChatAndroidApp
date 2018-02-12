@@ -42,7 +42,7 @@ public class SwipeUp extends Fragment {
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                getContext().gestureObject.onTouchEvent(motionEvent);
+                gestureObject.onTouchEvent(motionEvent);
                 return true;
             }
         });
@@ -95,6 +95,10 @@ public class SwipeUp extends Fragment {
 
 
     private class LearnGesture extends GestureDetector.SimpleOnGestureListener{
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
+            return true;
+        }
     }
 }
