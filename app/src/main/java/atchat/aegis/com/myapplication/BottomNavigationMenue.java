@@ -13,13 +13,14 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.support.v4.app.FragmentManager;
 
+import application.Users.LoggedInUserContainer;
 import application.Users.User;
 import application.Users.UserTemplate;
 import atchat.aegis.com.myapplication.PairingFragment.SwipeUp;
 import atchat.aegis.com.myapplication.TagListFragment.TagListFragment;
 
 public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener, UserTemplateFragment.OnFragmentInteractionListener
-, TextMessangerFragment.OnFragmentInteractionListener, TagListFragment.OnFragmentInteractionListener, SwipeUp.OnFragmentInteractionListener{
+, TextMessangerFragment.OnFragmentInteractionListener, TagListFragment.OnFragmentInteractionListener, SwipeUp.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener{
 
     private UserTemplate userTemplate;
 
@@ -28,7 +29,6 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     TagListFragment tlf = new TagListFragment();
@@ -40,18 +40,16 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
                     manager.beginTransaction().replace(R.id.contentLayout, t).commit();
                     return true;
                 case R.id.navigation_notifications:
+                    SwipeUp sw = new SwipeUp();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
 //                    TextMessangerFragment tmf = new TextMessangerFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
                     return true;
                 case R.id.navigation_search:
-
                     return true;
                 case R.id.navigation_Email:
-                    SwipeUp sw = new SwipeUp();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
-//                    SettingsFragment settingsFragment = new SettingsFragment();
-//                    FragmentManager manager = getSupportFragmentManager();
-//                    manager.beginTransaction().replace(R.id.contentLayout, settingsFragment, settingsFragment.getTag()).commit();
+                    SettingsFragment settingsFragment = new SettingsFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, settingsFragment, settingsFragment.getTag()).commit();
                     return true;
             }
             return false;
@@ -65,6 +63,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
         setContentView(R.layout.activity_bottom_navigation_menue);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.navigation_notifications);
     }
 
     @Override
