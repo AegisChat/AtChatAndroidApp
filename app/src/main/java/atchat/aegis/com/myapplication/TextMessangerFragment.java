@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.RunnableFuture;
 
 import application.Message.RecievedMessage;
 import application.Message.SentMessage;
@@ -64,6 +65,8 @@ public class TextMessangerFragment extends Fragment {
                 newMessage.setContext(messageInputEditText.getText().toString());
                 addToMessageList(newMessage);
                 updateMessageAdapter(messageList);
+                mMessageRecycler.scrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
+
             }
         });
 
@@ -87,6 +90,20 @@ public class TextMessangerFragment extends Fragment {
         mMessageAdapter = new MessageListAdapter(mMessageRecycler.getContext(), messageList);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mMessageRecycler.setAdapter(mMessageAdapter);
+
+        mMessageRecycler.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                if(i3 < i7){
+                    mMessageRecycler.postDelayed(new Runnable() {
+                        @Override
+                        public void run(){
+                            mMessageRecycler.smoothScrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
+                        }
+                    },100);
+                }
+            }
+        });
 
         // Inflate the layout for this fragment
         return view;

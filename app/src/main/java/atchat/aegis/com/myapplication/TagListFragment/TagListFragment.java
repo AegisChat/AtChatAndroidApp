@@ -2,20 +2,34 @@ package atchat.aegis.com.myapplication.TagListFragment;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import application.DatabaseHelpers.TagDatabaseHelper;
+import application.Message.UpdateTagMessage;
 import application.Tag.Tag;
 import application.Users.LoggedInUserContainer;
+import application.Users.User;
 import atchat.aegis.com.myapplication.R;
 
 /**
@@ -31,23 +45,88 @@ public class TagListFragment extends Fragment {
     private RecyclerView mTagRecycler;
     private TagListAdapter mTagAdapter;
     private List<Tag> tagList;
+    private EditText searchEditText;
+    private Button addTagButton;
+    private String website;
+    private TagDatabaseHelper tagDatabaseHelper;
+
+    //TODO CONNECT TO DATABASE
 
     public TagListFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Get the view
         View view = inflater.inflate(R.layout.fragment_tag_list, container, false);
 
+        //Set up the RecyclerView
         mTagRecycler = (RecyclerView) view.findViewById(R.id.reyclerview_tag_list);
-        tagList = new ArrayList<Tag>();
-        setUpTags();
+
+        //Set up the Tag Database
+        tagDatabaseHelper = new TagDatabaseHelper(getContext());
+//        Log.i("DBHelper" , String.valueOf(tagDatabaseHelper.tagExists(new Tag("Math"))));
+//        Retrieve all entries from the database
+        try {
+            tagList = new GetAllTags().execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        //Set up the ArrayAdapter
         mTagAdapter = new TagListAdapter(mTagRecycler.getContext(), tagList);
+
+        //Change to GridLayout
         mTagRecycler.setLayoutManager(new GridLayoutManager(mTagRecycler.getContext(), 3));
+
+        //Insert the ArrayAdapter
         mTagRecycler.setAdapter(mTagAdapter);
+
+
+        searchEditText = (EditText) view.findViewById(R.id.searchview_tagsearch);
+        addTagButton = (Button) view.findViewById(R.id.button_add_tag);
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                List<Tag> t = searchForTag(searchEditText.getText().toString());
+                updateTagAdapter(t);
+            }
+        });
+
+        addTagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String editTextString = "";
+                    if(!searchEditText.getText().toString().equals("")){
+                        Tag newTag = new Tag(searchEditText.getText().toString());
+                        if(!hasTag(newTag)){
+                            tagList.add(newTag);
+                            new AddToDataBase(newTag).execute();
+                        }
+                        LoggedInUserContainer.getInstance().getUser().addTag(newTag);
+                        new UpdateUserTagList().execute();
+                        searchEditText.setText("");
+                        updateTagAdapter(tagList);
+                    }
+            }
+        });
+
+        website = getContext().getString(R.string.localhost);
 
         return view;
     }
@@ -58,6 +137,12 @@ public class TagListFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
+    public void updateTagAdapter(List tagList){
+        mTagRecycler.setAdapter(null);
+        mTagRecycler.setAdapter(new TagListAdapter(mTagRecycler.getContext(), tagList));
+    }
+
 
     @Override
     public void onAttach(Context context) {
@@ -76,21 +161,74 @@ public class TagListFragment extends Fragment {
         mListener = null;
     }
 
-    public void setUpTags(){
-        tagList.add(new Tag("Movies"));
-        tagList.add(new Tag("Food"));
-        tagList.add(new Tag("Technology"));
-        tagList.add(new Tag("Video Games"));
-        tagList.add(new Tag("Computers"));
-        tagList.add(new Tag("Studying"));
-        tagList.add(new Tag("Cars"));
-        tagList.add(new Tag("Basketball"));
-        tagList.add(new Tag("Baseball"));
-        tagList.add(new Tag("Hockey"));
+    public List<Tag> searchForTag(String string){
+        List<Tag> tags = new ArrayList<Tag>();
+        for(Tag tag : tagList){
+            if(tag.getTag().toUpperCase().contains(string.toUpperCase())){
+                tags.add(tag);
+            }
+        }
+        return tags;
+    }
+
+
+    public boolean hasTag(Tag tag){
+        boolean ans = false;
+        Iterator<Tag> tagIterator = tagList.iterator();
+        while (tagIterator.hasNext()){
+            Tag t = tagIterator.next();
+            if(t.equals(tag)){
+                ans = true;
+            }
+        }
+        return ans;
+    }
+
+    private class UpdateUserTagList extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            User user = LoggedInUserContainer.getInstance().getUser();
+            final String url = website+"user/updateTags";
+            UpdateTagMessage utm = new UpdateTagMessage();
+            utm.setSender(user.getId());
+            utm.setTags(user.getTags());
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            try {
+                restTemplate.postForObject(url, utm, User.class);
+            }catch (Exception e){
+
+            }
+            return null;
+        }
     }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class GetAllTags extends AsyncTask<Void, Void, ArrayList<Tag>>{
+
+        @Override
+        protected ArrayList<Tag> doInBackground(Void... voids) {
+            return tagDatabaseHelper.getAllTags();
+        }
+    }
+
+    private class AddToDataBase extends AsyncTask<Void, Void, Void>{
+
+        private Tag tag;
+
+        public AddToDataBase(Tag tag){
+            this.tag = tag;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            tagDatabaseHelper.insertTagEntry(tag);
+            return null;
+        }
     }
 }
