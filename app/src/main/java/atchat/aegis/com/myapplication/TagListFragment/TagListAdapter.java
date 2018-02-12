@@ -99,6 +99,7 @@ public class TagListAdapter extends RecyclerView.Adapter {
             tagButton = (Button) itemView.findViewById(R.id.tag_button);
             userContainer = LoggedInUserContainer.getInstance();
             user = userContainer.getUser();
+            Log.i("UserName", user.getFirstName());
         }
 
         public void bind(final Tag tag){
