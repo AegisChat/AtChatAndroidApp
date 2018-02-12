@@ -97,7 +97,7 @@ public class SwipeUp extends Fragment {
     private class LearnGesture extends GestureDetector.SimpleOnGestureListener{
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            //this
+            //this asdl;fkjas;d
             return true;
         }
     }
