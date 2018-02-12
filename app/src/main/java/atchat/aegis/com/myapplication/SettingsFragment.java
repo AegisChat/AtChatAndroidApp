@@ -15,6 +15,8 @@ import android.widget.TextView;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.concurrent.ExecutionException;
+
 import application.Message.UpdatePairingDistanceMessage;
 import application.Users.LoggedInUserContainer;
 import application.Users.User;
@@ -73,7 +75,13 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                try {
+                    new UpdatePairingDistance(DistanceValue).execute().get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
                 Distance_Text.setText("Distance: " + DistanceValue + " km");
             }
         });
