@@ -15,10 +15,11 @@ import android.support.v4.app.FragmentManager;
 
 import application.Users.User;
 import application.Users.UserTemplate;
+import atchat.aegis.com.myapplication.PairingFragment.SwipeUp;
 import atchat.aegis.com.myapplication.TagListFragment.TagListFragment;
 
 public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener, UserTemplateFragment.OnFragmentInteractionListener
-, TextMessangerFragment.OnFragmentInteractionListener, TagListFragment.OnFragmentInteractionListener{
+, TextMessangerFragment.OnFragmentInteractionListener, TagListFragment.OnFragmentInteractionListener, SwipeUp.OnFragmentInteractionListener{
 
     private UserTemplate userTemplate;
 
@@ -45,7 +46,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
                     getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tlf).commit();
                     return true;
                 case R.id.navigation_Email:
-
+                    SwipeUp sw = new SwipeUp();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
 //                    SettingsFragment settingsFragment = new SettingsFragment();
 //                    FragmentManager manager = getSupportFragmentManager();
 //                    manager.beginTransaction().replace(R.id.contentLayout, settingsFragment, settingsFragment.getTag()).commit();

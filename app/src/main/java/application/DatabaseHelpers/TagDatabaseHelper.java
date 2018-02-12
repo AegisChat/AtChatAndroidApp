@@ -38,7 +38,7 @@ public class TagDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("drop table is exists "+TABLE_NAME);
+        db.execSQL("drop table if exists "+TABLE_NAME);
         onCreate(db);
     }
 
