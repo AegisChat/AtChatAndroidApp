@@ -1,8 +1,11 @@
 package atchat.aegis.com.myapplication.ContactMessageListFragment;
 
 
+import android.gesture.Gesture;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +26,12 @@ public class ContactMessageListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_contact_message_list, container, false);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_contact_message_list, container, false);
+        return view;
     }
+
+
 
 }

@@ -61,7 +61,6 @@ public class TagListFragment extends Fragment {
                              Bundle savedInstanceState) {
         //Get the view
         View view = inflater.inflate(R.layout.fragment_tag_list, container, false);
-
         //Set up the RecyclerView
         mTagRecycler = (RecyclerView) view.findViewById(R.id.reyclerview_tag_list);
 

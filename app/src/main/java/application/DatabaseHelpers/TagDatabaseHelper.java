@@ -33,13 +33,19 @@ public class TagDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         db.execSQL("create table "+TABLE_NAME+" (tagID integer primary key autoincrement unique , catagory text, tagContent text unique, selected text)");
         Log.i("DBHelpler", "onCreate()");
-//        initTagEntry();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("drop table is exists "+TABLE_NAME);
+        db.execSQL("drop table if exists "+TABLE_NAME);
         onCreate(db);
+//        initTagEntry();
+    }
+
+    public void dumpTable(){
+        getWritableDatabase().execSQL("drop table if exists "+TABLE_NAME);
+        onCreate(getWritableDatabase());
+//        initTagEntry();
     }
 
     public boolean isSelected(Tag tag){
