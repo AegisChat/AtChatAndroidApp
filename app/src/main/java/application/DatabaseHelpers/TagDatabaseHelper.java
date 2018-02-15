@@ -133,7 +133,7 @@ public class TagDatabaseHelper extends SQLiteOpenHelper {
         } finally {
             res.close();
         }
-
+        res.close();
         return tagExists;
     }
 
@@ -154,16 +154,19 @@ public class TagDatabaseHelper extends SQLiteOpenHelper {
             Log.i("DBHelper", "is empty");
             getAllTags();
         }
+        res.close();
         return tagList;
     }
     public void deleteTag(Tag tag){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("delete from "+TABLE_NAME+" where "+TAG_CONTENT+" = "+tag.getTag(),null);
+        res.close();
     }
 
     public void changeSelection(Tag tag, Boolean selected){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("update "+TABLE_NAME+" set "+SELECTED+" = "+selected+" where "+TAG_CONTENT+" = '" + tag.getTag() + "'" + "COLLATE NOCASE",null);
+        res.close();
     }
 
 

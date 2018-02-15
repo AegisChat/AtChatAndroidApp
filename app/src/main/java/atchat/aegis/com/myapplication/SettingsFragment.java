@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import application.Users.User;
 
 public class SettingsFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private onSettingsFragmentInteractionListener mListener;
 
     private static SeekBar Distance_Slider;
     private static TextView Distance_Text;
@@ -41,10 +40,11 @@ public class SettingsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
             }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         website = getString(R.string.localhost);
         user = LoggedInUserContainer.getInstance().getUser();
         // Inflate the layout for this fragment
@@ -98,18 +98,18 @@ public class SettingsFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onSettingsFragmentInteraction(uri);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof onSettingsFragmentInteractionListener) {
+            mListener = (onSettingsFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement  onSettingsFragmentInteractionListener");
         }
     }
 
@@ -119,19 +119,8 @@ public class SettingsFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public interface onSettingsFragmentInteractionListener {
+        void onSettingsFragmentInteraction(Uri uri);
     }
 
     private class UpdatePairingDistance extends AsyncTask<Void, Void, Void> {

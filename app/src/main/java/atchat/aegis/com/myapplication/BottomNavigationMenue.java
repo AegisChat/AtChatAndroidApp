@@ -16,11 +16,18 @@ import android.support.v4.app.FragmentManager;
 import application.Users.LoggedInUserContainer;
 import application.Users.User;
 import application.Users.UserTemplate;
+import atchat.aegis.com.myapplication.ContactMessageListFragment.ContactMessageListFragment;
 import atchat.aegis.com.myapplication.PairingFragment.SwipeUp;
+import atchat.aegis.com.myapplication.SettingsFragment.onSettingsFragmentInteractionListener;
 import atchat.aegis.com.myapplication.TagListFragment.TagListFragment;
 
-public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener, UserTemplateFragment.OnFragmentInteractionListener
-, TextMessangerFragment.OnFragmentInteractionListener, TagListFragment.OnFragmentInteractionListener, SwipeUp.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener{
+public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener,
+        UserTemplateFragment.OnFragmentInteractionListener,
+        TextMessangerFragment.OnFragmentInteractionListener,
+        TagListFragment.OnFragmentInteractionListener,
+        SwipeUp.OnFragmentInteractionListener,
+        onSettingsFragmentInteractionListener,
+        ContactMessageListFragment.OnContactMessageListFragmentInteractionListener{
 
     private UserTemplate userTemplate;
 
@@ -78,6 +85,16 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onSettingsFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onContactMessageListFragmentInteractionListener(Uri uri) {
 
     }
 }
