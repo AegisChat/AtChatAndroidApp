@@ -180,7 +180,7 @@ public final class User{
 			Iterator<Message> it = pendingRequests.iterator();
 			while(it.hasNext()) {
 				inMessage = it.next();
-				if(inMessage.getID().compareTo(u)== 0) {
+				if(inMessage.getId().compareTo(u)== 0) {
 					it.remove();
 					hasPR = true;
 				}
@@ -189,9 +189,18 @@ public final class User{
 		return hasPR;
 	}
 
+	public int getQueueNumber() {
+		return queueNumber;
+	}
+
+	public void setQueueNumber(int queueNumber) {
+		this.queueNumber = queueNumber;
+	}
+
 	public boolean removePendingRequest(Message m) {
 		boolean hasPR;
 		if(hasPendingRequest(m)) {
+
 			hasPR = false;
 		}else {
 			pendingRequests.remove(m);
@@ -203,7 +212,7 @@ public final class User{
 	public boolean hasPendingRequest(Message m) {
 		boolean hasMessage = false;
 		for (Message inMessage: pendingRequests) {
-			if(inMessage.getID().compareTo(m.getID()) == 0) {
+			if(inMessage.getId().compareTo(m.getId()) == 0) {
 				hasMessage = true;
 			}
 		}
@@ -213,7 +222,7 @@ public final class User{
 	public boolean hasPendingRequestById(UUID u) {
 		boolean hasPR = false;
 		for(Message inMessage: pendingRequests) {
-			if(inMessage.getID().compareTo(u)==0) {
+			if(inMessage.getId().compareTo(u)==0) {
 				hasPR = true;
 			}
 		}
@@ -223,7 +232,7 @@ public final class User{
 	public Message getPendingRequest(UUID messageID) {
 		Message m = null;
 		for (Message inMessage: pendingRequests) {
-			if(inMessage.getID().compareTo(m.getID()) == 0) {
+			if(inMessage.getId().compareTo(m.getId()) == 0) {
 				m = inMessage;
 			}
 		}
@@ -248,7 +257,7 @@ public final class User{
 			Iterator<Message> it = sendingRequests.iterator();
 			while(it.hasNext()) {
 				inMessage = it.next();
-				if(inMessage.getID().compareTo(m)== 0) {
+				if(inMessage.getId().compareTo(m)== 0) {
 					it.remove();
 					hasMessage= true;
 				}
@@ -271,7 +280,7 @@ public final class User{
 	public boolean hasSendingRequestById(UUID m) {
 		boolean hasMessage = false;
 		for (Message inMessage: sendingRequests) {
-			if(inMessage.getID().compareTo(m) == 0) {
+			if(inMessage.getId().compareTo(m) == 0) {
 				hasMessage = true;
 			}
 		}
@@ -281,7 +290,7 @@ public final class User{
 	public boolean hasSendingRequest(Message m) {
 		boolean hasMessage = false;
 		for (Message inMessage: sendingRequests) {
-			if(inMessage.getID().compareTo(m.getID()) == 0) {
+			if(inMessage.getId().compareTo(m.getId()) == 0) {
 				hasMessage = true;
 			}
 		}
@@ -291,7 +300,7 @@ public final class User{
 	public Message getSendingRequest(UUID messageID) {
 		Message m = null;
 		for (Message inMessage: sendingRequests) {
-			if(inMessage.getID().compareTo(m.getID()) == 0) {
+			if(inMessage.getId().compareTo(m.getId()) == 0) {
 				m = inMessage;
 			}
 		}

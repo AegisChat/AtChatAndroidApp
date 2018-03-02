@@ -14,7 +14,6 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.RunnableFuture;
 
 import application.Message.RecievedMessage;
 import application.Message.SentMessage;
@@ -128,7 +127,7 @@ public class TextMessangerFragment extends Fragment {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnContactListFragmentInteractionListener");
         }
     }
 

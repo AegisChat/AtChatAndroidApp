@@ -4,25 +4,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.BundleCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.support.v4.app.FragmentManager;
 
-import application.Users.LoggedInUserContainer;
-import application.Users.User;
 import application.Users.UserTemplate;
+import atchat.aegis.com.myapplication.ContactListFragment.ContactListFragment;
 import atchat.aegis.com.myapplication.ContactMessageListFragment.ContactMessageListFragment;
 import atchat.aegis.com.myapplication.PairingFragment.SwipeUp;
 import atchat.aegis.com.myapplication.SettingsFragment.onSettingsFragmentInteractionListener;
 import atchat.aegis.com.myapplication.TagListFragment.TagListFragment;
 
-public class BottomNavigationMenue extends AppCompatActivity implements UserTemplateTestListFragment.OnListFragmentInteractionListener,
-        UserTemplateFragment.OnFragmentInteractionListener,
+public class BottomNavigationMenue extends AppCompatActivity implements
+        ContactListFragment.OnContactListFragmentInteractionListener,
         TextMessangerFragment.OnFragmentInteractionListener,
         TagListFragment.OnFragmentInteractionListener,
         SwipeUp.OnFragmentInteractionListener,
@@ -33,35 +27,46 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
+        Fragment fragment = null;
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    TagListFragment tlf = new TagListFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tlf).commit();
-                    return true;
+                    fragment = TagListFragment.newInstance();
+//                    fragment = TagListFragment.
+//                    TagListFragment tlf = new TagListFragment();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tlf).commit();
+//                    return true;
+                    break;
                 case R.id.navigation_dashboard:
-                    UserTemplateTestListFragment t = new UserTemplateTestListFragment();
-                    FragmentManager manager = getSupportFragmentManager();
-                    manager.beginTransaction().replace(R.id.contentLayout, t).commit();
-                    return true;
+                    fragment = ContactListFragment.newInstance();
+//                    UserTemplateTestListFragment t = new UserTemplateTestListFragment();
+//                    FragmentManager manager = getSupportFragmentManager();
+//                    manager.beginTransaction().replace(R.id.contentLayout, t).commit();
+//                    return true;
+                    break;
                 case R.id.navigation_notifications:
-                    SwipeUp sw = new SwipeUp();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
+                    fragment = SwipeUp.newInstance();
+//                    SwipeUp sw = new SwipeUp();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
 //                    TextMessangerFragment tmf = new TextMessangerFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
-                    return true;
+//                    return true;
+                    break;
                 case R.id.navigation_search:
-                    return true;
+//                    return true;
+                    break;
                 case R.id.navigation_Email:
-                    SettingsFragment settingsFragment = new SettingsFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, settingsFragment, settingsFragment.getTag()).commit();
-                    return true;
+                    fragment = SettingsFragment.newInstance();
+//                    SettingsFragment settingsFragment = new SettingsFragment();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, settingsFragment, settingsFragment.getTag()).commit();
+//                    return true;
+                    break;
             }
-            return false;
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, fragment).commit();
+            return true;
         }
-
     };
 
     @Override
@@ -73,15 +78,15 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
         navigation.setSelectedItemId(R.id.navigation_notifications);
     }
 
-    @Override
-    public void onListFragmentInteraction(UserTemplate userTemplate) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("userTemplate", userTemplate);
-        UserTemplateFragment utf = new UserTemplateFragment();
-        utf.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, utf).commit();
-        Log.i("UserTemplate", userTemplate.getName());
-    }
+//    @Override
+//    public void onListFragmentInteraction(UserTemplate userTemplate) {
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("userTemplate", userTemplate);
+//        UserTemplateFragment utf = new UserTemplateFragment();
+//        utf.setArguments(bundle);
+//        getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, utf).commit();
+//        Log.i("UserTemplate", userTemplate.getName());
+//    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -95,6 +100,11 @@ public class BottomNavigationMenue extends AppCompatActivity implements UserTemp
 
     @Override
     public void onContactMessageListFragmentInteractionListener(Uri uri) {
+
+    }
+
+    @Override
+    public void onContactListFragmentInteractionListener(Uri uri) {
 
     }
 }

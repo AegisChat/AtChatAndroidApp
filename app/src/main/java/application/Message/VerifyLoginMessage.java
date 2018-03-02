@@ -5,6 +5,10 @@ package application.Message;
  */
 
 public class VerifyLoginMessage extends Message{
+
+    public VerifyLoginMessage(){
+
+    }
     public String getEmail() {
         return email;
     }
@@ -15,9 +19,6 @@ public class VerifyLoginMessage extends Message{
 
     private String email;
 
-    public VerifyLoginMessage(){
-
-    }
 
     public VerifyLoginMessage(String email){
         this.email = email;

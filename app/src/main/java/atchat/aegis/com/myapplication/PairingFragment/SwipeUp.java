@@ -3,7 +3,6 @@ package atchat.aegis.com.myapplication.PairingFragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
@@ -32,6 +31,10 @@ public class SwipeUp extends Fragment {
         // Required empty public constructor
     }
 
+    public static SwipeUp newInstance(){
+        SwipeUp fragment = new SwipeUp();
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,7 +68,7 @@ public class SwipeUp extends Fragment {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnContactListFragmentInteractionListener");
         }
     }
 

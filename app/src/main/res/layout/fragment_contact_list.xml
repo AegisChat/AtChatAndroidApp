@@ -2,12 +2,12 @@
 <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="atchat.aegis.com.myapplication.UserTemplateTestListFragment"
+    android:id="@+id/contact_list"
+    android:name="atchat.aegis.com.myapplication.ContactListFragment.ContactListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="0dp"
     android:layout_marginRight="0dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="atchat.aegis.com.myapplication.UserTemplateTestListFragment"
-    tools:listitem="@layout/fragment_usertemplate" />
+    tools:context="atchat.aegis.com.myapplication.ContactListFragment.ContactListFragment"
+    tools:listitem="@layout/contact_layout" />
