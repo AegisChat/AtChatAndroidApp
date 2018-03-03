@@ -59,13 +59,14 @@ public class SettingsFragment extends Fragment {
         Distance_Slider = (SeekBar) view.findViewById(R.id.distanceSlider);
         Distance_Text = (TextView) view.findViewById(R.id.distanceText);
 
-        Distance_Text.setText("Distance: " + 0.5 + " km");
+        Distance_Text.setText("Distance: " + LoggedInUserContainer.getInstance().getUser().getPairingDistance() + " km");
 
 
         Distance_Slider.setMax(20);
+        Distance_Slider.setProgress((int)LoggedInUserContainer.getInstance().getUser().getPairingDistance());
 
         Distance_Slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            double DistanceValue = 0.5;
+            double DistanceValue = LoggedInUserContainer.getInstance().getUser().getPairingDistance();
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 DistanceValue =  Math.min((0.5 + (double)(i)/2) , 10);

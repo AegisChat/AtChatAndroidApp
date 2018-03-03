@@ -40,7 +40,9 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 //                    return true;
                     break;
                 case R.id.navigation_dashboard:
-                    fragment = ContactListFragment.newInstance();
+                    fragment = TextMessangerFragment.newInstance();
+//                    TextMessangerFragment tmf = new TextMessangerFragment();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
 //                    UserTemplateTestListFragment t = new UserTemplateTestListFragment();
 //                    FragmentManager manager = getSupportFragmentManager();
 //                    manager.beginTransaction().replace(R.id.contentLayout, t).commit();

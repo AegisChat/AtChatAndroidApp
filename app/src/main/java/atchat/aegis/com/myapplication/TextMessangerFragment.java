@@ -49,6 +49,12 @@ public class TextMessangerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+
+    public static TextMessangerFragment newInstance(){
+        TextMessangerFragment fragment = new TextMessangerFragment();
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
