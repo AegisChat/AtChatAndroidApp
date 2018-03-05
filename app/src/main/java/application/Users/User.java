@@ -2,16 +2,14 @@ package application.Users;
 
 
 
-import android.util.Log;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import application.Message.Message;
 import application.Tag.Tag;
-import application.Message.*;
 
 
 public final class User{
@@ -23,6 +21,7 @@ public final class User{
 	private String lastName;
 	private String alias;
 	private String password;
+	private String firebaseID;
 	private int rating;
 	private boolean queueState;
 	private int queueNumber;
@@ -489,5 +488,13 @@ public final class User{
 	@Override
 	public String toString() {
 		return getFirstName();
+	}
+
+	public String getFirebaseID() {
+		return firebaseID;
+	}
+
+	public void setFirebaseID(String firebaseID) {
+		this.firebaseID = firebaseID;
 	}
 }

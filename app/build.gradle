@@ -71,9 +71,12 @@ dependencies {
     compile 'com.android.support:design:26.+'
     compile 'com.android.support:support-vector-drawable:26.+'
     testCompile 'junit:junit:4.12'
+
+    compile 'com.google.firebase:firebase-messaging:11.8.0'
 }
 repositories {
     maven {
         url 'https://repo.spring.io/libs-milestone'
     }
 }
+apply plugin: 'com.google.gms.google-services'

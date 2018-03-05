@@ -13,7 +13,7 @@ import java.util.UUID;
         @JsonSubTypes.Type(value = FriendRequestMessage.class),
         @JsonSubTypes.Type(value = BlockMessage.class),
         @JsonSubTypes.Type(value = DenyFriendRequestMessage.class),
-        @JsonSubTypes.Type(value = hasNewMessages.class),
+        @JsonSubTypes.Type(value = GetNewMessagesMessage.class),
         @JsonSubTypes.Type(value = QueueMessage.class),
         @JsonSubTypes.Type(value = SetTagsMessage.class),
         @JsonSubTypes.Type(value = UpdateLocationMessage.class),
