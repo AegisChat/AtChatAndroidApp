@@ -9,7 +9,7 @@
         android:color="@color/AtChatYellow"
         />
     <size
-        android:height="40dp"
-        android:width="40dp"
+        android:height="80dp"
+        android:width="80dp"
         />
 </shape>

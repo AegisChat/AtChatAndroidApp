@@ -74,6 +74,7 @@ public class TextMessangerFragment extends Fragment {
             public void onClick(View view) {
                 SentMessage newMessage = new SentMessage();
                 newMessage.setContext(messageInputEditText.getText().toString());
+                messageInputEditText.setText("");
                 addToMessageList(newMessage);
                 updateMessageAdapter(messageList);
                 mMessageRecycler.scrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);

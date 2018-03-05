@@ -3,7 +3,6 @@ package atchat.aegis.com.myapplication.FCMessaging;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -32,12 +31,12 @@ public class FCMNotifications extends FirebaseMessagingService {
     private Context context;
 
     public FCMNotifications(){
-        website = getString(R.string.localhost);
-        context = getApplicationContext();
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        website = getString(R.string.localhost);
+        context = getApplicationContext();
         Log.i("FCMNotifications" , "Message has been recieved");
         if(remoteMessage.getData().size() > 0){
             Log.i("FCMNotifications" , "data: " + remoteMessage.getData());
@@ -51,10 +50,10 @@ public class FCMNotifications extends FirebaseMessagingService {
             if(messages != null){
                 Iterator<Message> iterator = messages.iterator();
                 while(iterator.hasNext()){
-                    Message message = iterator.next();
-                    if(message instanceof TextMessage){
-                        TextMessage textMessage = (TextMessage) message;
-                        Toast.makeText(context, textMessage.getContext(), Toast.LENGTH_LONG).show();
+//                    Message message = iterator.next();
+                    if(iterator.next() instanceof TextMessage){
+                        TextMessage textMessage = (TextMessage)iterator.next();
+
                         Log.i("Message", textMessage.getContext());
                     }
                 }
@@ -72,7 +71,7 @@ public class FCMNotifications extends FirebaseMessagingService {
 
         @Override
         protected ArrayList<Message> doInBackground(Void... voids) {
-            final String url = website+"userActions/getNewMessage";
+            final String url = website+"userActions/getNewMessages";
             GetNewMessagesMessage getNewMessagesMessage = new GetNewMessagesMessage();
             getNewMessagesMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             RestTemplate restTemplate = new RestTemplate();
