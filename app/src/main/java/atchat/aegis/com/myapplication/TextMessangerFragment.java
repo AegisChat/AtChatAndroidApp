@@ -2,6 +2,7 @@ package atchat.aegis.com.myapplication;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,12 +13,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import application.Message.RecievedMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
+import application.Users.LoggedInUserContainer;
 
 
 public class TextMessangerFragment extends Fragment {
@@ -30,6 +36,7 @@ public class TextMessangerFragment extends Fragment {
     private Button sendButton;
     private EditText messageInputEditText;
     private List<TextMessage> messageList;
+    private String website;
 
     public TextMessangerFragment() {
 
@@ -58,6 +65,7 @@ public class TextMessangerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        website = getString(R.string.localhost);
         View view = inflater.inflate(R.layout.fragment_text_message_list, container, false);
 
         sendButton = (Button) view.findViewById(R.id.button_chatbox_send);
@@ -71,7 +79,7 @@ public class TextMessangerFragment extends Fragment {
                 addToMessageList(newMessage);
                 updateMessageAdapter(messageList);
                 mMessageRecycler.scrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
-
+                new Messanger().execute();
             }
         });
 
@@ -166,5 +174,22 @@ public class TextMessangerFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class Messanger extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final String url = website+"userActions/sendTextMessage";
+            TextMessage textMessage = new TextMessage();
+            textMessage.setContext(messageInputEditText.getText().toString());
+            textMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+            textMessage.setRecipient(UUID.fromString("3707c0af-24f0-452c-ad26-bad3b2cba8f6"));
+
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            restTemplate.postForObject(url, textMessage, Void.class);
+            return null;
+        }
     }
 }

@@ -55,6 +55,7 @@ public class FCMNotifications extends FirebaseMessagingService {
                     if(message instanceof TextMessage){
                         TextMessage textMessage = (TextMessage) message;
                         Toast.makeText(context, textMessage.getContext(), Toast.LENGTH_LONG).show();
+                        Log.i("Message", textMessage.getContext());
                     }
                 }
             }else{

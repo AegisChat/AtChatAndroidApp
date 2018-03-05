@@ -1,6 +1,6 @@
 package application.Message;
 
-public abstract class TextMessage extends Message{
+public class TextMessage extends Message{
 	
 	private String context;
 	private long time;
