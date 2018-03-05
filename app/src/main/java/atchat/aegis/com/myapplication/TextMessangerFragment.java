@@ -56,8 +56,6 @@ public class TextMessangerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-
-
     public static TextMessangerFragment newInstance(){
         TextMessangerFragment fragment = new TextMessangerFragment();
         return fragment;
@@ -188,7 +186,11 @@ public class TextMessangerFragment extends Fragment {
 
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            restTemplate.postForObject(url, textMessage, Void.class);
+            try {
+                restTemplate.postForObject(url, textMessage, Void.class);
+            }catch (Exception e){
+
+            }
             return null;
         }
     }

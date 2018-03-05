@@ -45,8 +45,11 @@ public class FCMInstanceIdServer extends FirebaseInstanceIdService {
             updateFirebaseIDMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            restTemplate.postForObject(url, updateFirebaseIDMessage, Void.class);
+            try{
+                restTemplate.postForObject(url, updateFirebaseIDMessage, Void.class);
+            }catch (Exception e){
 
+            }
             return null;
         }
     }

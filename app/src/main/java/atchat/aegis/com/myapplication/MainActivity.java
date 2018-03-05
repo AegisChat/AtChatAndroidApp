@@ -127,7 +127,11 @@ public class MainActivity extends AppCompatActivity {
                 UpdateFirebaseIDMessage ufidm = new UpdateFirebaseIDMessage();
                 ufidm.setSender(user.getId());
                 ufidm.setFirebaseID(user.getFirebaseID());
-                restTemplate.postForObject(updateFirebaseIDUrl,ufidm, Void.class);
+                try {
+                    restTemplate.postForObject(updateFirebaseIDUrl, ufidm, Void.class);
+                }catch(Exception e){
+
+                }
                 return user;
             }catch(Exception e){
                 Log.e("MainActivity", e.getMessage(), e);

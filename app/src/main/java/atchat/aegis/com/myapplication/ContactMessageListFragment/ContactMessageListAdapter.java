@@ -36,7 +36,7 @@ public class ContactMessageListAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_message_layout, parent, false);
         return new ContactMessageViewHolder(view);
     }
 

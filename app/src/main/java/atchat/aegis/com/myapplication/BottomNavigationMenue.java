@@ -57,6 +57,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 //                    return true;
                     break;
                 case R.id.navigation_search:
+                    fragment = ContactMessageListFragment.newInstance();
 //                    return true;
                     break;
                 case R.id.navigation_Email:
