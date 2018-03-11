@@ -7,6 +7,6 @@ package application.Message;
 public class SentMessage extends TextMessage {
 
     public SentMessage(){
-        type = 0;
+        messageType = 0;
     }
 }

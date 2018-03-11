@@ -78,8 +78,6 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
             return true;
     }
 
-
-
     //this will get all data from the database
     public Cursor getAllData(){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -109,7 +107,6 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
                 recievedMessage.setRecipient(UUID.fromString(res.getString(2)));
                 recievedMessage.setTime(res.getLong(3));
                 recievedMessage.setContext(res.getString(4));
-
                 messages.add(recievedMessage);
             }
         }

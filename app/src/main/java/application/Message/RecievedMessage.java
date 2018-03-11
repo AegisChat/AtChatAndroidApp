@@ -7,6 +7,6 @@ package application.Message;
 public class RecievedMessage extends TextMessage {
 
     public RecievedMessage(){
-        type = 1;
+        messageType = 1;
     }
 }
