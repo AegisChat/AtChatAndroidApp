@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import application.Tag.Tag;
@@ -39,68 +38,16 @@ public class TagDatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("drop table if exists "+TABLE_NAME);
         onCreate(db);
-//        initTagEntry();
     }
 
     public void dumpTable(){
         getWritableDatabase().execSQL("drop table if exists "+TABLE_NAME);
         onCreate(getWritableDatabase());
-//        initTagEntry();
     }
 
     public boolean isSelected(Tag tag){
         return true;
     }
-
-    private void initTagEntry(){
-        insertTagEntry(new Tag("Movies"));
-        insertTagEntry(new Tag("Food"));
-        insertTagEntry(new Tag("Technology"));
-        insertTagEntry(new Tag("Video Games"));
-        insertTagEntry(new Tag("Computers"));
-        insertTagEntry(new Tag("Studying"));
-        insertTagEntry(new Tag("Cars"));
-        insertTagEntry(new Tag("Basketball"));
-        insertTagEntry(new Tag("Baseball"));
-        insertTagEntry(new Tag("Hockey"));
-
-        insertTagEntry(new Tag("Pizza"));
-        insertTagEntry(new Tag("Lasagna"));
-        insertTagEntry(new Tag("Sushi"));
-        insertTagEntry(new Tag("Burger"));
-        insertTagEntry(new Tag("Cake"));
-        insertTagEntry(new Tag("Nutella"));
-        insertTagEntry(new Tag("Cheese"));
-        insertTagEntry(new Tag("Fruit"));
-        insertTagEntry(new Tag("Chicken"));
-        insertTagEntry(new Tag("Salad"));
-        insertTagEntry(new Tag("Cereal"));
-        insertTagEntry(new Tag("Shrimp"));
-        insertTagEntry(new Tag("Potato"));
-        insertTagEntry(new Tag("Smoothie"));
-
-        insertTagEntry(new Tag("Canada"));
-        insertTagEntry(new Tag("USA"));
-        insertTagEntry(new Tag("Mexico"));
-        insertTagEntry(new Tag("Germany"));
-        insertTagEntry(new Tag("India"));
-        insertTagEntry(new Tag("Japan"));
-        insertTagEntry(new Tag("China"));
-        insertTagEntry(new Tag("Brazil"));
-        insertTagEntry(new Tag("Iran"));
-        insertTagEntry(new Tag("Australia"));
-
-        insertTagEntry(new Tag("Math"));
-        insertTagEntry(new Tag("Calculus"));
-        insertTagEntry(new Tag("Science"));
-        insertTagEntry(new Tag("English"));
-        insertTagEntry(new Tag("Biology"));
-        insertTagEntry(new Tag("Computer Science"));
-        insertTagEntry(new Tag("Engineering"));
-        insertTagEntry(new Tag("Java"));
-        insertTagEntry(new Tag("Python"));
-    }
-
 
     public boolean insertTagEntry(Tag tag) {
         boolean inserted = false;
@@ -150,7 +97,6 @@ public class TagDatabaseHelper extends SQLiteOpenHelper {
             tagList.add(new Tag(res.getString(2)));
         }
         if(tagList.isEmpty()){
-            initTagEntry();
             Log.i("DBHelper", "is empty");
             getAllTags();
         }
@@ -168,7 +114,6 @@ public class TagDatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("update "+TABLE_NAME+" set "+SELECTED+" = "+selected+" where "+TAG_CONTENT+" = '" + tag.getTag() + "'" + "COLLATE NOCASE",null);
         res.close();
     }
-
 
 //    private class AddToDatabase implements Runnable{
 //

@@ -1,6 +1,5 @@
 package atchat.aegis.com.myapplication.FCMessaging;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -15,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import application.Message.FoundPartnerMessage;
 import application.Message.GetNewMessagesMessage;
 import application.Message.Message;
 import application.Message.MessageInterface;
@@ -29,7 +29,7 @@ import atchat.aegis.com.myapplication.R;
 public class FCMNotifications extends FirebaseMessagingService {
 
     private String website;
-    private Context context;
+
 
     public FCMNotifications(){
     }
@@ -37,7 +37,7 @@ public class FCMNotifications extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         website = getString(R.string.localhost);
-        context = getApplicationContext();
+
         Log.i("FCMNotifications" , "Message has been recieved");
         if(remoteMessage.getData().size() > 0){
             Log.i("FCMNotifications" , "data: " + remoteMessage.getData());
@@ -55,6 +55,8 @@ public class FCMNotifications extends FirebaseMessagingService {
                     if(messageInterface instanceof TextMessage){
                         TextMessage textMessage =  (TextMessage) messageInterface;
                         Log.i("TextMessage" , textMessage.getContext());
+                    }else if(messageInterface instanceof FoundPartnerMessage){
+
                     }
                 }
             }else{
