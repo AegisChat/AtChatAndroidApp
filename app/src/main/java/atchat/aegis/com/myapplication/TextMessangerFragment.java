@@ -183,7 +183,8 @@ public class TextMessangerFragment extends Fragment {
             TextMessage textMessage = new TextMessage();
             textMessage.setContext(messageInputEditText.getText().toString());
             textMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
-            textMessage.setRecipient(UUID.fromString("3707c0af-24f0-452c-ad26-bad3b2cba8f6"));
+            textMessage.setRecipient(UUID.fromString("fe758ca4-c5d4-4d7d-9b6d-07976b03b171"));
+//            "22461bfc-9ec8-4df2-aa48-5789a357e009"
 
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());

@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 import application.Message.GetNewMessagesMessage;
 import application.Message.Message;
+import application.Message.MessageInterface;
 import application.Message.TextMessage;
 import application.Users.LoggedInUserContainer;
 import atchat.aegis.com.myapplication.R;
@@ -50,11 +51,10 @@ public class FCMNotifications extends FirebaseMessagingService {
             if(messages != null){
                 Iterator<Message> iterator = messages.iterator();
                 while(iterator.hasNext()){
-//                    Message message = iterator.next();
-                    if(iterator.next() instanceof TextMessage){
-                        TextMessage textMessage = (TextMessage)iterator.next();
-
-                        Log.i("Message", textMessage.getContext());
+                    MessageInterface messageInterface = iterator.next();
+                    if(messageInterface instanceof TextMessage){
+                        TextMessage textMessage =  (TextMessage) messageInterface;
+                        Log.i("TextMessage" , textMessage.getContext());
                     }
                 }
             }else{

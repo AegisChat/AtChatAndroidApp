@@ -28,9 +28,10 @@ import java.util.UUID;
         @JsonSubTypes.Type(value = RecievedMessage.class),
         @JsonSubTypes.Type(value = UpdateTagMessage.class),
         @JsonSubTypes.Type(value = UpdatePairingDistanceMessage.class),
-        @JsonSubTypes.Type(value = EmailPasswordPairMessage.class)
+        @JsonSubTypes.Type(value = EmailPasswordPairMessage.class),
+		@JsonSubTypes.Type(value = GetConversationListMessage.class)
 })
-public abstract class Message{
+public abstract class Message implements MessageInterface{
 
 	protected UUID sender;
 	protected UUID recipient;

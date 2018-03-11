@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         String token = FirebaseInstanceId.getInstance().getToken();
 
-        Log.d("Main Activity", token);
+//        Log.d("Main Activity", token);
 
         Intent createdUserIntent = getIntent();
         if(createdUserIntent != null){

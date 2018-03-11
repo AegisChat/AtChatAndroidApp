@@ -32,6 +32,7 @@ public final class User{
 	private ArrayList<UUID> blocked;
 	private ArrayList<Message> pendingRequests;
 	private ArrayList<Message> sendingRequests;
+	private ArrayList<UUID> converstations;
 
 	private Point location;
 
@@ -496,5 +497,13 @@ public final class User{
 
 	public void setFirebaseID(String firebaseID) {
 		this.firebaseID = firebaseID;
+	}
+
+	public ArrayList<UUID> getConverstations() {
+		return converstations;
+	}
+
+	public void setConverstations(ArrayList<UUID> converstations) {
+		this.converstations = converstations;
 	}
 }
