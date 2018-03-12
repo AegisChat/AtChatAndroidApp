@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import application.Message.FoundPartnerMessage;
 import application.Message.GetNewMessagesMessage;
 import application.Message.Message;
+import application.Message.MessageInterface;
 import application.Message.TextMessage;
 import application.Users.LoggedInUserContainer;
 import atchat.aegis.com.myapplication.R;
@@ -50,7 +51,7 @@ public class FCMNotifications extends FirebaseMessagingService {
             if(messages != null){
                 Iterator<Message> iterator = messages.iterator();
                 while(iterator.hasNext()){
-                    Object message = iterator.next();
+                    MessageInterface message = iterator.next();
                     if(message instanceof TextMessage){
                         TextMessage textMessage =  (TextMessage) message;
                         Log.i("TextMessage" , textMessage.getContext());
@@ -77,7 +78,8 @@ public class FCMNotifications extends FirebaseMessagingService {
             getNewMessagesMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            ArrayList<Message> newMessages = restTemplate.postForObject(url, getNewMessagesMessage, ArrayList.class);
+            GetNewMessagesMessage result = restTemplate.postForObject(url, getNewMessagesMessage, GetNewMessagesMessage.class);
+            ArrayList<Message> newMessages = result.getMessages();
             return newMessages;
         }
     }

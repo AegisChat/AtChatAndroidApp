@@ -13,6 +13,8 @@ import java.util.UUID;
 import application.Message.RecievedMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
+import application.Users.LoggedInUserContainer;
+import application.Users.UserTemplate;
 
 
 /**
@@ -113,5 +115,8 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         return null;
     }
 
-
+    public List<UserTemplate> getConversationNames(){
+        List<UUID> conversants = LoggedInUserContainer.getInstance().getUser().getConverstations();
+        return null;
+    }
 }
