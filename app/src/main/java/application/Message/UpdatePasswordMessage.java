@@ -4,7 +4,7 @@ public class UpdatePasswordMessage extends Message{
 
 	private String changedPassword;
 	
-	public UpdatePasswordMessage() {
+	public UpdatePasswordMessage(String changedPassword) {
 		
 	}
 

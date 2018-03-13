@@ -6,6 +6,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
+    </style>
+
+    <style name="EditTextHint" parent="TextAppearance.AppCompat">
+        <item name="colorAccent">@android:color/white</item>
+        <item name="android:textColorHint">@color/AtChatYellow</item>
+        <item name="colorControlNormal">@color/AtChatYellow</item>
+        <item name="colorControlActivated">@color/AtChatYellow</item>
+        <item name="colorControlHighlight">@color/AtChatYellow</item>
     </style>
 
 </resources>
