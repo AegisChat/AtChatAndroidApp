@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,6 +28,9 @@ public class loggedIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
         LoggedInUserContainer userContainer = LoggedInUserContainer.getInstance();
+        if(userContainer == null){
+            Log.e("LoggedIn", "UserContainer has become null");
+        }
         String message = userContainer.getUser().getAlias();
         TextView text = (TextView) findViewById(R.id.textView);
         text.setText("Hello " + message);
@@ -50,8 +54,6 @@ public class loggedIn extends AppCompatActivity {
                 goToListFragment();
             }
         });
-
-
     }
 
 

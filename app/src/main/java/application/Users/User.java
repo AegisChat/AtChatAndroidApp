@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import application.Message.Message;
 import application.Tag.Tag;
+import atchat.aegis.com.myapplication.ContactMessageListFragment.ConversationTemplate;
 
 
 public final class User{
@@ -32,7 +33,7 @@ public final class User{
 	private ArrayList<UUID> blocked;
 	private ArrayList<Message> pendingRequests;
 	private ArrayList<Message> sendingRequests;
-	private ArrayList<UUID> converstations;
+	private ArrayList<UUID> conversations;
 
 	private Point location;
 
@@ -49,6 +50,7 @@ public final class User{
 		blocked = new ArrayList<UUID>();
 		pendingRequests = new ArrayList<Message>();
 		sendingRequests = new ArrayList<Message>();
+		conversations = new ArrayList<UUID>();
 		pairingDistance = 1;
 		rating = 10;
 	}
@@ -65,6 +67,7 @@ public final class User{
 		blocked = new ArrayList<UUID>();
 		pendingRequests = new ArrayList<Message>();
 		sendingRequests = new ArrayList<Message>();
+		conversations = new ArrayList<UUID>();
 		pairingDistance = 1;
 		rating = 10;
 	}
@@ -136,6 +139,17 @@ public final class User{
 		return hasFriend;
 	}
 
+	public boolean hasSharedInfo(UUID friend) {
+		boolean hasSharedInfo = false;
+		for(FriendHasSharedInfoPair person: friends) {
+			if(person.getFriendID().compareTo(friend) == 0) {
+				if(person.isHasSharedInfo())
+					hasSharedInfo = true;
+			}
+		}
+		return hasSharedInfo;
+	}
+
 	public boolean addBlockedUser(UUID newBlockedUser) {
 		if(hasBlocked(newBlockedUser)){
 			return false;
@@ -189,18 +203,9 @@ public final class User{
 		return hasPR;
 	}
 
-	public int getQueueNumber() {
-		return queueNumber;
-	}
-
-	public void setQueueNumber(int queueNumber) {
-		this.queueNumber = queueNumber;
-	}
-
 	public boolean removePendingRequest(Message m) {
 		boolean hasPR;
 		if(hasPendingRequest(m)) {
-
 			hasPR = false;
 		}else {
 			pendingRequests.remove(m);
@@ -436,7 +441,22 @@ public final class User{
 		return counter;
 	}
 
+	public void addToConversationList(UUID id) {
+		boolean hasID = false;
+		if(conversations == null)
+			conversations = new ArrayList<UUID>();
+		Iterator<UUID> uuidIterator = conversations.iterator();
+		while(uuidIterator.hasNext()) {
+			UUID uuid = uuidIterator.next();
+			if(uuid.toString().equals(id.toString())) {
+				hasID = true;
+			}
+		}
 
+		if(hasID == false) {
+			conversations.add(id);
+		}
+	}
 
 	public ArrayList<Tag> getTags() {
 		return tags;
@@ -499,11 +519,11 @@ public final class User{
 		this.firebaseID = firebaseID;
 	}
 
-	public ArrayList<UUID> getConverstations() {
-		return converstations;
+	public ArrayList<UUID> getConversations() {
+		return conversations;
 	}
 
-	public void setConverstations(ArrayList<UUID> converstations) {
-		this.converstations = converstations;
+	public void setConversations(ArrayList<UUID> conversations) {
+		this.conversations = conversations;
 	}
 }

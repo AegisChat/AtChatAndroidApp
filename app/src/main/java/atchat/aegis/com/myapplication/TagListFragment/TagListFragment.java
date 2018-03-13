@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import application.DatabaseHelpers.TagDatabaseHelper;
 import application.Message.UpdateTagMessage;
@@ -68,15 +67,11 @@ public class TagListFragment extends Fragment {
 
         //Set up the Tag Database
         tagDatabaseHelper = new TagDatabaseHelper(getContext());
+        new GetAllTags().execute();
 //        Log.i("DBHelper" , String.valueOf(tagDatabaseHelper.tagExists(new Tag("Math"))));
 //        Retrieve all entries from the database
-        try {
-            tagList = new GetAllTags().execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+
+        tagList = new ArrayList<Tag>();
 
         //Set up the ArrayAdapter
         mTagAdapter = new TagListAdapter(mTagRecycler.getContext(), tagList);
@@ -86,7 +81,6 @@ public class TagListFragment extends Fragment {
 
         //Insert the ArrayAdapter
         mTagRecycler.setAdapter(mTagAdapter);
-
 
         searchEditText = (EditText) view.findViewById(R.id.searchview_tagsearch);
         addTagButton = (Button) view.findViewById(R.id.button_add_tag);
@@ -143,7 +137,6 @@ public class TagListFragment extends Fragment {
         mTagRecycler.setAdapter(null);
         mTagRecycler.setAdapter(new TagListAdapter(mTagRecycler.getContext(), tagList));
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -216,6 +209,11 @@ public class TagListFragment extends Fragment {
         protected ArrayList<Tag> doInBackground(Void... voids) {
             return tagDatabaseHelper.getAllTags();
         }
+
+        @Override
+        protected void onPostExecute(ArrayList<Tag> tags) {
+            updateTagAdapter(tags);
+        }
     }
 
     private class AddToDataBase extends AsyncTask<Void, Void, Void>{
@@ -230,6 +228,11 @@ public class TagListFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             tagDatabaseHelper.insertTagEntry(tag);
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
         }
     }
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import application.Message.RecievedMessage;
+import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
 import application.Users.LoggedInUserContainer;
@@ -28,15 +29,18 @@ import application.Users.LoggedInUserContainer;
 
 public class TextMessangerFragment extends Fragment {
 
+    public static final String USERNAME_ARGUMENT = "com.aegis.atchat.TextMessageFragment.username";
+    public static final String UUID_ARGUMENT = "com.aegis.atchat.TextMessageFragment.UUID";
+
     private OnFragmentInteractionListener mListener;
-
-
     private RecyclerView mMessageRecycler;
     private MessageListAdapter mMessageAdapter;
     private Button sendButton;
+    private TextView conversantsNameTextView;
     private EditText messageInputEditText;
     private List<TextMessage> messageList;
     private String website;
+    private UUID conversant;
 
     public TextMessangerFragment() {
 
@@ -63,11 +67,18 @@ public class TextMessangerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(getArguments().getString(USERNAME_ARGUMENT) != null) {
+            String userName = getArguments().getString(USERNAME_ARGUMENT);
+            conversant = UUID.fromString(getArguments().getString(UUID_ARGUMENT));
+        }
+
         website = getString(R.string.localhost);
         View view = inflater.inflate(R.layout.fragment_text_message_list, container, false);
 
         sendButton = (Button) view.findViewById(R.id.button_chatbox_send);
         messageInputEditText = (EditText) view.findViewById(R.id.edittext_chatbox);
+
+        conversantsNameTextView = (TextView) view.findViewById(R.id.user_template_name);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,26 +89,27 @@ public class TextMessangerFragment extends Fragment {
                 updateMessageAdapter(messageList);
                 mMessageRecycler.scrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
                 new Messanger().execute();
+                new InputMessageIntoDatabase(newMessage).execute();
                 messageInputEditText.setText("");
             }
         });
 
-        messageList = new ArrayList<TextMessage>();
-        SentMessage sm = new SentMessage();
-        sm.setContext("Hey this is Frost");
-
-        RecievedMessage dm = new RecievedMessage();
-        dm.setContext("Hey this is Mendel");
-
-        SentMessage sm1 = new SentMessage();
-        sm1.setContext("I am sending a message 2 u");
-
-        RecievedMessage dm1 = new RecievedMessage();
-        dm1.setContext("I am replying");
-        messageList.add(sm);
-        messageList.add(dm);
-        messageList.add(sm1);
-        messageList.add(dm1);
+//        messageList = new ArrayList<TextMessage>();
+//        SentMessage sm = new SentMessage();
+//        sm.setContext("Hey this is Frost");
+//
+//        RecievedMessage dm = new RecievedMessage();
+//        dm.setContext("Hey this is Mendel");
+//
+//        SentMessage sm1 = new SentMessage();
+//        sm1.setContext("I am sending a message 2 u");
+//
+//        RecievedMessage dm1 = new RecievedMessage();
+//        dm1.setContext("I am replying");
+//        messageList.add(sm);
+//        messageList.add(dm);
+//        messageList.add(sm1);
+//        messageList.add(dm1);
         mMessageRecycler = (RecyclerView) view.findViewById(R.id.reyclerview_message_list);
         mMessageAdapter = new MessageListAdapter(mMessageRecycler.getContext(), messageList);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -116,6 +128,8 @@ public class TextMessangerFragment extends Fragment {
                 }
             }
         });
+
+        new MessageRetriever().execute();
 
         // Inflate the layout for this fragment
         return view;
@@ -160,16 +174,6 @@ public class TextMessangerFragment extends Fragment {
         mMessageRecycler.setAdapter(new MessageListAdapter(mMessageRecycler.getContext(), messageList));
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
@@ -183,8 +187,7 @@ public class TextMessangerFragment extends Fragment {
             TextMessage textMessage = new TextMessage();
             textMessage.setContext(messageInputEditText.getText().toString());
             textMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
-            textMessage.setRecipient(UUID.fromString("8091a4cd-e968-4b41-be8b-30703a526e8d"));
-//            "22461bfc-9ec8-4df2-aa48-5789a357e009"
+            textMessage.setRecipient(conversant);
 
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -194,6 +197,43 @@ public class TextMessangerFragment extends Fragment {
 
             }
             return null;
+        }
+    }
+
+    private class MessageRetriever extends AsyncTask<Void, Void, ArrayList<TextMessage>>{
+
+        @Override
+        protected ArrayList<TextMessage> doInBackground(Void... voids) {
+            TextMessageDatabaseHelper db = new TextMessageDatabaseHelper(getContext());
+            ArrayList<TextMessage> messages = (ArrayList<TextMessage>) db.getMessagesForUniqueConversation(conversant);
+            return messages;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<TextMessage> textMessages) {
+            messageList = textMessages;
+            updateMessageAdapter(textMessages);
+        }
+    }
+
+    private class InputMessageIntoDatabase extends AsyncTask<Void, Void, Void>{
+
+        private TextMessage textMessage;
+
+        public InputMessageIntoDatabase(TextMessage textMessage){
+            this.textMessage = textMessage;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            TextMessageDatabaseHelper db = new TextMessageDatabaseHelper(getContext());
+            db.insertMessageEntry(textMessage);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
         }
     }
 }
