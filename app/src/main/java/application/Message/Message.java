@@ -29,7 +29,8 @@ import java.util.UUID;
 		@JsonSubTypes.Type(value = UpdatePairingDistanceMessage.class),
 		@JsonSubTypes.Type(value = EmailPasswordPairMessage.class),
 		@JsonSubTypes.Type(value = GetConversationListMessage.class),
-		@JsonSubTypes.Type(value = GetNewMessagesMessage.class)
+		@JsonSubTypes.Type(value = GetNewMessagesMessage.class),
+		@JsonSubTypes.Type(value = UpdateAliasMessage.class)
 })
 public abstract class Message implements MessageInterface{
 
