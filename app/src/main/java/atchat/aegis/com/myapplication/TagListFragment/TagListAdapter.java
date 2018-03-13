@@ -3,7 +3,6 @@ package atchat.aegis.com.myapplication.TagListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -99,7 +98,6 @@ public class TagListAdapter extends RecyclerView.Adapter {
             tagButton = (Button) itemView.findViewById(R.id.tag_button);
             userContainer = LoggedInUserContainer.getInstance();
             user = userContainer.getUser();
-            Log.i("UserName", user.getFirstName());
         }
 
         public void bind(final Tag tag){

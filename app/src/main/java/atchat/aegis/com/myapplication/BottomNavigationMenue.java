@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import application.Users.UserTemplate;
 import atchat.aegis.com.myapplication.ContactListFragment.ContactListFragment;
 import atchat.aegis.com.myapplication.ContactMessageListFragment.ContactMessageListFragment;
-import atchat.aegis.com.myapplication.PairingFragment.SwipeUp;
+import atchat.aegis.com.myapplication.PairingFragment.PairingFragment;
 import atchat.aegis.com.myapplication.SettingsFragment.onSettingsFragmentInteractionListener;
 import atchat.aegis.com.myapplication.TagListFragment.TagListFragment;
 
@@ -19,7 +20,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         ContactListFragment.OnContactListFragmentInteractionListener,
         TextMessangerFragment.OnFragmentInteractionListener,
         TagListFragment.OnFragmentInteractionListener,
-        SwipeUp.OnFragmentInteractionListener,
+        PairingFragment.OnFragmentInteractionListener,
         onSettingsFragmentInteractionListener,
         ContactMessageListFragment.OnContactMessageListFragmentInteractionListener{
 
@@ -49,8 +50,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 //                    return true;
                     break;
                 case R.id.navigation_notifications:
-                    fragment = SwipeUp.newInstance();
-//                    SwipeUp sw = new SwipeUp();
+                    fragment = PairingFragment.newInstance();
+//                    PairingFragment sw = new PairingFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
 //                    TextMessangerFragment tmf = new TextMessangerFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
@@ -67,7 +68,9 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 //                    return true;
                     break;
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, fragment).commit();
+            FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+            fragmentTransaction.replace(R.id.contentLayout, fragment).commit();
             return true;
         }
     };

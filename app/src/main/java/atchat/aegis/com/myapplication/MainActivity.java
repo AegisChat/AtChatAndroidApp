@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String website;
     private Context context;
+    private RestTemplate restTemplate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = this;
         website = getString(R.string.localhost);
+
+        restTemplate = new RestTemplate(getClientHttpRequestFactory());
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
         badLoginTextView = (TextView) findViewById(R.id.wrongLogin);
         emailInput = (EditText) findViewById(R.id.emailText);
@@ -59,9 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         createAccountButton = (Button) findViewById(R.id.createAccount);
 
-        String token = FirebaseInstanceId.getInstance().getToken();
-
-//        Log.d("Main Activity", token);
 
         Intent createdUserIntent = getIntent();
         if(createdUserIntent != null){
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
         rememberMeCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        System.out.println("LoginEmail: " +settings.getString("loginEmail", null));
         if(settings.getString("loginEmail", null) != null){
 
             login(sendButton);
@@ -105,6 +108,31 @@ public class MainActivity extends AppCompatActivity {
                 login(view);
             }
         });
+    }
+
+    public void login(View v){
+        EmailPasswordPairMessage loginCred = new EmailPasswordPairMessage();
+        String email;
+        String pass;
+        boolean autoLogin = false;
+        if (settings.getString("loginEmail", null) != null) {
+            email = settings.getString("loginEmail", null);
+            pass = settings.getString("password", null);
+            loginCred.setEmail(email);
+            loginCred.setPassword(pass);
+            autoLogin = true;
+        }else{
+            loginCred.setEmail(emailInput.getText().toString());
+            loginCred.setPassword(passwordInput.getText().toString());
+        }
+        new HttpRequestTask(loginCred).execute();
+    }
+
+    private ClientHttpRequestFactory getClientHttpRequestFactory(){
+        int timeout = 5000;
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        clientHttpRequestFactory.setConnectTimeout(timeout);
+        return clientHttpRequestFactory;
     }
 
     private class HttpRequestTask extends AsyncTask<Void, Void, User>{
@@ -119,8 +147,6 @@ public class MainActivity extends AppCompatActivity {
             try {
                 System.out.println(loginCred.getEmail());
                 final String url = website+"user/login";
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 user = restTemplate.postForObject(url, loginCred, User.class);
                 user.setFirebaseID(FirebaseInstanceId.getInstance().getToken());
                 final String updateFirebaseIDUrl = website + "user/updateFirebaseID";
@@ -141,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(User user) {
-            super.onPostExecute(user);
             if(user == null){
                 Toast.makeText(context, "Wrong Email or password", Toast.LENGTH_LONG).show();
             }else {
@@ -153,28 +178,19 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(context, "Welcome " + user.getAlias()+"!" , Toast.LENGTH_LONG).show();
                 LoggedInUserContainer userContainer = LoggedInUserContainer.getInstance();
                 userContainer.setUser(user);
+
+
                 Intent intent = new Intent(context, loggedIn.class);
                 startActivity(intent);
             }
         }
     }
-
-
-    public void login(View v){
-        EmailPasswordPairMessage loginCred = new EmailPasswordPairMessage();
-        String email;
-        String pass;
-        boolean autoLogin = false;
-        if (settings.getString("loginEmail", null) != null) {
-            email = settings.getString("loginEmail", null);
-            pass = settings.getString("password", null);
-            loginCred.setEmail(email);
-            loginCred.setPassword(pass);
-            autoLogin = true;
-        }else{
-            loginCred.setEmail(emailInput.getText().toString());
-            loginCred.setPassword(passwordInput.getText().toString());
-        }
-        new HttpRequestTask(loginCred).execute();
-    }
+//
+//    private class GetUserInfo extends AsyncTask<Void, Void, Void>{
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            return null;
+//        }
+//    }
 }

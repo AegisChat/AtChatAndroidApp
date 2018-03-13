@@ -51,11 +51,11 @@ public class FCMNotifications extends FirebaseMessagingService {
             if(messages != null){
                 Iterator<Message> iterator = messages.iterator();
                 while(iterator.hasNext()){
-                    MessageInterface messageInterface = iterator.next();
-                    if(messageInterface instanceof TextMessage){
-                        TextMessage textMessage =  (TextMessage) messageInterface;
+                    MessageInterface message = iterator.next();
+                    if(message instanceof TextMessage){
+                        TextMessage textMessage =  (TextMessage) message;
                         Log.i("TextMessage" , textMessage.getContext());
-                    }else if(messageInterface instanceof FoundPartnerMessage){
+                    }else if(message instanceof FoundPartnerMessage){
 
                     }
                 }
@@ -78,7 +78,8 @@ public class FCMNotifications extends FirebaseMessagingService {
             getNewMessagesMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            ArrayList<Message> newMessages = restTemplate.postForObject(url, getNewMessagesMessage, ArrayList.class);
+            GetNewMessagesMessage result = restTemplate.postForObject(url, getNewMessagesMessage, GetNewMessagesMessage.class);
+            ArrayList<Message> newMessages = result.getMessages();
             return newMessages;
         }
     }

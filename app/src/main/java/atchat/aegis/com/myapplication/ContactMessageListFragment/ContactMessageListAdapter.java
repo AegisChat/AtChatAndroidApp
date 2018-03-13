@@ -12,7 +12,6 @@ import java.util.List;
 
 import application.Users.LoggedInUserContainer;
 import application.Users.User;
-import application.Users.UserTemplate;
 import atchat.aegis.com.myapplication.R;
 
 /**
@@ -21,15 +20,15 @@ import atchat.aegis.com.myapplication.R;
 
 public class ContactMessageListAdapter extends RecyclerView.Adapter {
 
-    private List<UserTemplate> mFriends;
+    private List<ConversationTemplate> mConvsations;
     private Context mContext;
     private String website;
     private User user;
 
 
-    public ContactMessageListAdapter(Context context, List<UserTemplate> friends){
+    public ContactMessageListAdapter(Context context, List<ConversationTemplate> conversationList){
         this.mContext = context;
-        this.mFriends = friends;
+        this.mConvsations = conversationList;
         website = mContext.getString(R.string.localhost);
         user = LoggedInUserContainer.getInstance().getUser();
     }
@@ -47,36 +46,37 @@ public class ContactMessageListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        UserTemplate userTemplate = (UserTemplate) mFriends.get(position);
-        ((ContactMessageViewHolder) holder).bind(userTemplate);
+        ConversationTemplate conversationTemplate = (ConversationTemplate) mConvsations.get(position);
+        ((ContactMessageViewHolder) holder).bind(conversationTemplate);
     }
 
     @Override
     public int getItemCount() {
-        return mFriends.size();
+        return mConvsations.size();
     }
 
     private class ContactMessageViewHolder extends RecyclerView.ViewHolder{
         private ImageView imageView;
         private TextView userTemplateName;
         private TextView message;
-        private String name;
-        private String latestTestMessage;
 
 
         public ContactMessageViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Send info to TextMessageFragment
+                }
+            });
             imageView = (ImageView)itemView.findViewById(R.id.profile_image);
             userTemplateName = (TextView) itemView.findViewById(R.id.contact_profile_message);
             message = (TextView) itemView.findViewById(R.id.contact_messge_message);
         }
 
-        public void bind(UserTemplate userTemplate){
-            name = userTemplate.getName();
-
-
+        public void bind(ConversationTemplate conversationTemplate){
+            userTemplateName.setText(conversationTemplate.getUserTemplateName());
+            message.setText(conversationTemplate.getTextMessage().getContext());
         }
-
-
     }
 }

@@ -1,27 +1,37 @@
 package application.Message;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.UUID;
 
 import application.Users.UserTemplate;
 
 public class GetConversationListMessage extends Message{
-	
-	private List<UserTemplate> conversations;
-	
+
+	private ArrayList<UserTemplate> conversations;
+	private ArrayList<UUID> conversants;
+
 	public GetConversationListMessage() {
-		
+
 	}
-	
-	public GetConversationListMessage(List<UserTemplate> conversations) {
+
+	public GetConversationListMessage(ArrayList<UserTemplate> conversations) {
 		this.setConversations(conversations);
 	}
 
-	public List<UserTemplate> getConversations() {
+	public ArrayList<UserTemplate> getConversations() {
 		return conversations;
 	}
 
-	public void setConversations(List<UserTemplate> conversations) {
+	public void setConversations(ArrayList<UserTemplate> conversations) {
 		this.conversations = conversations;
+	}
+
+	public ArrayList<UUID> getConversants() {
+		return conversants;
+	}
+
+	public void setConversants(ArrayList<UUID> conversants) {
+		this.conversants = conversants;
 	}
 
 }

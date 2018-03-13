@@ -98,7 +98,6 @@ public class TagDatabaseHelper extends SQLiteOpenHelper {
         }
         if(tagList.isEmpty()){
             Log.i("DBHelper", "is empty");
-            getAllTags();
         }
         res.close();
         return tagList;

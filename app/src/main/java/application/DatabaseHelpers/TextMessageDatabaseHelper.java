@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.UUID;
 import application.Message.RecievedMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
+import application.Users.LoggedInUserContainer;
+import atchat.aegis.com.myapplication.R;
 
 
 /**
@@ -29,15 +32,17 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
     public static final String MESSAGE = "message";
 
     private UUID userID;
+    private String website;
 
     public TextMessageDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
+        website = context.getString(R.string.localhost);
+        userID = LoggedInUserContainer.getInstance().getUser().getId();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME +" (messageID text primary key unique, sender text, receiver text, timeStamp real, message text) ");
-        userID = UUID.randomUUID(); //THIS IS WRONG, ITS JUST TEMPORARY
     }
 
     @Override
@@ -62,7 +67,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
             return true;
     }
 
-    public boolean insterMessageEntry(TextMessage message){
+    public boolean insertMessageEntry(TextMessage message){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MESSAGE_ID, message.getId().toString());
@@ -78,8 +83,6 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
             return true;
     }
 
-
-
     //this will get all data from the database
     public Cursor getAllData(){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -90,7 +93,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
     public List<TextMessage> getMessagesForUniqueConversation(UUID id){
         List<TextMessage> messages = new ArrayList<TextMessage>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(" SELECT * FROM " +TABLE_NAME +" WHERE "+SENDER+" = "+id.toString() +"OR "+RECIEVER+ " = "+ id.toString() + "  ORDER BY " + TIME_STAMP + "DESC",null);
+        Cursor res = db.rawQuery(" SELECT * FROM " +TABLE_NAME +" WHERE "+SENDER+" = "+id.toString() +"OR "+RECIEVER+ " = "+ id.toString() + "  ORDER BY " + TIME_STAMP + " DESC",null);
         while(res.moveToNext()){
             if(res.getString(1).equals(userID.toString())){
                 SentMessage sentMessage = new SentMessage();
@@ -109,12 +112,43 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
                 recievedMessage.setRecipient(UUID.fromString(res.getString(2)));
                 recievedMessage.setTime(res.getLong(3));
                 recievedMessage.setContext(res.getString(4));
-
                 messages.add(recievedMessage);
             }
         }
-        return null;
+
+        return messages;
     }
 
+    public TextMessage getMostRecentMessage(UUID id){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '"  + id.toString() + "' OR " + RECIEVER + " = '" + id.toString() + "' ORDER BY " + TIME_STAMP + " DESC LIMIT 1";
+        Cursor res = sqLiteDatabase.rawQuery(query, null);
+        TextMessage textMessage = new TextMessage();
+        while(res.moveToNext()){
+            Log.i("TextMessageDBHelper", res.getString(0));
+            Log.i("TextMessageDBHelper", res.getString(1));
+            Log.i("TextMessageDBHelper", res.getString(2));
+            Log.i("TextMessageDBHelper", res.getString(3));
+            Log.i("TextMessageDBHelper", res.getString(4));
+            if(res.getString(1).equals(userID.toString())){
+                textMessage = new SentMessage();
+                textMessage.setStringToUUID(res.getString(0));
+                textMessage.setSender(UUID.fromString(res.getString(1)));
+                textMessage.setRecipient(UUID.fromString(res.getString(2)));
+                textMessage.setTime(res.getLong(3));
+                textMessage.setContext(res.getString(4));
+            }
+            else {
+                textMessage = new RecievedMessage();
+                textMessage.setStringToUUID(res.getString(0));
+                textMessage.setSender(UUID.fromString(res.getString(1)));
+                textMessage.setRecipient(UUID.fromString(res.getString(2)));
+                textMessage.setTime(res.getLong(3));
+                textMessage.setContext(res.getString(4));
+            }
+        }
+        res.close();
+        return textMessage;
+    }
 
 }

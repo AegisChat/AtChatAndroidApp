@@ -1,10 +1,10 @@
 package application.Message;
 
 public class TextMessage extends Message{
-	
+
 	private String context;
 	private long time;
-	protected int type;
+	protected int messageType;
 
 	public TextMessage(){
 		context = "";
@@ -26,7 +26,7 @@ public class TextMessage extends Message{
 		this.time = time;
 	}
 
-	public int getType(){
-		return type;
+	public int getMessageType(){
+		return messageType;
 	}
 }
