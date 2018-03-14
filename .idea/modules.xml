@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MyApplication.iml" filepath="$PROJECT_DIR$/MyApplication.iml" />
+      <module fileurl="file://C:\Users\puya3\AndroidStudioProjects\SpringTestLogin\MyApplication.iml" filepath="C:\Users\puya3\AndroidStudioProjects\SpringTestLogin\MyApplication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SpringTestLogin.iml" filepath="$PROJECT_DIR$/SpringTestLogin.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
