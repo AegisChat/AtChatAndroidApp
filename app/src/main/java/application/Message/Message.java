@@ -12,6 +12,7 @@ import java.util.UUID;
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = FriendRequestMessage.class),
 		@JsonSubTypes.Type(value = BlockMessage.class),
+		@JsonSubTypes.Type(value = CancelQueueMessage.class),
 		@JsonSubTypes.Type(value = DenyFriendRequestMessage.class),
 		@JsonSubTypes.Type(value = QueueMessage.class),
 		@JsonSubTypes.Type(value = SetTagsMessage.class),
