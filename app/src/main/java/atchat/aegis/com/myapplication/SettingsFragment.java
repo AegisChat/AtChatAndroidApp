@@ -7,11 +7,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.ExecutionException;
 
+import application.Message.UpdateAliasMessage;
 import application.Message.UpdatePairingDistanceMessage;
 import application.Message.UpdatePasswordMessage;
 import application.Users.LoggedInUserContainer;
@@ -39,6 +42,9 @@ public class SettingsFragment extends Fragment {
     TextView chname;
     Button applyName;
     Button changenameButtonClick;
+    Button changePasswordButtonClick;
+    EditText text11;
+    EditText text22;
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -68,10 +74,8 @@ public class SettingsFragment extends Fragment {
       //  changedName.setHint("Change Name ("+(String)LoggedInUserContainer.getInstance().getUser().getAlias() + ")");
       // chname = (TextView) view.findViewById(R.id.name1);
       //  applyName = (Button) view.findViewById(R.id.namebutton);
-
+//CHANGE ALIAS BUTTON------------------------------------
         changenameButtonClick = (Button) view.findViewById(R.id.changeNameButton);
-
-
         changenameButtonClick.setOnClickListener(new View.OnClickListener() {
             @Override
 
@@ -79,7 +83,6 @@ public class SettingsFragment extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Name");
-
                 final EditText updatedName = new EditText(view.getContext());
                 updatedName.setHint((String)LoggedInUserContainer.getInstance().getUser().getAlias());
                 builder.setView(updatedName);
@@ -88,14 +91,11 @@ public class SettingsFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String finaltext = updatedName.getText().toString();
+                        Log.i("Settings Fragment", "Changing name to: " + finaltext);
                         Toast.makeText(getContext(), "Name has been updated!", Toast.LENGTH_SHORT).show();
-//                        try {
-//                            new UpdatePassword(finaltext).execute();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        } catch (ExecutionException e) {
-//                            e.printStackTrace();
-                     //   }
+
+                        new UpdateAlias(finaltext).execute();
+
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -106,26 +106,80 @@ public class SettingsFragment extends Fragment {
                     }
                 });
                 builder.show();
-
-//                builder.setView()
-
             }
         });
+//CHANGE PASSWORD BUTTON --------------------------------
 
-//        applyName.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//               changedName.setVisibility(View.VISIBLE);
-//              //  String finaltext = changedName.getText().toString();
-//               chname.setText(finaltext);
+        changePasswordButtonClick = (Button) view.findViewById(R.id.changePasswordButton);
+        changePasswordButtonClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+
+            public void onClick(View view) {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+                LayoutInflater inflater2 = getActivity().getLayoutInflater();
+
+                View alertdialogView = inflater2.inflate(R.layout.password_dialog, null);
+
+                builder1.setView(alertdialogView);
+
+                final EditText currentUserPass = new EditText(view.getContext());
+                currentUserPass.setText((String)LoggedInUserContainer.getInstance().getUser().getPassword());
+
+                final EditText currentPassInput = (EditText)alertdialogView.findViewById(R.id.currentPassword);
+                final EditText newPassword1 = (EditText)alertdialogView.findViewById(R.id.password1);
+                final EditText newPassword2 = (EditText)alertdialogView.findViewById(R.id.password2);
+
+
+                builder1.setPositiveButton("Update Password", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                           if (currentUserPass.getText().toString().equals(currentPassInput.getText().toString())
+                                && (newPassword1.getText().toString().equals(newPassword2.getText().toString())))
+                        {
+                            String newPassword = newPassword1.getText().toString();
+                               Toast.makeText(getContext(), "Password updated", Toast.LENGTH_SHORT).show();
+                            new UpdatePassword(newPassword).execute();
+                        }
+//
+                       else {
+                                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                                }
+                    }
+                });
+                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "NO MATCH", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+//                builder.setTitle("Current password");
+//                final EditText currentPassInput = new EditText(view.getContext());
+//                currentPassInput.setHint("Current Pass");
+//                builder.add
+
+//                builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        String finaltext = updatedName.getText().toString();
+//                        Log.i("Settings Fragment", "Changing name to: " + finaltext);
+//                        Toast.makeText(getContext(), "Name has been updated!", Toast.LENGTH_SHORT).show();
+//
+//                        new UpdateAlias(finaltext).execute();
+//
+//                    }
+//                });
+//                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                });
+               builder1.show(); }
 //            }
-//        });
-
-
-
-
-//        String name = (String)chname.getText();
-
+  });
         Distance_Slider = (SeekBar) view.findViewById(R.id.distanceSlider);
         Distance_Text = (TextView) view.findViewById(R.id.distanceText);
 
@@ -225,6 +279,29 @@ public class SettingsFragment extends Fragment {
         }
     }
 
+    private class UpdateAlias extends AsyncTask<Void, Void, Void> {
+        // /user/updateAlias
+        private String changedAlias;
+
+
+        private UpdateAlias(String changedAlias){
+            this.changedAlias = changedAlias;
+
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            UpdateAliasMessage upa = new UpdateAliasMessage();
+            upa.setSender(user.getId());
+            upa.setNewAlias(changedAlias);
+            final String url = website+"user/updateAlias";
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            restTemplate.postForObject(url, upa, Boolean.class);
+            return null;
+        }
+    }
+
     private class UpdatePassword extends AsyncTask<Void, Void, Void> {
 
         private String changedPassword;
@@ -239,14 +316,11 @@ public class SettingsFragment extends Fragment {
 
             UpdatePasswordMessage upw = new UpdatePasswordMessage(changedPassword);
             upw.setSender(user.getId());
+            upw.setChangedPassword(changedPassword);
             final String url = website+"user/updatePassword";
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            try {
-                restTemplate.postForObject(url, upw, User.class);
-            }catch (Exception e){
-
-            }
+            restTemplate.postForObject(url, upw, Boolean.class);
             return null;
         }
     }

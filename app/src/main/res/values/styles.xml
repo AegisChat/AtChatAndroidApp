@@ -18,4 +18,8 @@
         <item name="colorControlHighlight">@color/AtChatYellow</item>
     </style>
 
+    <!--<style name="AlertDialogCustom" parent="Theme.AppCompat.Light.DarkActionBar">-->
+        <!--<item name="colorAccent">@color/AtChatYellow</item>-->
+    <!--</style>-->
+
 </resources>
