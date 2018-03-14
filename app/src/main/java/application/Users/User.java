@@ -2,7 +2,6 @@ package application.Users;
 
 
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.UUID;
 
 import application.Message.Message;
 import application.Tag.Tag;
-import atchat.aegis.com.myapplication.ContactMessageListFragment.ConversationTemplate;
 
 
 public final class User{
@@ -322,8 +320,7 @@ public final class User{
 
 	public void setQueueState(boolean queueState) {
 		if(queueState == true) {
-			Instant instant = Instant.now();
-			this.timeStampEpoch = instant.toEpochMilli();
+			this.timeStampEpoch = System.currentTimeMillis();
 		}
 		this.queueState = queueState;
 	}
