@@ -55,33 +55,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.983" />
 
-    <TextView
-        android:id="@+id/name1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="274dp" />
-
-    <Button
-        android:id="@+id/namebutton"
-        android:layout_width="92dp"
-        android:layout_height="58dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Apply"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.971"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.748" />
-
     <Button
         android:id="@+id/changeNameButton"
         android:layout_width="368dp"
@@ -90,6 +63,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="#00000000"
+        android:elevation="0dp"
         android:text="Change Name"
         android:textAlignment="textStart"
         android:textColor="@color/AtChatYellow"
@@ -99,6 +73,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.659" />
+
+    <Button
+        android:id="@+id/changePasswordButton"
+        android:layout_width="368dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#00000000"
+        android:text="Change Password"
+        android:textAlignment="textStart"
+        android:textColor="@color/AtChatYellow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeNameButton"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </android.support.constraint.ConstraintLayout>

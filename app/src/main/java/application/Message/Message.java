@@ -10,30 +10,27 @@ import java.util.UUID;
         property = "type")
 
 @JsonSubTypes({
-		@JsonSubTypes.Type(value = AcceptedEmailAddressMessage.class),
-		@JsonSubTypes.Type(value = BlockMessage.class),
-		@JsonSubTypes.Type(value = CancelQueueMessage.class),
-		@JsonSubTypes.Type(value = DenyFriendRequestMessage.class),
-		@JsonSubTypes.Type(value = EmailPasswordPairMessage.class),
-		@JsonSubTypes.Type(value = FoundPartnerMessage.class),
 		@JsonSubTypes.Type(value = FriendRequestMessage.class),
-		@JsonSubTypes.Type(value = GetConversationListMessage.class),
-		@JsonSubTypes.Type(value = GetFriendsListMessage.class),
-		@JsonSubTypes.Type(value = GetNewMessagesMessage.class),
-		@JsonSubTypes.Type(value = NewUserCreatedMessage.class),
+		@JsonSubTypes.Type(value = BlockMessage.class),
+		@JsonSubTypes.Type(value = DenyFriendRequestMessage.class),
 		@JsonSubTypes.Type(value = QueueMessage.class),
-		@JsonSubTypes.Type(value = QueueMessage.class),
-		@JsonSubTypes.Type(value = RecievedMessage.class),
-		@JsonSubTypes.Type(value = SentMessage.class),
 		@JsonSubTypes.Type(value = SetTagsMessage.class),
-		@JsonSubTypes.Type(value = TextMessage.class),
-		@JsonSubTypes.Type(value = UpdateAliasMessage.class),
-		@JsonSubTypes.Type(value = UpdateFirebaseIDMessage.class),
 		@JsonSubTypes.Type(value = UpdateLocationMessage.class),
-		@JsonSubTypes.Type(value = UpdatePairingDistanceMessage.class),
+		@JsonSubTypes.Type(value = FoundPartnerMessage.class),
+		@JsonSubTypes.Type(value = QueueMessage.class),
+		@JsonSubTypes.Type(value = VerifyLoginMessage.class),
+		@JsonSubTypes.Type(value = AcceptedEmailAddressMessage.class),
+		@JsonSubTypes.Type(value = NewUserCreatedMessage.class),
+		@JsonSubTypes.Type(value = GetFriendsListMessage.class),
+		@JsonSubTypes.Type(value = TextMessage.class),
+		@JsonSubTypes.Type(value = SentMessage.class),
+		@JsonSubTypes.Type(value = RecievedMessage.class),
 		@JsonSubTypes.Type(value = UpdateTagMessage.class),
-		@JsonSubTypes.Type(value = UpdatePasswordMessage.class),
-		@JsonSubTypes.Type(value = VerifyLoginMessage.class)
+		@JsonSubTypes.Type(value = UpdatePairingDistanceMessage.class),
+		@JsonSubTypes.Type(value = EmailPasswordPairMessage.class),
+		@JsonSubTypes.Type(value = GetConversationListMessage.class),
+		@JsonSubTypes.Type(value = GetNewMessagesMessage.class),
+		@JsonSubTypes.Type(value = UpdateAliasMessage.class)
 })
 public abstract class Message implements MessageInterface{
 
