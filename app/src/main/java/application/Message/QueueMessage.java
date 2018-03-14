@@ -1,8 +1,6 @@
 package application.Message;
 
-import java.util.UUID;
-
-import org.springframework.data.geo.Point;
+import application.Users.Point;
 
 public class QueueMessage extends Message{
 
