@@ -2,7 +2,9 @@ package atchat.aegis.com.myapplication;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -36,6 +38,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         PairingFragment.OnFragmentInteractionListener,
         onSettingsFragmentInteractionListener,
         ContactMessageListFragment.OnContactMessageListFragmentInteractionListener {
+
+    private static final String PAIRING_FRAGMENT_KEY = "PairingState";
 
     private UserTemplate userTemplate;
     private LocationManager locationManager;
@@ -183,5 +187,14 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     @SuppressLint("MissingPermission")
     private void configureButton(){
         locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PAIRING_FRAGMENT_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+        sharedPreferencesEditor.putInt(PAIRING_FRAGMENT_KEY, 1);
+        sharedPreferencesEditor.commit();
+        super.onDestroy();
     }
 }

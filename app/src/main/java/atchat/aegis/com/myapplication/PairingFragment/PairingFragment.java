@@ -1,6 +1,7 @@
 package atchat.aegis.com.myapplication.PairingFragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ import atchat.aegis.com.myapplication.R;
  */
 public class PairingFragment extends Fragment {
 
+    private static final String PAIRING_FRAGMENT_KEY = "PairingState";
+
     private ImageView imageView;
     private OnFragmentInteractionListener mListener;
     private GestureDetectorCompat mDetector;
@@ -61,6 +64,10 @@ public class PairingFragment extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         waitMessageTextView = (TextView) view.findViewById(R.id.wait_message_textview);
         cancelQueueButton = (Button) view.findViewById(R.id.cancel_queue_button);
+        state = 1;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PAIRING_FRAGMENT_KEY, Context.MODE_PRIVATE);
+        state = sharedPreferences.getInt(PAIRING_FRAGMENT_KEY, 0);
+        changeState(state);
 
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -73,10 +80,37 @@ public class PairingFragment extends Fragment {
         cancelQueueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                changeState(1);
                 //Cancel for queueing
             }
         });
         return view;
+    }
+
+    public void changeState(int state){
+        switch(state) {
+            case 1:
+                imageView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                waitMessageTextView.setVisibility(View.GONE);
+                cancelQueueButton.setVisibility(View.GONE);
+                this.state = 1;
+                break;
+            case 2:
+                imageView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                waitMessageTextView.setVisibility(View.VISIBLE);
+                cancelQueueButton.setVisibility(View.VISIBLE);
+                this.state = 2;
+                break;
+            default:
+                this.state = 1;
+                imageView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                waitMessageTextView.setVisibility(View.GONE);
+                cancelQueueButton.setVisibility(View.GONE);
+        }
+
     }
 
 
@@ -102,6 +136,15 @@ public class PairingFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(PAIRING_FRAGMENT_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+        sharedPreferencesEditor.putInt(PAIRING_FRAGMENT_KEY, state);
+        sharedPreferencesEditor.commit();
     }
 
     /**
@@ -151,10 +194,7 @@ public class PairingFragment extends Fragment {
 
             if (motionEvent.getY() > motionEvent1.getY()) {
                 Log.i("SwipeUpGestureDetector", "SwipeUpDetected");
-                imageView.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                waitMessageTextView.setVisibility(View.VISIBLE);
-                cancelQueueButton.setVisibility(View.VISIBLE);
+                changeState(2);
 //                new SendReadyToPairMessage().execute();
             }
             return false;
@@ -175,6 +215,23 @@ public class PairingFragment extends Fragment {
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             restTemplate.postForObject(url, queueMessage, Boolean.class);
 
+            return null;
+        }
+    }
+
+    public class CancelPairingMessage extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final String url = website + "userActions/startForQueue";
+            User user = LoggedInUserContainer.getInstance().getUser();
+            QueueMessage queueMessage = new QueueMessage();
+            queueMessage.setSender(user.getId());
+            queueMessage.setNewLocation(user.getLocation());
+
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            restTemplate.postForObject(url, queueMessage, Boolean.class);
             return null;
         }
     }

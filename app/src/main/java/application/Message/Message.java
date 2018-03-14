@@ -12,6 +12,7 @@ import java.util.UUID;
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = AcceptedEmailAddressMessage.class),
 		@JsonSubTypes.Type(value = BlockMessage.class),
+		@JsonSubTypes.Type(value = CancelQueueMessage.class),
 		@JsonSubTypes.Type(value = DenyFriendRequestMessage.class),
 		@JsonSubTypes.Type(value = EmailPasswordPairMessage.class),
 		@JsonSubTypes.Type(value = FoundPartnerMessage.class),
