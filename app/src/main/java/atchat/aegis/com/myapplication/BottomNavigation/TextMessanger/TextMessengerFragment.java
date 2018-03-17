@@ -159,10 +159,10 @@ public class TextMessengerFragment extends Fragment {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-//                TextMessage textMessage = (TextMessage) intent.getExtras().getSerializable("TextMessage");
+                TextMessage textMessage = (TextMessage) intent.getExtras().getSerializable("TextMessage");
                 Log.i("TextMessage", "Broadcast recieved");
-                new MessageRetriever().execute();
-//                new InputMessageIntoDatabase(textMessage).execute();
+//                new MessageRetriever().execute();
+                new InputMessageIntoDatabase(textMessage).execute();
             }
         };
         // Inflate the layout for this fragment

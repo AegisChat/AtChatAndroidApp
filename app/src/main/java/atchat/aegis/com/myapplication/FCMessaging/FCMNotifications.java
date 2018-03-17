@@ -62,9 +62,9 @@ public class FCMNotifications extends FirebaseMessagingService {
                     MessageInterface message = iterator.next();
                     if(message instanceof TextMessage){
                         TextMessage textMessage =  (TextMessage) message;
-                        db.insertMessageEntry(textMessage);
+//                        db.insertMessageEntry(textMessage);
                         Intent intent = new Intent("TextMessage" + textMessage.getSender());
-//                        intent.putExtra("TextMessage", textMessage);
+                        intent.putExtra("TextMessage", textMessage);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
                     }else if(message instanceof FoundPartnerMessage){
