@@ -147,7 +147,7 @@ public class TextMessangerFragment extends Fragment {
             }
         });
 
-//        new MessageRetriever().execute();
+        new MessageRetriever().execute();
 
         // Inflate the layout for this fragment
         return view;

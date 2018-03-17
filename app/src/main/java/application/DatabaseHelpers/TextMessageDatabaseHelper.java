@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -93,27 +94,30 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
     public List<TextMessage> getMessagesForUniqueConversation(UUID id){
         List<TextMessage> messages = new ArrayList<TextMessage>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(" SELECT * FROM " +TABLE_NAME +" WHERE "+SENDER+" = "+id.toString() +"OR "+RECIEVER+ " = "+ id.toString() + "  ORDER BY " + TIME_STAMP + " DESC",null);
-        while(res.moveToNext()){
-            if(res.getString(1).equals(userID.toString())){
-                SentMessage sentMessage = new SentMessage();
-                sentMessage.setStringToUUID(res.getString(0));
-                sentMessage.setSender(UUID.fromString(res.getString(1)));
-                sentMessage.setRecipient(UUID.fromString(res.getString(2)));
-                sentMessage.setTime(res.getLong(3));
-                sentMessage.setContext(res.getString(4));
+        try {
+            Cursor res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = " + id.toString() + "OR " + RECIEVER + " = " + id.toString() + "  ORDER BY " + TIME_STAMP + " DESC", null);
+            while (res.moveToNext()) {
+                if (res.getString(1).equals(userID.toString())) {
+                    SentMessage sentMessage = new SentMessage();
+                    sentMessage.setStringToUUID(res.getString(0));
+                    sentMessage.setSender(UUID.fromString(res.getString(1)));
+                    sentMessage.setRecipient(UUID.fromString(res.getString(2)));
+                    sentMessage.setTime(res.getLong(3));
+                    sentMessage.setContext(res.getString(4));
 
-                messages.add(sentMessage);
+                    messages.add(sentMessage);
+                } else {
+                    RecievedMessage recievedMessage = new RecievedMessage();
+                    recievedMessage.setStringToUUID(res.getString(0));
+                    recievedMessage.setSender(UUID.fromString(res.getString(1)));
+                    recievedMessage.setRecipient(UUID.fromString(res.getString(2)));
+                    recievedMessage.setTime(res.getLong(3));
+                    recievedMessage.setContext(res.getString(4));
+                    messages.add(recievedMessage);
+                }
             }
-            else {
-                RecievedMessage recievedMessage = new RecievedMessage();
-                recievedMessage.setStringToUUID(res.getString(0));
-                recievedMessage.setSender(UUID.fromString(res.getString(1)));
-                recievedMessage.setRecipient(UUID.fromString(res.getString(2)));
-                recievedMessage.setTime(res.getLong(3));
-                recievedMessage.setContext(res.getString(4));
-                messages.add(recievedMessage);
-            }
+        }catch(SQLiteException e){
+
         }
 
         return messages;

@@ -190,7 +190,7 @@ public class PairingFragment extends Fragment {
                 Log.i("SwipeUpGestureDetector", "SwipeUpDetected");
                 changeState(2);
                 LoggedInUserContainer.getInstance().getUser().setQueueState(true);
-//                new SendReadyToPairMessager().execute();
+                new SendReadyToPairMessager().execute();
             }
             return false;
         }
