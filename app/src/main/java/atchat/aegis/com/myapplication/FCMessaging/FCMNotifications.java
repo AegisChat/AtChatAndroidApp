@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.FoundPartnerMessage;
 import application.Message.GetNewMessagesMessage;
 import application.Message.Message;
@@ -31,8 +32,10 @@ import atchat.aegis.com.myapplication.R;
 public class FCMNotifications extends FirebaseMessagingService {
 
     private String website;
+    private TextMessageDatabaseHelper db;
 
     public FCMNotifications(){
+        db = new TextMessageDatabaseHelper(this);
     }
 
     @Override
@@ -59,16 +62,9 @@ public class FCMNotifications extends FirebaseMessagingService {
                     MessageInterface message = iterator.next();
                     if(message instanceof TextMessage){
                         TextMessage textMessage =  (TextMessage) message;
-
-                        Log.i("TextMessage" , textMessage.getId().toString());
-                        Log.i("TextMessage" , textMessage.getRecipient().toString());
-                        Log.i("TextMessage" , textMessage.getSender().toString());
-                        Log.i("TextMessage" , String.valueOf(textMessage.getTime()));
-                        Log.i("TextMessage" , textMessage.getContext());
-
-
+                        db.insertMessageEntry(textMessage);
                         Intent intent = new Intent("TextMessage" + textMessage.getSender());
-                        intent.putExtra("TextMessage", textMessage);
+//                        intent.putExtra("TextMessage", textMessage);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
                     }else if(message instanceof FoundPartnerMessage){
