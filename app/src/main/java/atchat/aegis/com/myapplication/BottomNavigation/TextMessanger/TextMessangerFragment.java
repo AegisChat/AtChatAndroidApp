@@ -46,14 +46,6 @@ public class TextMessangerFragment extends Fragment {
     private EditText messageInputEditText;
     private List<TextMessage> messageList;
     private BroadcastReceiver broadcastReceiver;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("TestMessage" + conversant.toString()));
-//        broadcastReceiver = new Br
-    }
-
     private String website;
     private UUID conversant;
     private String username;
@@ -166,11 +158,17 @@ public class TextMessangerFragment extends Fragment {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                new MessageRetriever().execute();
+                TextMessage textMessage = (TextMessage) intent.getExtras().getSerializable("TextMessage");
             }
         };
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("TestMessage" + conversant.toString()));
     }
 
     @Override
@@ -263,6 +261,7 @@ public class TextMessangerFragment extends Fragment {
     private class InputMessageIntoDatabase extends AsyncTask<Void, Void, Void>{
 
         private TextMessage textMessage;
+        private List<TextMessage> textMessages;
 
         public InputMessageIntoDatabase(TextMessage textMessage){
             this.textMessage = textMessage;
@@ -272,12 +271,15 @@ public class TextMessangerFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             TextMessageDatabaseHelper db = new TextMessageDatabaseHelper(getContext());
             db.insertMessageEntry(textMessage);
+            textMessages = db.getMessagesForUniqueConversation(conversant);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            updateMessageAdapter(textMessages);
+
         }
     }
 }
