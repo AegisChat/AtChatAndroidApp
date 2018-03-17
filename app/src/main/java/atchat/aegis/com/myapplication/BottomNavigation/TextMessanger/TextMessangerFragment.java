@@ -95,7 +95,10 @@ public class TextMessangerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 SentMessage newMessage = new SentMessage();
+                newMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+                newMessage.setRecipient(conversant);
                 newMessage.setContext(messageInputEditText.getText().toString());
+                newMessage.setTime(System.currentTimeMillis());
                 addToMessageList(newMessage);
                 updateMessageAdapter(messageList);
                 mMessageRecycler.scrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);

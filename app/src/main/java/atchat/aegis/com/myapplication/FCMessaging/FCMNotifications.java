@@ -59,8 +59,6 @@ public class FCMNotifications extends FirebaseMessagingService {
                     }else if(message instanceof FoundPartnerMessage){
                         Log.i("FoundPartnerMessage" , "New Partner Found");
                         FoundPartnerMessage foundPartnerMessage = (FoundPartnerMessage) message;
-//                        BottomNavigationMenue bottomNavigationMenue =(BottomNavigationMenue) getApplicationContext();
-//                        bottomNavigationMenue.startTextMessageFragment(foundPartnerMessage);
                         Intent intent = new Intent("FoundPartnerMessage");
                         intent.putExtra("FoundPartnerMessage", foundPartnerMessage);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
