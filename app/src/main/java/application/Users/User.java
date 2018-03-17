@@ -2,6 +2,7 @@ package application.Users;
 
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +12,7 @@ import application.Message.Message;
 import application.Tag.Tag;
 
 
-public final class User{
+public final class User implements Serializable{
 
 
 	private UUID id;

@@ -18,14 +18,6 @@ public class LoggedInUserContainer {
 
     }
 
-    public static LoggedInUserContainer getInstance(){
-        if(instance == null){
-            return new LoggedInUserContainer();
-        }else{
-            return instance;
-        }
-    }
-
     public void setUser(User user){
         this.user = user;
     }
@@ -48,5 +40,13 @@ public class LoggedInUserContainer {
 
     public void setConversationTemplates(ArrayList<ConversationTemplate> conversationTemplates) {
         this.conversationTemplates = conversationTemplates;
+    }
+
+    private static class UserContainerHolder{
+        private static final LoggedInUserContainer instance = new LoggedInUserContainer();
+    }
+
+    public static LoggedInUserContainer getInstance(){
+        return UserContainerHolder.instance;
     }
 }

@@ -43,7 +43,11 @@ public class FCMNotifications extends FirebaseMessagingService {
         if(remoteMessage.getData().size() > 0){
             Log.i("FCMNotifications" , "data: " + remoteMessage.getData());
         }
-        parseMessages();
+        try{
+            LoggedInUserContainer.getInstance().getUser().getAlias();
+            parseMessages();
+        }catch (NullPointerException e){
+        }
     }
 
     public void parseMessages(){
@@ -71,6 +75,8 @@ public class FCMNotifications extends FirebaseMessagingService {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }catch(NullPointerException e){
+            e.printStackTrace();
         }
     }
 
@@ -83,12 +89,14 @@ public class FCMNotifications extends FirebaseMessagingService {
             getNewMessagesMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            ArrayList<Message> newMessages = null;
+            ArrayList<Message> newMessages = new ArrayList<Message>();
             try {
                 GetNewMessagesMessage result = restTemplate.postForObject(url, getNewMessagesMessage, GetNewMessagesMessage.class);
                 newMessages = result.getMessages();
             }catch(NullPointerException e){
                 Log.i("FCMNotifications", "No Messages");
+            }catch(Exception e){
+
             }
             return newMessages;
         }

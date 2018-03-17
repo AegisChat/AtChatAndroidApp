@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
+        property = "jsontype")
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = FriendRequestMessage.class),

@@ -29,6 +29,7 @@ import application.Users.User;
 public class MainActivity extends AppCompatActivity {
     public static final String FileSettingsName = "LogInFile";
     public static final String INTENT_MESSAGE = "com.aegis.logginTest.intentMessage";
+    private static final String USER_FILE_NAME = "com.aegis.user.userinfo";
     private SharedPreferences settings;
 
     private EditText emailInput;
@@ -149,6 +150,18 @@ public class MainActivity extends AppCompatActivity {
                 final String url = website+"user/login";
                 user = restTemplate.postForObject(url, loginCred, User.class);
                 user.setFirebaseID(FirebaseInstanceId.getInstance().getToken());
+//                File file = new File(context.getFilesDir(), USER_FILE_NAME);
+//                FileOutputStream fileOutputStream;
+//                try{
+//                    fileOutputStream = openFileOutput(USER_FILE_NAME, Context.MODE_PRIVATE);
+//                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//                    objectOutputStream.writeObject(user);
+//                    objectOutputStream.close();
+//                    fileOutputStream.close();
+//                }catch(Exception e){
+//                    e.printStackTrace();
+//                }
+
                 final String updateFirebaseIDUrl = website + "user/updateFirebaseID";
                 UpdateFirebaseIDMessage ufidm = new UpdateFirebaseIDMessage();
                 ufidm.setSender(user.getId());
