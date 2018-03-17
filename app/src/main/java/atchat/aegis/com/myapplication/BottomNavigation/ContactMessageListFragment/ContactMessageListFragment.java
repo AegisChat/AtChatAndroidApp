@@ -104,14 +104,19 @@ public class ContactMessageListFragment extends Fragment {
             final String url = website+"user/getConversationList";
             final TextMessageDatabaseHelper textMessageDatabaseHelper = new TextMessageDatabaseHelper(getContext());
 
-
             GetConversationListMessage getConversationListMessage = new GetConversationListMessage();
             getConversationListMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             getConversationListMessage.setConversants(LoggedInUserContainer.getInstance().getUser().getConversations());
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             GetConversationListMessage result = restTemplate.postForObject(url, getConversationListMessage, GetConversationListMessage.class);
-            ArrayList<UserTemplate> newMessages = (ArrayList<UserTemplate>)result.getConversations();
+            ArrayList<UserTemplate> newMessages;
+            if(result != null){
+                newMessages= (ArrayList<UserTemplate>)result.getConversations();
+            }else{
+                newMessages = new ArrayList<UserTemplate>();
+            }
+
 
             ArrayList<ConversationTemplate> conversationTemplates = new ArrayList<ConversationTemplate>();
             Iterator<UserTemplate> userTemplateIterator = newMessages.iterator();
