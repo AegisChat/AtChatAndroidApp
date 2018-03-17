@@ -1,10 +1,14 @@
 package atchat.aegis.com.myapplication.BottomNavigation.TextMessanger;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -41,6 +45,15 @@ public class TextMessangerFragment extends Fragment {
     private TextView conversantsNameTextView;
     private EditText messageInputEditText;
     private List<TextMessage> messageList;
+    private BroadcastReceiver broadcastReceiver;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("TestMessage" + conversant.toString()));
+//        broadcastReceiver = new Br
+    }
+
     private String website;
     private UUID conversant;
     private String username;
@@ -75,8 +88,6 @@ public class TextMessangerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
 
         website = getString(R.string.localhost);
         View view = inflater.inflate(R.layout.fragment_text_message_list, container, false);
@@ -152,8 +163,20 @@ public class TextMessangerFragment extends Fragment {
 
         new MessageRetriever().execute();
 
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                new MessageRetriever().execute();
+            }
+        };
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver);
     }
 
     @Override
