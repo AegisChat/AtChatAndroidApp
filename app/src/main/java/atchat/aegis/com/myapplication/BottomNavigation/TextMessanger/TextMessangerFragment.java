@@ -159,6 +159,7 @@ public class TextMessangerFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 TextMessage textMessage = (TextMessage) intent.getExtras().getSerializable("TextMessage");
+                new InputMessageIntoDatabase(textMessage).execute();
             }
         };
         // Inflate the layout for this fragment
@@ -272,6 +273,9 @@ public class TextMessangerFragment extends Fragment {
             TextMessageDatabaseHelper db = new TextMessageDatabaseHelper(getContext());
             db.insertMessageEntry(textMessage);
             textMessages = db.getMessagesForUniqueConversation(conversant);
+//            for(TextMessage textMessage : textMessages){
+//                Log.i("TestTextMessage", textMessage.getContext());
+//            }
             return null;
         }
 
