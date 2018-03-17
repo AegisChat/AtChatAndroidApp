@@ -95,7 +95,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         List<TextMessage> messages = new ArrayList<TextMessage>();
         SQLiteDatabase db = this.getReadableDatabase();
         try {
-            Cursor res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '" + id.toString() + "' OR " + RECIEVER + " = '" + id.toString() + "'  ORDER BY " + TIME_STAMP + " DESC", null);
+            Cursor res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '" + id.toString() + "' OR " + RECIEVER + " = '" + id.toString() + "'  ORDER BY " + TIME_STAMP + " ASC", null);
             while (res.moveToNext()) {
                 if (res.getString(1).equals(userID.toString())) {
                     SentMessage sentMessage = new SentMessage();
