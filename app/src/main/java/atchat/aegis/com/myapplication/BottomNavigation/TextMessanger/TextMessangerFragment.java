@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -159,6 +160,7 @@ public class TextMessangerFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 TextMessage textMessage = (TextMessage) intent.getExtras().getSerializable("TextMessage");
+                Log.i("TextMessage", "Broadcast recieved");
                 new InputMessageIntoDatabase(textMessage).execute();
             }
         };
@@ -169,7 +171,7 @@ public class TextMessangerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("TestMessage" + conversant.toString()));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("TextMessage" + conversant.toString()));
     }
 
     @Override
@@ -273,9 +275,9 @@ public class TextMessangerFragment extends Fragment {
             TextMessageDatabaseHelper db = new TextMessageDatabaseHelper(getContext());
             db.insertMessageEntry(textMessage);
             textMessages = db.getMessagesForUniqueConversation(conversant);
-//            for(TextMessage textMessage : textMessages){
-//                Log.i("TestTextMessage", textMessage.getContext());
-//            }
+            for(TextMessage textMessage : textMessages){
+                Log.i("TestTextMessage", textMessage.getContext());
+            }
             return null;
         }
 
