@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="atchat.aegis.com.myapplication.BottomNavigationMenue">
+    tools:context="atchat.aegis.com.myapplication.BottomNavigation.BottomNavigationMenue">
 
     <FrameLayout
         android:id="@+id/contentLayout"

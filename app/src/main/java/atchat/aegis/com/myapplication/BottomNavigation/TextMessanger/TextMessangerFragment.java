@@ -1,4 +1,4 @@
-package atchat.aegis.com.myapplication;
+package atchat.aegis.com.myapplication.BottomNavigation.TextMessanger;
 
 import android.content.Context;
 import android.net.Uri;
@@ -25,6 +25,8 @@ import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
 import application.Users.LoggedInUserContainer;
+import atchat.aegis.com.myapplication.MessageListAdapter;
+import atchat.aegis.com.myapplication.R;
 
 
 public class TextMessangerFragment extends Fragment {
@@ -41,6 +43,8 @@ public class TextMessangerFragment extends Fragment {
     private List<TextMessage> messageList;
     private String website;
     private UUID conversant;
+    private String username;
+    private UUID uuid;
 
     public TextMessangerFragment() {
 
@@ -60,17 +64,19 @@ public class TextMessangerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public static TextMessangerFragment newInstance(){
+    public static TextMessangerFragment newInstance(String userName, String conversantsUUID){
         TextMessangerFragment fragment = new TextMessangerFragment();
+        Bundle args = new Bundle();
+        args.putString(USERNAME_ARGUMENT, userName);
+        args.putString(UUID_ARGUMENT, conversantsUUID);
+        fragment.setArguments(args);
         return fragment;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if(getArguments().getString(USERNAME_ARGUMENT) != null) {
-            String userName = getArguments().getString(USERNAME_ARGUMENT);
-            conversant = UUID.fromString(getArguments().getString(UUID_ARGUMENT));
-        }
+
+
 
         website = getString(R.string.localhost);
         View view = inflater.inflate(R.layout.fragment_text_message_list, container, false);
@@ -79,6 +85,11 @@ public class TextMessangerFragment extends Fragment {
         messageInputEditText = (EditText) view.findViewById(R.id.edittext_chatbox);
 
         conversantsNameTextView = (TextView) view.findViewById(R.id.user_template_name);
+
+        Bundle bundle = this.getArguments();
+        conversant = UUID.fromString(getArguments().getString(UUID_ARGUMENT));
+        username = bundle.getString(USERNAME_ARGUMENT);
+        conversantsNameTextView.setText(username);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +121,13 @@ public class TextMessangerFragment extends Fragment {
 //        messageList.add(dm);
 //        messageList.add(sm1);
 //        messageList.add(dm1);
+        try{
+            if(messageList == null){
+                messageList = new ArrayList<TextMessage>();
+            }
+        }catch (NullPointerException e){
+            messageList = new ArrayList<TextMessage>();
+        }
         mMessageRecycler = (RecyclerView) view.findViewById(R.id.reyclerview_message_list);
         mMessageAdapter = new MessageListAdapter(mMessageRecycler.getContext(), messageList);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -129,7 +147,7 @@ public class TextMessangerFragment extends Fragment {
             }
         });
 
-        new MessageRetriever().execute();
+//        new MessageRetriever().execute();
 
         // Inflate the layout for this fragment
         return view;

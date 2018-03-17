@@ -1,4 +1,4 @@
-package atchat.aegis.com.myapplication.ContactListFragment;
+package atchat.aegis.com.myapplication.BottomNavigation.ContactListFragment;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

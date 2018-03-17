@@ -1,4 +1,4 @@
-package atchat.aegis.com.myapplication.TagListFragment;
+package atchat.aegis.com.myapplication.BottomNavigation.TagListFragment;
 
 import android.content.Context;
 import android.os.AsyncTask;

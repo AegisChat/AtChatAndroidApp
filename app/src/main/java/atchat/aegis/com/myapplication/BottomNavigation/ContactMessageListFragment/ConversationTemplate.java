@@ -1,4 +1,4 @@
-package atchat.aegis.com.myapplication.ContactMessageListFragment;
+package atchat.aegis.com.myapplication.BottomNavigation.ContactMessageListFragment;
 
 import application.Message.TextMessage;
 import application.Users.UserTemplate;

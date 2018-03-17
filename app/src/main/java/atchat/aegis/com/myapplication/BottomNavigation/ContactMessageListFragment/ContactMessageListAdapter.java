@@ -1,4 +1,4 @@
-package atchat.aegis.com.myapplication.ContactMessageListFragment;
+package atchat.aegis.com.myapplication.BottomNavigation.ContactMessageListFragment;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

@@ -1,6 +1,8 @@
 package atchat.aegis.com.myapplication.FCMessaging;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -30,7 +32,6 @@ public class FCMNotifications extends FirebaseMessagingService {
 
     private String website;
 
-
     public FCMNotifications(){
     }
 
@@ -56,7 +57,13 @@ public class FCMNotifications extends FirebaseMessagingService {
                         TextMessage textMessage =  (TextMessage) message;
                         Log.i("TextMessage" , textMessage.getContext());
                     }else if(message instanceof FoundPartnerMessage){
-
+                        Log.i("FoundPartnerMessage" , "New Partner Found");
+                        FoundPartnerMessage foundPartnerMessage = (FoundPartnerMessage) message;
+//                        BottomNavigationMenue bottomNavigationMenue =(BottomNavigationMenue) getApplicationContext();
+//                        bottomNavigationMenue.startTextMessageFragment(foundPartnerMessage);
+                        Intent intent = new Intent("FoundPartnerMessage");
+                        intent.putExtra("FoundPartnerMessage", foundPartnerMessage);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }
                 }
             }else{
@@ -78,8 +85,13 @@ public class FCMNotifications extends FirebaseMessagingService {
             getNewMessagesMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            GetNewMessagesMessage result = restTemplate.postForObject(url, getNewMessagesMessage, GetNewMessagesMessage.class);
-            ArrayList<Message> newMessages = result.getMessages();
+            ArrayList<Message> newMessages = null;
+            try {
+                GetNewMessagesMessage result = restTemplate.postForObject(url, getNewMessagesMessage, GetNewMessagesMessage.class);
+                newMessages = result.getMessages();
+            }catch(NullPointerException e){
+                Log.i("FCMNotifications", "No Messages");
+            }
             return newMessages;
         }
     }

@@ -1,9 +1,11 @@
-package atchat.aegis.com.myapplication;
+package atchat.aegis.com.myapplication.BottomNavigation;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -18,18 +20,25 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import java.util.UUID;
+
+import application.Message.FoundPartnerMessage;
 import application.Users.LoggedInUserContainer;
 import application.Users.Point;
 import application.Users.UserTemplate;
-import atchat.aegis.com.myapplication.ContactListFragment.ContactListFragment;
-import atchat.aegis.com.myapplication.ContactMessageListFragment.ContactMessageListFragment;
-import atchat.aegis.com.myapplication.PairingFragment.PairingFragment;
+import atchat.aegis.com.myapplication.BottomNavigation.ContactListFragment.ContactListFragment;
+import atchat.aegis.com.myapplication.BottomNavigation.ContactMessageListFragment.ContactMessageListFragment;
+import atchat.aegis.com.myapplication.BottomNavigation.PairingFragment.PairingFragment;
+import atchat.aegis.com.myapplication.BottomNavigation.TagListFragment.TagListFragment;
+import atchat.aegis.com.myapplication.BottomNavigation.TextMessanger.TextMessangerFragment;
+import atchat.aegis.com.myapplication.R;
+import atchat.aegis.com.myapplication.SettingsFragment;
 import atchat.aegis.com.myapplication.SettingsFragment.onSettingsFragmentInteractionListener;
-import atchat.aegis.com.myapplication.TagListFragment.TagListFragment;
 
 public class BottomNavigationMenue extends AppCompatActivity implements
         ContactListFragment.OnContactListFragmentInteractionListener,
@@ -44,6 +53,9 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     private UserTemplate userTemplate;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private OnFoundPartnerListener onFoundPartnerListener;
+    private BroadcastReceiver broadcastReceiver;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -61,7 +73,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 //                    return true;
                     break;
                 case R.id.navigation_dashboard:
-                    fragment = TextMessangerFragment.newInstance();
+                    fragment = ContactListFragment.newInstance();
+//                    fragment = TextMessangerFragment.newInstance();
 //                    TextMessangerFragment tmf = new TextMessangerFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
 //                    UserTemplateTestListFragment t = new UserTemplateTestListFragment();
@@ -92,8 +105,23 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
             fragmentTransaction.replace(R.id.contentLayout, fragment).commit();
             return true;
+
+
+
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("FoundPartnerMessage"));
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +130,13 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_notifications);
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                FoundPartnerMessage foundPartnerMessage = (FoundPartnerMessage) intent.getExtras().getSerializable("FoundPartnerMessage");
+                startTextMessageFragment(foundPartnerMessage);
+            }
+        };
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
@@ -143,6 +178,23 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         }
     }
 
+    public void startTextMessageFragment(final FoundPartnerMessage foundPartnerMessage){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                UserTemplate userTemplate = foundPartnerMessage.getPartner();
+                String userName = userTemplate.getName();
+                UUID conversantsUUID = userTemplate.getId();
+                Bundle bundle = new Bundle();
+                bundle.putString(TextMessangerFragment.USERNAME_ARGUMENT, userName);
+                bundle.putString(TextMessangerFragment.UUID_ARGUMENT, conversantsUUID.toString());
+                Fragment fragment = TextMessangerFragment.newInstance(userName, conversantsUUID.toString());
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                fragmentTransaction.replace(R.id.contentLayout, fragment).commit();
+            }
+        });
+    }
 
 //    @Override
 //    public void onListFragmentInteraction(UserTemplate userTemplate) {
@@ -188,6 +240,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     private void configureButton(){
         locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
     }
+
 
     @Override
     protected void onDestroy() {

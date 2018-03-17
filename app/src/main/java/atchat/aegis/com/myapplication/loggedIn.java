@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import application.DatabaseHelpers.TagDatabaseHelper;
 import application.Users.LoggedInUserContainer;
+import atchat.aegis.com.myapplication.BottomNavigation.BottomNavigationMenue;
 
 public class loggedIn extends AppCompatActivity {
 

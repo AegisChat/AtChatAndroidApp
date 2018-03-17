@@ -2,7 +2,7 @@ package application.Users;
 
 import java.util.ArrayList;
 
-import atchat.aegis.com.myapplication.ContactMessageListFragment.ConversationTemplate;
+import atchat.aegis.com.myapplication.BottomNavigation.ContactMessageListFragment.ConversationTemplate;
 
 /**
  * Created by Avi on 2018-02-04.

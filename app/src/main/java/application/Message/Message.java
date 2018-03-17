@@ -3,6 +3,7 @@ package application.Message;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
@@ -33,7 +34,7 @@ import java.util.UUID;
 		@JsonSubTypes.Type(value = GetNewMessagesMessage.class),
 		@JsonSubTypes.Type(value = UpdateAliasMessage.class)
 })
-public abstract class Message implements MessageInterface{
+public abstract class Message implements MessageInterface, Serializable{
 
 	protected UUID sender;
 	protected UUID recipient;

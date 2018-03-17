@@ -1,4 +1,4 @@
-package atchat.aegis.com.myapplication.PairingFragment;
+package atchat.aegis.com.myapplication.BottomNavigation.PairingFragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,6 +21,7 @@ import android.widget.TextView;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import application.Message.CancelQueueMessage;
 import application.Message.QueueMessage;
 import application.Users.LoggedInUserContainer;
 import application.Users.User;
@@ -81,6 +82,8 @@ public class PairingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 changeState(1);
+                LoggedInUserContainer.getInstance().getUser().setQueueState(false);
+                new CancelPairingMessager().execute();
                 //Cancel for queueing
             }
         });
@@ -147,16 +150,7 @@ public class PairingFragment extends Fragment {
         sharedPreferencesEditor.commit();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
@@ -195,13 +189,14 @@ public class PairingFragment extends Fragment {
             if (motionEvent.getY() > motionEvent1.getY()) {
                 Log.i("SwipeUpGestureDetector", "SwipeUpDetected");
                 changeState(2);
-//                new SendReadyToPairMessage().execute();
+                LoggedInUserContainer.getInstance().getUser().setQueueState(true);
+//                new SendReadyToPairMessager().execute();
             }
             return false;
         }
     }
 
-    public class SendReadyToPairMessage extends AsyncTask<Void, Void, Void> {
+    public class SendReadyToPairMessager extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -219,19 +214,17 @@ public class PairingFragment extends Fragment {
         }
     }
 
-    public class CancelPairingMessage extends AsyncTask<Void, Void, Void>{
+    public class CancelPairingMessager extends AsyncTask<Void, Void, Void>{
 
         @Override
         protected Void doInBackground(Void... voids) {
-            final String url = website + "userActions/startForQueue";
+            final String url = website + "userActions/cancelQueue";
             User user = LoggedInUserContainer.getInstance().getUser();
-            QueueMessage queueMessage = new QueueMessage();
-            queueMessage.setSender(user.getId());
-            queueMessage.setNewLocation(user.getLocation());
-
+            CancelQueueMessage cancelQueueMessage = new CancelQueueMessage();
+            cancelQueueMessage.setSender(user.getId());
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            restTemplate.postForObject(url, queueMessage, Boolean.class);
+            restTemplate.postForObject(url, cancelQueueMessage, Boolean.class);
             return null;
         }
     }
