@@ -35,14 +35,14 @@ import atchat.aegis.com.myapplication.BottomNavigation.ContactListFragment.Conta
 import atchat.aegis.com.myapplication.BottomNavigation.ContactMessageListFragment.ContactMessageListFragment;
 import atchat.aegis.com.myapplication.BottomNavigation.PairingFragment.PairingFragment;
 import atchat.aegis.com.myapplication.BottomNavigation.TagListFragment.TagListFragment;
-import atchat.aegis.com.myapplication.BottomNavigation.TextMessanger.TextMessangerFragment;
+import atchat.aegis.com.myapplication.BottomNavigation.TextMessanger.TextMessengerFragment;
 import atchat.aegis.com.myapplication.R;
 import atchat.aegis.com.myapplication.SettingsFragment;
 import atchat.aegis.com.myapplication.SettingsFragment.onSettingsFragmentInteractionListener;
 
 public class BottomNavigationMenue extends AppCompatActivity implements
         ContactListFragment.OnContactListFragmentInteractionListener,
-        TextMessangerFragment.OnFragmentInteractionListener,
+        TextMessengerFragment.OnFragmentInteractionListener,
         TagListFragment.OnFragmentInteractionListener,
         PairingFragment.OnFragmentInteractionListener,
         onSettingsFragmentInteractionListener,
@@ -74,8 +74,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                     break;
                 case R.id.navigation_dashboard:
                     fragment = ContactListFragment.newInstance();
-//                    fragment = TextMessangerFragment.newInstance();
-//                    TextMessangerFragment tmf = new TextMessangerFragment();
+//                    fragment = TextMessengerFragment.newInstance();
+//                    TextMessengerFragment tmf = new TextMessengerFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
 //                    UserTemplateTestListFragment t = new UserTemplateTestListFragment();
 //                    FragmentManager manager = getSupportFragmentManager();
@@ -86,7 +86,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                     fragment = PairingFragment.newInstance();
 //                    PairingFragment sw = new PairingFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
-//                    TextMessangerFragment tmf = new TextMessangerFragment();
+//                    TextMessengerFragment tmf = new TextMessengerFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
 //                    return true;
                     break;
@@ -186,9 +186,9 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 String userName = userTemplate.getName();
                 UUID conversantsUUID = userTemplate.getId();
                 Bundle bundle = new Bundle();
-                bundle.putString(TextMessangerFragment.USERNAME_ARGUMENT, userName);
-                bundle.putString(TextMessangerFragment.UUID_ARGUMENT, conversantsUUID.toString());
-                Fragment fragment = TextMessangerFragment.newInstance(userName, conversantsUUID.toString());
+                bundle.putString(TextMessengerFragment.USERNAME_ARGUMENT, userName);
+                bundle.putString(TextMessengerFragment.UUID_ARGUMENT, conversantsUUID.toString());
+                Fragment fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString());
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
                 fragmentTransaction.replace(R.id.contentLayout, fragment).commit();

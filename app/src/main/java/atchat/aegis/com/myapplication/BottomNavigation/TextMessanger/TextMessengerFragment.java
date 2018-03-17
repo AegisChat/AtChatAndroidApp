@@ -34,7 +34,7 @@ import atchat.aegis.com.myapplication.MessageListAdapter;
 import atchat.aegis.com.myapplication.R;
 
 
-public class TextMessangerFragment extends Fragment {
+public class TextMessengerFragment extends Fragment {
 
     public static final String USERNAME_ARGUMENT = "com.aegis.atchat.TextMessageFragment.username";
     public static final String UUID_ARGUMENT = "com.aegis.atchat.TextMessageFragment.UUID";
@@ -52,12 +52,12 @@ public class TextMessangerFragment extends Fragment {
     private String username;
     private UUID uuid;
 
-    public TextMessangerFragment() {
+    public TextMessengerFragment() {
 
     }
 
-//    public static TextMessangerFragment newInstance(String param1, String param2) {
-//        TextMessangerFragment fragment = new TextMessangerFragment();
+//    public static TextMessengerFragment newInstance(String param1, String param2) {
+//        TextMessengerFragment fragment = new TextMessengerFragment();
 //        Bundle args = new Bundle();
 //        args.putString(ARG_PARAM1, param1);
 //        args.putString(ARG_PARAM2, param2);
@@ -70,8 +70,8 @@ public class TextMessangerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public static TextMessangerFragment newInstance(String userName, String conversantsUUID){
-        TextMessangerFragment fragment = new TextMessangerFragment();
+    public static TextMessengerFragment newInstance(String userName, String conversantsUUID){
+        TextMessengerFragment fragment = new TextMessengerFragment();
         Bundle args = new Bundle();
         args.putString(USERNAME_ARGUMENT, userName);
         args.putString(UUID_ARGUMENT, conversantsUUID);
@@ -230,6 +230,7 @@ public class TextMessangerFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             final String url = website+"userActions/sendTextMessage";
             TextMessage textMessage = new TextMessage();
+            textMessage.setTime(System.currentTimeMillis());
             textMessage.setContext(messageInputEditText.getText().toString());
             textMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             textMessage.setRecipient(conversant);
@@ -275,9 +276,9 @@ public class TextMessangerFragment extends Fragment {
             TextMessageDatabaseHelper db = new TextMessageDatabaseHelper(getContext());
             db.insertMessageEntry(textMessage);
             textMessages = db.getMessagesForUniqueConversation(conversant);
-            for(TextMessage textMessage : textMessages){
-                Log.i("TestTextMessage", textMessage.getContext());
-            }
+//            for(TextMessage textMessage : textMessages){
+//                Log.i("TestTextMessage", textMessage.getContext());
+//            }
             return null;
         }
 
