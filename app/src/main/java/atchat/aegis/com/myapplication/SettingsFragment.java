@@ -3,6 +3,7 @@ package atchat.aegis.com.myapplication;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class SettingsFragment extends Fragment {
     Button changePasswordButtonClick;
     EditText text11;
     EditText text22;
+    Button logoutButton;
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -74,6 +76,8 @@ public class SettingsFragment extends Fragment {
       //  changedName.setHint("Change Name ("+(String)LoggedInUserContainer.getInstance().getUser().getAlias() + ")");
       // chname = (TextView) view.findViewById(R.id.name1);
       //  applyName = (Button) view.findViewById(R.id.namebutton);
+       logoutButton = (Button) view.findViewById(R.id.logoutButton1);
+
 //CHANGE ALIAS BUTTON------------------------------------
         changenameButtonClick = (Button) view.findViewById(R.id.changeNameButton);
         changenameButtonClick.setOnClickListener(new View.OnClickListener() {
@@ -154,29 +158,6 @@ public class SettingsFragment extends Fragment {
                     }
                 });
 
-//                builder.setTitle("Current password");
-//                final EditText currentPassInput = new EditText(view.getContext());
-//                currentPassInput.setHint("Current Pass");
-//                builder.add
-
-//                builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        String finaltext = updatedName.getText().toString();
-//                        Log.i("Settings Fragment", "Changing name to: " + finaltext);
-//                        Toast.makeText(getContext(), "Name has been updated!", Toast.LENGTH_SHORT).show();
-//
-//                        new UpdateAlias(finaltext).execute();
-//
-//                    }
-//                });
-//                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-//
-//                    }
-//                });
                builder1.show(); }
 //            }
   });
@@ -217,6 +198,32 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //logout();
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
+                builder2.setTitle("Are you sure you wish to logout?");
+                final EditText updatedName = new EditText(view.getContext());
+
+                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.i("Settings Fragment", "User confirmed logout");
+                        logout();
+
+                    }
+                });
+                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                builder2.show();
+            }
+        });
         return view;
     }
 
@@ -323,5 +330,10 @@ public class SettingsFragment extends Fragment {
             restTemplate.postForObject(url, upw, Boolean.class);
             return null;
         }
+    }
+
+    public void logout(){
+        Intent logoutIntent = new Intent(getActivity(), MainActivity.class);
+        startActivity(logoutIntent);
     }
 }
