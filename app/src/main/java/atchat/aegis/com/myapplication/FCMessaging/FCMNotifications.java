@@ -35,7 +35,7 @@ public class FCMNotifications extends FirebaseMessagingService {
     private TextMessageDatabaseHelper db;
 
     public FCMNotifications(){
-        db = new TextMessageDatabaseHelper(this);
+//        db = new TextMessageDatabaseHelper(this);
     }
 
     @Override
