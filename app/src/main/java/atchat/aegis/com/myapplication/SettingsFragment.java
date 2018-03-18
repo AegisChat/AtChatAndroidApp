@@ -201,7 +201,27 @@ public class SettingsFragment extends Fragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                logout();
+                //logout();
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
+                builder2.setTitle("Are you sure you wish to logout?");
+                final EditText updatedName = new EditText(view.getContext());
+
+                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.i("Settings Fragment", "User confirmed logout");
+                        logout();
+
+                    }
+                });
+                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                builder2.show();
             }
         });
         return view;
