@@ -36,6 +36,8 @@ import atchat.aegis.com.myapplication.R;
 public class PairingFragment extends Fragment {
 
     private static final String PAIRING_FRAGMENT_KEY = "PairingState";
+    private static final int NORMAL_STATE = 1;
+    private static final int SWIPED_UP_STATE = 2;
 
     private ImageView imageView1, imageView2, imageView3;
     private OnFragmentInteractionListener mListener;
@@ -83,7 +85,7 @@ public class PairingFragment extends Fragment {
         cancelQueueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeState(1);
+                changeState(NORMAL_STATE);
                 LoggedInUserContainer.getInstance().getUser().setQueueState(false);
                 new CancelPairingMessager().execute();
                 //Cancel for queueing
@@ -101,7 +103,7 @@ public class PairingFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 waitMessageTextView.setVisibility(View.GONE);
                 cancelQueueButton.setVisibility(View.GONE);
-                this.state = 1;
+                this.state = NORMAL_STATE;
                 break;
             case 2:
                 imageView1.setVisibility(View.GONE);
@@ -110,10 +112,10 @@ public class PairingFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 waitMessageTextView.setVisibility(View.VISIBLE);
                 cancelQueueButton.setVisibility(View.VISIBLE);
-                this.state = 2;
+                this.state = SWIPED_UP_STATE;
                 break;
             default:
-                this.state = 1;
+                this.state = NORMAL_STATE;
                 imageView1.setVisibility(View.VISIBLE);
                 imageView2.setVisibility(View.VISIBLE);
                 imageView3.setVisibility(View.VISIBLE);
@@ -152,6 +154,7 @@ public class PairingFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        changeState(NORMAL_STATE);
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(PAIRING_FRAGMENT_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
         sharedPreferencesEditor.putInt(PAIRING_FRAGMENT_KEY, state);
