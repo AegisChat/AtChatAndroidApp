@@ -85,6 +85,7 @@ public class TextMessengerFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -110,7 +111,7 @@ public class TextMessengerFragment extends Fragment {
         cancelConversationImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("TextgMessageFragment", "Cancel Conversation Button has been hit");
+                Log.i("TextMessageFragment", "Cancel Conversation Button has been hit");
                 try {
                     new CancelPair().execute().get();
                 } catch (InterruptedException e) {
@@ -118,7 +119,7 @@ public class TextMessengerFragment extends Fragment {
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-                finish();
+                closeTextMessageFragment();
             }
         });
 
@@ -144,22 +145,6 @@ public class TextMessengerFragment extends Fragment {
             }
         });
 
-//        messageList = new ArrayList<TextMessage>();
-//        SentMessage sm = new SentMessage();
-//        sm.setContext("Hey this is Frost");
-//
-//        RecievedMessage dm = new RecievedMessage();
-//        dm.setContext("Hey this is Mendel");
-//
-//        SentMessage sm1 = new SentMessage();
-//        sm1.setContext("I am sending a message 2 u");
-//
-//        RecievedMessage dm1 = new RecievedMessage();
-//        dm1.setContext("I am replying");
-//        messageList.add(sm);
-//        messageList.add(dm);
-//        messageList.add(sm1);
-//        messageList.add(dm1);
         try{
             if(messageList == null){
                 messageList = new ArrayList<TextMessage>();
@@ -253,7 +238,7 @@ public class TextMessengerFragment extends Fragment {
         mMessageRecycler.scrollToPosition(messageList.size() - 1);
     }
 
-    public void finish(){
+    public void closeTextMessageFragment(){
         Fragment fragment = new PairingFragment();
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
@@ -303,6 +288,8 @@ public class TextMessengerFragment extends Fragment {
         }
     }
 
+    //----------------------------------------------------------------------------------------------
+
     private class InputMessageIntoDatabase extends AsyncTask<Void, Void, Void>{
 
         private TextMessage textMessage;
@@ -313,23 +300,22 @@ public class TextMessengerFragment extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            messageList.add(textMessage);
+            updateMessageAdapter(messageList);
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
             TextMessageDatabaseHelper db = new TextMessageDatabaseHelper(getContext());
             db.insertMessageEntry(textMessage);
             textMessages = db.getMessagesForUniqueConversation(conversant);
-//            for(TextMessage textMessage : textMessages){
-//                Log.i("TestTextMessage", textMessage.getContext());
-//            }
             return null;
         }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            updateMessageAdapter(textMessages);
-
-        }
     }
+
+    //----------------------------------------------------------------------------------------------
 
     private class CancelPair extends AsyncTask<Void, Void, Void>{
 

@@ -128,12 +128,19 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //----------------------------------------------------------------------------------------------
+        //Initilization of variables
+        //----------------------------------------------------------------------------------------------
         setContentView(R.layout.activity_bottom_navigation_menue);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_notifications);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
+        //----------------------------------------------------------------------------------------------
         //Found Partner Message Broadcast Reciever
+        //----------------------------------------------------------------------------------------------
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -142,6 +149,9 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             }
         };
 
+        //----------------------------------------------------------------------------------------------
+        //Cancel TextMessageFragment Broadcast Reciever
+        //----------------------------------------------------------------------------------------------
         cancelMessageBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -149,8 +159,33 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             }
         };
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locationListener = new LocationListener() {
+        //----------------------------------------------------------------------------------------------
+        //Configure Location Listner
+        //----------------------------------------------------------------------------------------------
+        locationListener = configureLocationListener();
+
+        //----------------------------------------------------------------------------------------------
+        //Permissions to grab a users location
+        //----------------------------------------------------------------------------------------------
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.INTERNET
+                }, 10);
+                return;
+            }
+        }else{
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            LoggedInUserContainer.getInstance().getUser().setLocation(new Point(location.getLongitude(), location.getLatitude()));
+            Log.i("Location:", "Longitude: " + location.getLongitude() + " Latitude: " + location.getLatitude());
+            configureButton();
+        }
+    }
+
+    public LocationListener configureLocationListener(){
+        LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 LoggedInUserContainer.getInstance().getUser().setLocation(new Point(location.getLongitude(), location.getLatitude()));
@@ -173,21 +208,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 startActivity(intent);
             }
         };
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.INTERNET
-                }, 10);
-                return;
-            }
-        }else{
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            LoggedInUserContainer.getInstance().getUser().setLocation(new Point(location.getLongitude(), location.getLatitude()));
-            Log.i("Location:", "Longitude: " + location.getLongitude() + " Latitude: " + location.getLatitude());
-            configureButton();
-        }
+        return locationListener;
     }
 
     public void startTextMessageFragment(final FoundPartnerMessage foundPartnerMessage){
