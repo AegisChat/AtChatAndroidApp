@@ -12,29 +12,37 @@
         android:id="@+id/emailText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:background="#11000000"
+        android:drawableLeft="@drawable/ic_action_username"
         android:ems="10"
+        android:hint="Username"
         android:inputType="textEmailAddress"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
+        android:textSize="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="54dp"
-        app:layout_constraintTop_toBottomOf="@+id/wrongLogin"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <EditText
         android:id="@+id/passwordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="#11000000"
+        android:drawableLeft="@drawable/ic_action_password"
         android:ems="10"
+        android:hint="Password"
         android:inputType="textPassword"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
+        android:textSize="16dp"
+        app:layout_constraintLeft_toLeftOf="@+id/emailText"
         app:layout_constraintRight_toRightOf="@+id/emailText"
-        android:layout_marginTop="77dp"
         app:layout_constraintTop_toBottomOf="@+id/emailText"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/emailText" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <CheckBox
         android:id="@+id/rememberMe"
@@ -54,6 +62,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
         android:text="Login"
+        android:textColor="@color/AtChatYellow"
+        android:textSize="14dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordText"
@@ -85,5 +95,23 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1"
-        tools:text="Create Account" />
+        tools:text="Create Account"
+        android:textColor="@color/AtChatYellow"
+        style="?android:attr/borderlessButtonStyle"
+        android:textSize="10dp"/>
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="77dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="44dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/atchaticonblank" />
+
+
 </android.support.constraint.ConstraintLayout>
