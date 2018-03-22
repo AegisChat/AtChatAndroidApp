@@ -126,6 +126,15 @@ public class PairingFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(LoggedInUserContainer.getInstance().getUser().isPaired())
+            changeState(SWIPED_UP_STATE);
+        else
+            changeState(NORMAL_STATE);
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
