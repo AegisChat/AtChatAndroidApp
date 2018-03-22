@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -40,7 +41,9 @@ public class CreateNewUser_Personal_Info extends AppCompatActivity {
     private String emailAddress;
     private String password;
 
-    private Context context;
+    private Context context = this;
+    private CharSequence text = "Please fill in all personal information fields";
+    private int duration = Toast.LENGTH_SHORT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,26 +78,33 @@ public class CreateNewUser_Personal_Info extends AppCompatActivity {
                 NewUserCreatedMessage nucm = new NewUserCreatedMessage();
                 nucm.setEmail(emailAddress);
                 nucm.setPassword(password);
-                nucm.setFirstName(firstNameEditText.getText().toString());
-                nucm.setLastName(lastNameEditText.getText().toString());
-                nucm.setAlias(aliasEditText.getText().toString());
-                try {
-                    NewUserCreatedMessage answer = new CreateNewUserTask(nucm).execute().get();
-                    if(answer.isNewUserCreated()){
-                        Intent goToLoginIntent = new Intent(context, MainActivity.class);
-                        goToLoginIntent.putExtra(INTENT_CREATE_USER_EMAIL, emailAddress);
-                        goToLoginIntent.putExtra(INTENT_CREATE_USER_PASSWORD, password);
-                        goToLoginIntent.putExtra(INTENT_CREATE_USER_ID, "From_CreateNewUser_Person_Info");
-                        startActivity(goToLoginIntent);
-                    }else {
-                        Intent goToLoginIntent = new Intent(context, MainActivity.class);
-                        startActivity(goToLoginIntent);
+                if (firstNameEditText.getText().toString().trim().isEmpty() || lastNameEditText.getText().toString().trim().isEmpty() || aliasEditText.getText().toString().trim().isEmpty()) {
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                } else {
+                    nucm.setFirstName(firstNameEditText.getText().toString());
+                    nucm.setLastName(lastNameEditText.getText().toString());
+                    nucm.setAlias(aliasEditText.getText().toString());
+
+                    try {
+                        NewUserCreatedMessage answer = new CreateNewUserTask(nucm).execute().get();
+                        if (answer.isNewUserCreated()) {
+                            Intent goToLoginIntent = new Intent(context, MainActivity.class);
+                            goToLoginIntent.putExtra(INTENT_CREATE_USER_EMAIL, emailAddress);
+                            goToLoginIntent.putExtra(INTENT_CREATE_USER_PASSWORD, password);
+                            goToLoginIntent.putExtra(INTENT_CREATE_USER_ID, "From_CreateNewUser_Person_Info");
+                            startActivity(goToLoginIntent);
+                        } else {
+                            Intent goToLoginIntent = new Intent(context, MainActivity.class);
+                            startActivity(goToLoginIntent);
+                        }
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
                     }
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
                 }
             }
         });
