@@ -55,6 +55,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     private LocationListener locationListener;
     private OnFoundPartnerListener onFoundPartnerListener;
     private BroadcastReceiver broadcastReceiver;
+    private BroadcastReceiver cancelMessageBroadcastReceiver;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -114,11 +115,13 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("FoundPartnerMessage"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(cancelMessageBroadcastReceiver, new IntentFilter("CancelPairMessage"));
     }
 
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(cancelMessageBroadcastReceiver);
         super.onPause();
     }
 
@@ -129,6 +132,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_notifications);
+
+        //Found Partner Message Broadcast Reciever
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -136,6 +141,14 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 startTextMessageFragment(foundPartnerMessage);
             }
         };
+
+        cancelMessageBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+            }
+        };
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
@@ -188,6 +201,18 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 bundle.putString(TextMessengerFragment.USERNAME_ARGUMENT, userName);
                 bundle.putString(TextMessengerFragment.UUID_ARGUMENT, conversantsUUID.toString());
                 Fragment fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString());
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                fragmentTransaction.replace(R.id.contentLayout, fragment).commit();
+            }
+        });
+    }
+
+    public void endTextMessageFragment(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Fragment fragment = new PairingFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
                 fragmentTransaction.replace(R.id.contentLayout, fragment).commit();
