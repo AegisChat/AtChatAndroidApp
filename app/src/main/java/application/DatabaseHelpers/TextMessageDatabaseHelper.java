@@ -68,6 +68,19 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
             return true;
     }
 
+    public boolean hasMessage(UUID messageID){
+        boolean hasMessage = false;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + MESSAGE_ID + " = '"  + messageID +"' ", null);
+        if (res.getCount() <= 0){
+            hasMessage = false;
+        }else{
+            hasMessage = true;
+        }
+        res.close();
+        return hasMessage;
+    }
+
     public boolean insertMessageEntry(TextMessage message){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -77,7 +90,9 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         contentValues.put(TIME_STAMP, message.getTime());
         contentValues.put(MESSAGE, message.getContext().toString());
 
-        long result = db.insert(TABLE_NAME, null, contentValues);
+        long result = -1;
+        if(hasMessage(message.getId()))
+            result = db.insert(TABLE_NAME, null, contentValues);
         if(result == -1)
             return false;
         else
