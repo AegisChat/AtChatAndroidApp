@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.List;
 
 import application.Message.TextMessage;
@@ -71,6 +72,12 @@ public class MessageListAdapter extends RecyclerView.Adapter{
         }
     }
 
+    public String configureTime(long timeInEpoch){
+        Calendar time = Calendar.getInstance();
+        time.setTimeInMillis(timeInEpoch);
+        return String.valueOf(time.get(Calendar.HOUR_OF_DAY));
+    }
+
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder{
         TextView messageTextView, timeTextView;
 
@@ -98,7 +105,7 @@ public class MessageListAdapter extends RecyclerView.Adapter{
 
         void bind(TextMessage textMessage){
             messageTextView.setText(textMessage.getContext());
-            timeTextView.setText(String.valueOf(textMessage.getTime()));
+            timeTextView.setText(configureTime(textMessage.getTime()));
         }
     }
 }
