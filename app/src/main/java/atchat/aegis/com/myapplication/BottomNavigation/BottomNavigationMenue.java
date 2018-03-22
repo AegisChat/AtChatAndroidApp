@@ -240,6 +240,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                LoggedInUserContainer.getInstance().getUser().setPaired(false);
                 Fragment fragment = new PairingFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
