@@ -73,9 +73,9 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = getReadableDatabase();
         Cursor res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + MESSAGE_ID + " = '"  + messageID +"' ", null);
         if (res.getCount() <= 0){
-            hasMessage = false;
-        }else{
             hasMessage = true;
+        }else{
+            hasMessage = false;
         }
         res.close();
         return hasMessage;
