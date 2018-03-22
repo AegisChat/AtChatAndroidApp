@@ -25,6 +25,7 @@ import application.Message.EmailPasswordPairMessage;
 import application.Message.UpdateFirebaseIDMessage;
 import application.Users.LoggedInUserContainer;
 import application.Users.User;
+import atchat.aegis.com.myapplication.BottomNavigation.BottomNavigationMenue;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FileSettingsName = "LogInFile";
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 userContainer.setUser(user);
 
 
-                Intent intent = new Intent(context, loggedIn.class);
+                Intent intent = new Intent(context, BottomNavigationMenue.class);
                 startActivity(intent);
             }
         }
