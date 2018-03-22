@@ -18,6 +18,10 @@
         <item name="colorControlHighlight">@color/AtChatYellow</item>
     </style>
 
+    <style name="rememberMe">
+        <item name="colorAccent">@color/AtChatYellow</item>
+    </style>
+
     <!--<style name="AtChatBottomN" parent="@style/Theme.Design.NoActionBar">-->
         <!--<item name="BottomNavigationView_itemIconTint">@color/AtChatYellow</item>-->
     <!--</style>-->
