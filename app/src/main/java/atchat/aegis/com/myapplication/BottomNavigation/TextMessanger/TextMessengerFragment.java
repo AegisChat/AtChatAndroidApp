@@ -104,7 +104,7 @@ public class TextMessengerFragment extends Fragment {
         addFriendImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("TextgMessageFragment", "Add Friend Button has been hit");
+                Log.i("TextMessageFragment", "Add Friend Button has been hit");
 
             }
         });
@@ -115,6 +115,7 @@ public class TextMessengerFragment extends Fragment {
                 Log.i("TextMessageFragment", "Cancel Conversation Button has been hit");
                 try {
                     new CancelPair().execute().get();
+                    LoggedInUserContainer.getInstance().getUser().setPaired(false);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
