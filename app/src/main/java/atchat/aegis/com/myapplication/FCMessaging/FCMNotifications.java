@@ -72,6 +72,8 @@ public class FCMNotifications extends FirebaseMessagingService {
                         FoundPartnerMessage foundPartnerMessage = (FoundPartnerMessage) message;
                         Intent intent = new Intent("FoundPartnerMessage");
                         intent.putExtra("FoundPartnerMessage", foundPartnerMessage);
+                        LoggedInUserContainer.getInstance().getUser().setPaired(true);
+                        LoggedInUserContainer.getInstance().getUser().setLastPairedPerson(foundPartnerMessage.getPartner());
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }else if(message instanceof CancelPairMessage){
                         CancelPairMessage cancelPairMessage = (CancelPairMessage) message;

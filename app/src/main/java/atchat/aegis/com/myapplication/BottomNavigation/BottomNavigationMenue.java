@@ -83,7 +83,17 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 //                    return true;
                     break;
                 case R.id.navigation_notifications:
-                    fragment = PairingFragment.newInstance();
+                    if(!LoggedInUserContainer.getInstance().getUser().isPaired())
+                        fragment = PairingFragment.newInstance();
+                    else{
+                        UserTemplate userTemplate = LoggedInUserContainer.getInstance().getUser().getLastPairedPerson();
+                        String userName = userTemplate.getName();
+                        UUID conversantsUUID = userTemplate.getId();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TextMessengerFragment.USERNAME_ARGUMENT, userName);
+                        bundle.putString(TextMessengerFragment.UUID_ARGUMENT, conversantsUUID.toString());
+                        fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString());
+                    }
 //                    PairingFragment sw = new PairingFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
 //                    TextMessengerFragment tmf = new TextMessengerFragment();
@@ -105,9 +115,6 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
             fragmentTransaction.replace(R.id.contentLayout, fragment).commit();
             return true;
-
-
-
         }
     };
 

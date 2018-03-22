@@ -34,6 +34,8 @@ public final class User implements Serializable{
 	private ArrayList<Message> sendingRequests;
 	private ArrayList<UUID> conversations;
 
+	private UserTemplate lastPairedPerson;
+
 	private Point location;
 
 
@@ -523,5 +525,13 @@ public final class User implements Serializable{
 
 	public void setConversations(ArrayList<UUID> conversations) {
 		this.conversations = conversations;
+	}
+
+	public UserTemplate getLastPairedPerson() {
+		return lastPairedPerson;
+	}
+
+	public void setLastPairedPerson(UserTemplate lastPairedPerson) {
+		this.lastPairedPerson = lastPairedPerson;
 	}
 }
