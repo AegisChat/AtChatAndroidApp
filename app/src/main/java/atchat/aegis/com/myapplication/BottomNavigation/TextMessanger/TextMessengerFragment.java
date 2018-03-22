@@ -251,6 +251,26 @@ public class TextMessengerFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    public TextMessage configureMessage(TextMessage textMessage){
+        if(textMessage.getSender().equals(LoggedInUserContainer.getInstance().getUser().getId())){
+            SentMessage sentMessage = new SentMessage();
+            sentMessage.setId(textMessage.getId());
+            sentMessage.setSender(textMessage.getSender());
+            sentMessage.setRecipient(textMessage.getRecipient());
+            sentMessage.setContext(textMessage.getContext());
+            sentMessage.setTime(textMessage.getTime());
+            return sentMessage;
+        }else {
+            RecievedMessage recievedMessage = new RecievedMessage();
+            recievedMessage.setId(textMessage.getId());
+            recievedMessage.setSender(textMessage.getSender());
+            recievedMessage.setRecipient(textMessage.getRecipient());
+            recievedMessage.setContext(textMessage.getContext());
+            recievedMessage.setTime(textMessage.getTime());
+            return recievedMessage;
+        }
+    }
+
     private class Messanger extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -303,13 +323,7 @@ public class TextMessengerFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if(textMessage.getSender().equals(LoggedInUserContainer.getInstance().getUser().getId())){
-                textMessage = (SentMessage) textMessage;
-            }else
-            {
-                textMessage = (RecievedMessage) textMessage;
-            }
-            messageList.add(textMessage);
+            messageList.add(configureMessage(textMessage));
             updateMessageAdapter(messageList);
         }
 
