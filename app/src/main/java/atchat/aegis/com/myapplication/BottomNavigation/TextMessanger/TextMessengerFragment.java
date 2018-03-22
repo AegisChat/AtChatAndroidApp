@@ -323,8 +323,8 @@ public class TextMessengerFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            messageList.add(configureMessage(textMessage));
-            updateMessageAdapter(messageList);
+//            messageList.add(configureMessage(textMessage));
+//            updateMessageAdapter(messageList);
         }
 
         @Override
@@ -333,6 +333,12 @@ public class TextMessengerFragment extends Fragment {
             db.insertMessageEntry(textMessage);
             textMessages = db.getMessagesForUniqueConversation(conversant);
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            updateMessageAdapter(textMessages);
         }
     }
 
