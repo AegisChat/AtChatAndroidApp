@@ -129,7 +129,7 @@ public class PairingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(LoggedInUserContainer.getInstance().getUser().isPaired())
+        if(LoggedInUserContainer.getInstance().getUser().isQueueState())
             changeState(SWIPED_UP_STATE);
         else
             changeState(NORMAL_STATE);
@@ -162,7 +162,6 @@ public class PairingFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        changeState(NORMAL_STATE);
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(PAIRING_FRAGMENT_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
         sharedPreferencesEditor.putInt(PAIRING_FRAGMENT_KEY, state);
