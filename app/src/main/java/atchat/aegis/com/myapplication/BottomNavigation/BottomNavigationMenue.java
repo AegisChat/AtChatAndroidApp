@@ -189,7 +189,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
                 alertDialogBuilder.setTitle(friendRequestMessage.getName() + " want to be your friend");
                 alertDialogBuilder.setPositiveButton("Accept", getPositiveButtonOnClickListener(friendRequestMessage));
-//                alertDialogBuilder.setNegativeButton("Deny", )
+                alertDialogBuilder.setNegativeButton("Deny", getNegativeButtonOnClickListener(friendRequestMessage));
             }
         };
 
