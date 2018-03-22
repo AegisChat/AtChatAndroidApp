@@ -109,7 +109,7 @@ public class TextMessengerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.i("TextMessageFragment", "Add Friend Button has been hit");
-
+                new AddFriend().execute();
             }
         });
 
