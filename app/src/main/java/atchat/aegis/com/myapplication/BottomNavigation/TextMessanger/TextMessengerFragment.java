@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.CancelPairMessage;
+import application.Message.FriendRequestMessage;
 import application.Message.RecievedMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
@@ -357,6 +358,26 @@ public class TextMessengerFragment extends Fragment {
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             try {
                 restTemplate.postForObject(url, cancelPairMessage, Boolean.class);
+            }catch (Exception e){
+
+            }
+            return null;
+        }
+    }
+
+    private class AddFriend extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final String url = website+"userActions/friendRequest";
+            FriendRequestMessage friendRequestMessage = new FriendRequestMessage();
+            friendRequestMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+            friendRequestMessage.setRecipient(conversant);
+            friendRequestMessage.setName(LoggedInUserContainer.getInstance().getUser().getAlias());
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            try {
+                restTemplate.postForObject(url, friendRequestMessage, Boolean.class);
             }catch (Exception e){
 
             }

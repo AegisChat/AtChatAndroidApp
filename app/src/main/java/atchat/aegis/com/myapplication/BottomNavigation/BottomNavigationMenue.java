@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -21,13 +23,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.UUID;
 
+import application.Message.AcceptFriendRequestMessage;
+import application.Message.DenyFriendRequestMessage;
 import application.Message.FoundPartnerMessage;
+import application.Message.FriendRequestMessage;
 import application.Users.LoggedInUserContainer;
 import application.Users.Point;
 import application.Users.UserTemplate;
@@ -56,6 +65,9 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     private OnFoundPartnerListener onFoundPartnerListener;
     private BroadcastReceiver broadcastReceiver;
     private BroadcastReceiver cancelMessageBroadcastReceiver;
+    private BroadcastReceiver addFriendBroadcastReciever;
+    private AlertDialog.Builder alertDialogBuilder;
+    private String website;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -123,18 +135,22 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("FoundPartnerMessage"));
         LocalBroadcastManager.getInstance(this).registerReceiver(cancelMessageBroadcastReceiver, new IntentFilter("CancelPairMessage"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(addFriendBroadcastReciever, new IntentFilter("FriendRequestMessage"));
     }
 
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(cancelMessageBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(addFriendBroadcastReciever);
         super.onPause();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        website = getString(R.string.localhost);
 
         //----------------------------------------------------------------------------------------------
         //Initilization of variables
@@ -165,6 +181,18 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 endTextMessageFragment();
             }
         };
+
+        addFriendBroadcastReciever = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                FriendRequestMessage friendRequestMessage = (FriendRequestMessage) intent.getSerializableExtra("FriendRequestMessage");
+                alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                alertDialogBuilder.setTitle(friendRequestMessage.getName() + " want to be your friend");
+                alertDialogBuilder.setPositiveButton("Accept", getPositiveButtonOnClickListener(friendRequestMessage));
+//                alertDialogBuilder.setNegativeButton("Deny", )
+            }
+        };
+
 
         //----------------------------------------------------------------------------------------------
         //Configure Location Listner
@@ -259,6 +287,26 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 //        Log.i("UserTemplate", userTemplate.getName());
 //    }
 
+    public DialogInterface.OnClickListener getPositiveButtonOnClickListener(final FriendRequestMessage message){
+        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                new AcceptFriendRequest(message).execute();
+            }
+        };
+        return onClickListener;
+    }
+
+    public DialogInterface.OnClickListener getNegativeButtonOnClickListener(final FriendRequestMessage message){
+        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                new DenyFriendRequest(message).execute();
+            }
+        };
+        return onClickListener;
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
@@ -303,5 +351,59 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         sharedPreferencesEditor.putInt(PAIRING_FRAGMENT_KEY, 1);
         sharedPreferencesEditor.commit();
         super.onDestroy();
+    }
+
+    public class AcceptFriendRequest extends AsyncTask<Void, Void, Void>{
+
+        private FriendRequestMessage friendRequestMessage;
+
+        public AcceptFriendRequest(FriendRequestMessage friendRequestMessage){
+            this.friendRequestMessage = friendRequestMessage;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final String url = website+"userActions/acceptFriendRequest";
+            AcceptFriendRequestMessage acceptFriendRequestMessage = new AcceptFriendRequestMessage();
+            acceptFriendRequestMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+            acceptFriendRequestMessage.setFriendRequestID(friendRequestMessage.getRecipient());
+            acceptFriendRequestMessage.setRecipient(friendRequestMessage.getRecipient());
+
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            try {
+                restTemplate.postForObject(url, acceptFriendRequestMessage, Boolean.class);
+            }catch (Exception e){
+
+            }
+            return null;
+        }
+    }
+
+    public class DenyFriendRequest extends AsyncTask<Void, Void, Void>{
+
+        private FriendRequestMessage friendRequestMessage;
+
+        public DenyFriendRequest(FriendRequestMessage friendRequestMessage){
+            this.friendRequestMessage = friendRequestMessage;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final String url = website+"userActions/denyFriendRequest";
+            DenyFriendRequestMessage denyFriendRequestMessage = new DenyFriendRequestMessage();
+            denyFriendRequestMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+            denyFriendRequestMessage.setFriendRequestID(friendRequestMessage.getRecipient());
+            denyFriendRequestMessage.setRecipient(friendRequestMessage.getRecipient());
+
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            try {
+                restTemplate.postForObject(url, denyFriendRequestMessage, Boolean.class);
+            }catch (Exception e){
+
+            }
+            return null;
+        }
     }
 }

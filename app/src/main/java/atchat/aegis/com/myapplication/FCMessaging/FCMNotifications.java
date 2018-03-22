@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.CancelPairMessage;
 import application.Message.FoundPartnerMessage;
+import application.Message.FriendRequestMessage;
 import application.Message.GetNewMessagesMessage;
 import application.Message.Message;
 import application.Message.MessageInterface;
@@ -62,12 +63,18 @@ public class FCMNotifications extends FirebaseMessagingService {
                 while(iterator.hasNext()){
                     MessageInterface message = iterator.next();
                     if(message instanceof TextMessage){
+                        //----------------------------------------------------------------------------------------------
+                        //Upon TextMessage Recieved
+                        //----------------------------------------------------------------------------------------------
                         TextMessage textMessage =  (TextMessage) message;
                         db.insertMessageEntry(textMessage);
                         Intent intent = new Intent("TextMessage" + textMessage.getSender());
                         intent.putExtra("TextMessage", textMessage);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }else if(message instanceof FoundPartnerMessage){
+                        //----------------------------------------------------------------------------------------------
+                        //Upon FoundPartnerMessage Recieved
+                        //----------------------------------------------------------------------------------------------
                         Log.i("FoundPartnerMessage" , "New Partner Found");
                         FoundPartnerMessage foundPartnerMessage = (FoundPartnerMessage) message;
                         Intent intent = new Intent("FoundPartnerMessage");
@@ -77,8 +84,16 @@ public class FCMNotifications extends FirebaseMessagingService {
                         LoggedInUserContainer.getInstance().getUser().setLastPairedPerson(foundPartnerMessage.getPartner());
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }else if(message instanceof CancelPairMessage){
+                        //----------------------------------------------------------------------------------------------
+                        //Upon FriendRequest Messaqe Recieved
+                        //----------------------------------------------------------------------------------------------
                         CancelPairMessage cancelPairMessage = (CancelPairMessage) message;
                         Intent intent = new Intent("CancelPairMessage");
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    }else if(message instanceof FriendRequestMessage){
+                        FriendRequestMessage friendRequestMessage = (FriendRequestMessage) message;
+                        Intent intent = new Intent("FriendRequestMessage");
+                        intent.putExtra("FriendRequestMessage", friendRequestMessage);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }
                 }
