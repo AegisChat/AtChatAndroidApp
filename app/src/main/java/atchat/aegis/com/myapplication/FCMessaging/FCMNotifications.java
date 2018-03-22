@@ -36,7 +36,6 @@ public class FCMNotifications extends FirebaseMessagingService {
     private TextMessageDatabaseHelper db;
 
     public FCMNotifications(){
-//        db = new TextMessageDatabaseHelper(this);
     }
 
     @Override
@@ -56,6 +55,7 @@ public class FCMNotifications extends FirebaseMessagingService {
 
     public void parseMessages(){
         try {
+            db = new TextMessageDatabaseHelper(this);
             List<Message> messages = (new NewMessageReciever().execute()).get();
             if(messages != null){
                 Iterator<Message> iterator = messages.iterator();
@@ -63,7 +63,7 @@ public class FCMNotifications extends FirebaseMessagingService {
                     MessageInterface message = iterator.next();
                     if(message instanceof TextMessage){
                         TextMessage textMessage =  (TextMessage) message;
-//                        db.insertMessageEntry(textMessage);
+                        db.insertMessageEntry(textMessage);
                         Intent intent = new Intent("TextMessage" + textMessage.getSender());
                         intent.putExtra("TextMessage", textMessage);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
