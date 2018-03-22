@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -51,6 +52,8 @@ public class TextMessengerFragment extends Fragment {
     private UUID conversant;
     private String username;
     private UUID uuid;
+    private ImageButton cancelConversationImageButton;
+    private ImageButton addFriendImageButton;
 
     public TextMessengerFragment() {
 
@@ -89,6 +92,23 @@ public class TextMessengerFragment extends Fragment {
         messageInputEditText = (EditText) view.findViewById(R.id.edittext_chatbox);
 
         conversantsNameTextView = (TextView) view.findViewById(R.id.user_template_name);
+        cancelConversationImageButton = (ImageButton) view.findViewById(R.id.leave_conversation_button);
+        addFriendImageButton = (ImageButton)  view.findViewById(R.id.add_friend_button);
+
+        addFriendImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("TextgMessageFragment", "Add Friend Button has been hit");
+
+            }
+        });
+
+        cancelConversationImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("TextgMessageFragment", "Cancel Conversation Button has been hit");
+            }
+        });
 
         Bundle bundle = this.getArguments();
         conversant = UUID.fromString(getArguments().getString(UUID_ARGUMENT));
@@ -218,6 +238,7 @@ public class TextMessengerFragment extends Fragment {
 
         mMessageRecycler.setAdapter(null);
         mMessageRecycler.setAdapter(new MessageListAdapter(mMessageRecycler.getContext(), messageList));
+        mMessageRecycler.scrollToPosition(messageList.size() - 1);
     }
 
     public interface OnFragmentInteractionListener {

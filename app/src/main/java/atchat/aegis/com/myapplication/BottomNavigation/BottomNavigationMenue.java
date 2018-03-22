@@ -56,7 +56,6 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     private OnFoundPartnerListener onFoundPartnerListener;
     private BroadcastReceiver broadcastReceiver;
 
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         Fragment fragment = null;
