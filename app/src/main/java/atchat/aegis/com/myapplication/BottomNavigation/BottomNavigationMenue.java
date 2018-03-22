@@ -296,6 +296,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
+        LoggedInUserContainer.getInstance().getUser().setPaired(false);
         SharedPreferences sharedPreferences = getSharedPreferences(PAIRING_FRAGMENT_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
         sharedPreferencesEditor.putInt(PAIRING_FRAGMENT_KEY, 1);
