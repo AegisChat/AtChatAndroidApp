@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
+import application.Message.CancelPairMessage;
 import application.Message.FoundPartnerMessage;
 import application.Message.GetNewMessagesMessage;
 import application.Message.Message;
@@ -66,13 +67,14 @@ public class FCMNotifications extends FirebaseMessagingService {
                         Intent intent = new Intent("TextMessage" + textMessage.getSender());
                         intent.putExtra("TextMessage", textMessage);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
                     }else if(message instanceof FoundPartnerMessage){
                         Log.i("FoundPartnerMessage" , "New Partner Found");
                         FoundPartnerMessage foundPartnerMessage = (FoundPartnerMessage) message;
                         Intent intent = new Intent("FoundPartnerMessage");
                         intent.putExtra("FoundPartnerMessage", foundPartnerMessage);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    }else if(message instanceof CancelPairMessage){
+
                     }
                 }
             }else{

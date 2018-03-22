@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,12 +27,14 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.CancelPairMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
 import application.Users.LoggedInUserContainer;
+import atchat.aegis.com.myapplication.BottomNavigation.PairingFragment.PairingFragment;
 import atchat.aegis.com.myapplication.MessageListAdapter;
 import atchat.aegis.com.myapplication.R;
 
@@ -108,6 +111,14 @@ public class TextMessengerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.i("TextgMessageFragment", "Cancel Conversation Button has been hit");
+                try {
+                    new CancelPair().execute().get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                finish();
             }
         });
 
@@ -240,6 +251,13 @@ public class TextMessengerFragment extends Fragment {
         mMessageRecycler.setAdapter(null);
         mMessageRecycler.setAdapter(new MessageListAdapter(mMessageRecycler.getContext(), messageList));
         mMessageRecycler.scrollToPosition(messageList.size() - 1);
+    }
+
+    public void finish(){
+        Fragment fragment = new PairingFragment();
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        fragmentTransaction.replace(R.id.contentLayout, fragment).commit();
     }
 
     public interface OnFragmentInteractionListener {

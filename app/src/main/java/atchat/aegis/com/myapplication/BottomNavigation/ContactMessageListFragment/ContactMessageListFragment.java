@@ -103,29 +103,31 @@ public class ContactMessageListFragment extends Fragment {
         protected ArrayList<ConversationTemplate> doInBackground(Void... voids) {
             final String url = website+"user/getConversationList";
             final TextMessageDatabaseHelper textMessageDatabaseHelper = new TextMessageDatabaseHelper(getContext());
-
+            ArrayList<ConversationTemplate> conversationTemplates = new ArrayList<ConversationTemplate>();
             GetConversationListMessage getConversationListMessage = new GetConversationListMessage();
             getConversationListMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             getConversationListMessage.setConversants(LoggedInUserContainer.getInstance().getUser().getConversations());
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            GetConversationListMessage result = restTemplate.postForObject(url, getConversationListMessage, GetConversationListMessage.class);
-            ArrayList<UserTemplate> newMessages;
-            if(result != null){
-                newMessages= (ArrayList<UserTemplate>)result.getConversations();
-            }else{
-                newMessages = new ArrayList<UserTemplate>();
-            }
-
-
-            ArrayList<ConversationTemplate> conversationTemplates = new ArrayList<ConversationTemplate>();
-            Iterator<UserTemplate> userTemplateIterator = newMessages.iterator();
-            while(userTemplateIterator.hasNext()){
-                UserTemplate userTemplate = userTemplateIterator.next();
-                Log.i("ConversationReciever", "User name: " + userTemplate.getName());
-                Log.i("ConversationReciever", "User id: " + userTemplate.getId());
-                TextMessage textMessage = textMessageDatabaseHelper.getMostRecentMessage(userTemplate.getId());
-                conversationTemplates.add(new ConversationTemplate(userTemplate, textMessage));
+            try {
+                GetConversationListMessage result = restTemplate.postForObject(url, getConversationListMessage, GetConversationListMessage.class);
+                ArrayList<UserTemplate> newMessages;
+                if (result != null) {
+                    newMessages = (ArrayList<UserTemplate>) result.getConversations();
+                } else {
+                    newMessages = new ArrayList<UserTemplate>();
+                }
+                conversationTemplates = new ArrayList<ConversationTemplate>();
+                Iterator<UserTemplate> userTemplateIterator = newMessages.iterator();
+                while(userTemplateIterator.hasNext()){
+                    UserTemplate userTemplate = userTemplateIterator.next();
+                    Log.i("ConversationReciever", "User name: " + userTemplate.getName());
+                    Log.i("ConversationReciever", "User id: " + userTemplate.getId());
+                    TextMessage textMessage = textMessageDatabaseHelper.getMostRecentMessage(userTemplate.getId());
+                    conversationTemplates.add(new ConversationTemplate(userTemplate, textMessage));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
             return conversationTemplates;
         }
