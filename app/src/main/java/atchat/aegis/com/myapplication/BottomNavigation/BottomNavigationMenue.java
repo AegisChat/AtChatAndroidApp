@@ -145,7 +145,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         cancelMessageBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
+                endTextMessageFragment();
             }
         };
 
