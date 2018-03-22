@@ -15,6 +15,13 @@
         android:layout_weight="1">
 
     </FrameLayout>
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="16dp"
+        android:background="#fff100" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -24,5 +31,6 @@
         android:background="?android:attr/windowBackground"
 
         app:menu="@menu/navigation" />
+
 
 </LinearLayout>
