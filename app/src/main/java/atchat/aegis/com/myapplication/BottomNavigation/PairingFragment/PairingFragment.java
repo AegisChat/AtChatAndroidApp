@@ -37,7 +37,7 @@ public class PairingFragment extends Fragment {
 
     private static final String PAIRING_FRAGMENT_KEY = "PairingState";
 
-    private ImageView imageView;
+    private ImageView imageView1, imageView2, imageView3;
     private OnFragmentInteractionListener mListener;
     private GestureDetectorCompat mDetector;
     private String website;
@@ -59,7 +59,9 @@ public class PairingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
         view = inflater.inflate(R.layout.swipeup, container, false);
-        imageView = (ImageView) view.findViewById(R.id.arrow_image);
+        imageView1 = (ImageView) view.findViewById(R.id.arrow_image1);
+        imageView2 = (ImageView) view.findViewById(R.id.arrow_image2);
+        imageView3 = (ImageView) view.findViewById(R.id.arrow_image3);
         mDetector = new GestureDetectorCompat(getContext(), new SwipeUpGestureDetector());
         website = getString(R.string.localhost);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
@@ -93,14 +95,18 @@ public class PairingFragment extends Fragment {
     public void changeState(int state){
         switch(state) {
             case 1:
-                imageView.setVisibility(View.VISIBLE);
+                imageView1.setVisibility(View.VISIBLE);
+                imageView2.setVisibility(View.VISIBLE);
+                imageView3.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
                 waitMessageTextView.setVisibility(View.GONE);
                 cancelQueueButton.setVisibility(View.GONE);
                 this.state = 1;
                 break;
             case 2:
-                imageView.setVisibility(View.GONE);
+                imageView1.setVisibility(View.GONE);
+                imageView2.setVisibility(View.GONE);
+                imageView3.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
                 waitMessageTextView.setVisibility(View.VISIBLE);
                 cancelQueueButton.setVisibility(View.VISIBLE);
@@ -108,7 +114,9 @@ public class PairingFragment extends Fragment {
                 break;
             default:
                 this.state = 1;
-                imageView.setVisibility(View.VISIBLE);
+                imageView1.setVisibility(View.VISIBLE);
+                imageView2.setVisibility(View.VISIBLE);
+                imageView3.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
                 waitMessageTextView.setVisibility(View.GONE);
                 cancelQueueButton.setVisibility(View.GONE);
