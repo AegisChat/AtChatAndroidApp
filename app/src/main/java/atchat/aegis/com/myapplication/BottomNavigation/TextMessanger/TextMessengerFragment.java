@@ -1,7 +1,9 @@
 package atchat.aegis.com.myapplication.BottomNavigation.TextMessanger;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -20,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -112,18 +115,50 @@ public class TextMessengerFragment extends Fragment {
 
         cancelConversationImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
+
+
             public void onClick(View view) {
-                Log.i("TextMessageFragment", "Cancel Conversation Button has been hit");
-                try {
-                    new CancelPair().execute().get();
-                    LoggedInUserContainer.getInstance().getUser().setPaired(false);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                closeTextMessageFragment();
+                //logout();
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
+                builder2.setTitle("Are you sure you wish to leave this conversation? You will not be able to join this conversation again");
+
+                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.i("TextMessageFragment", "User confirmed exit");
+                        try {
+                            new CancelPair().execute().get();
+                            LoggedInUserContainer.getInstance().getUser().setPaired(false);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        closeTextMessageFragment();
+
+                    }
+                });
+                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                builder2.show();
             }
+//            public void onClick(View view) {
+//                Log.i("TextMessageFragment", "Cancel Conversation Button has been hit");
+//                try {
+//                    new CancelPair().execute().get();
+//                    LoggedInUserContainer.getInstance().getUser().setPaired(false);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                }
+//                closeTextMessageFragment();
+//            }
         });
 
         Bundle bundle = this.getArguments();
