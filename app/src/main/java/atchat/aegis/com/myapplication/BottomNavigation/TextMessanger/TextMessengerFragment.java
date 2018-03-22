@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.CancelPairMessage;
+import application.Message.RecievedMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
 import application.Users.LoggedInUserContainer;
@@ -302,6 +303,12 @@ public class TextMessengerFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            if(textMessage.getSender().equals(LoggedInUserContainer.getInstance().getUser().getId())){
+                textMessage = (SentMessage) textMessage;
+            }else
+            {
+                textMessage = (RecievedMessage) textMessage;
+            }
             messageList.add(textMessage);
             updateMessageAdapter(messageList);
         }
