@@ -142,7 +142,6 @@ public class TextMessengerFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-
                     }
                 });
                 builder2.show();

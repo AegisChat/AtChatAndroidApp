@@ -27,6 +27,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -185,11 +187,9 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         addFriendBroadcastReciever = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.i("BottomNavigationMenue", "Friend broadcast recieved");
                 FriendRequestMessage friendRequestMessage = (FriendRequestMessage) intent.getSerializableExtra("FriendRequestMessage");
-                alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
-                alertDialogBuilder.setTitle(friendRequestMessage.getName() + " want to be your friend");
-                alertDialogBuilder.setPositiveButton("Accept", getPositiveButtonOnClickListener(friendRequestMessage));
-                alertDialogBuilder.setNegativeButton("Deny", getNegativeButtonOnClickListener(friendRequestMessage));
+                friendRequestAlertBox(friendRequestMessage);
             }
         };
 
@@ -287,11 +287,25 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 //        Log.i("UserTemplate", userTemplate.getName());
 //    }
 
+    public void friendRequestAlertBox(FriendRequestMessage friendRequestMessage){
+        alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(friendRequestMessage.getName() + " want to be your friend");
+        alertDialogBuilder.setPositiveButton("Accept", getPositiveButtonOnClickListener(friendRequestMessage));
+        alertDialogBuilder.setNegativeButton("Deny", getNegativeButtonOnClickListener(friendRequestMessage));
+        alertDialogBuilder.show();
+    }
+
     public DialogInterface.OnClickListener getPositiveButtonOnClickListener(final FriendRequestMessage message){
+        final Context context = this;
         DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 new AcceptFriendRequest(message).execute();
+                String toastMessage = "You are now friends with " + message.getName();
+                Toast toast = Toast.makeText(context, toastMessage, toastMessage.length());
+                View view = toast.getView();
+                view.setBackgroundColor(getResources().getColor(R.color.AtChatYellow));
+                toast.show();
             }
         };
         return onClickListener;
@@ -367,8 +381,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             AcceptFriendRequestMessage acceptFriendRequestMessage = new AcceptFriendRequestMessage();
             acceptFriendRequestMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
             acceptFriendRequestMessage.setFriendRequestID(friendRequestMessage.getRecipient());
-            acceptFriendRequestMessage.setRecipient(friendRequestMessage.getRecipient());
-
+            acceptFriendRequestMessage.setRecipient(friendRequestMessage.getSender());
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             try {

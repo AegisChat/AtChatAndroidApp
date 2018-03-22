@@ -91,6 +91,7 @@ public class FCMNotifications extends FirebaseMessagingService {
                         Intent intent = new Intent("CancelPairMessage");
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }else if(message instanceof FriendRequestMessage){
+                        Log.i("FriendRequestMessage" , "New Friend Request");
                         FriendRequestMessage friendRequestMessage = (FriendRequestMessage) message;
                         Intent intent = new Intent("FriendRequestMessage");
                         intent.putExtra("FriendRequestMessage", friendRequestMessage);
