@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
+import application.Message.CancelPairMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
 import application.Users.LoggedInUserContainer;
@@ -309,6 +310,25 @@ public class TextMessengerFragment extends Fragment {
             super.onPostExecute(aVoid);
             updateMessageAdapter(textMessages);
 
+        }
+    }
+
+    private class CancelPair extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final String url = website+"userActions/cancelPair";
+            CancelPairMessage cancelPairMessage = new CancelPairMessage();
+            cancelPairMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+            cancelPairMessage.setRecipient(conversant);
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            try {
+                restTemplate.postForObject(url, cancelPairMessage, Boolean.class);
+            }catch (Exception e){
+
+            }
+            return null;
         }
     }
 }
