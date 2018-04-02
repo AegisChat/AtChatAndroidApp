@@ -33,12 +33,14 @@ import android.widget.Toast;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.UUID;
 
 import application.Message.AcceptFriendRequestMessage;
 import application.Message.DenyFriendRequestMessage;
 import application.Message.FoundPartnerMessage;
 import application.Message.FriendRequestMessage;
+import application.Tag.Tag;
 import application.Users.LoggedInUserContainer;
 import application.Users.Point;
 import application.Users.UserTemplate;
@@ -103,10 +105,18 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                         UserTemplate userTemplate = LoggedInUserContainer.getInstance().getUser().getLastPairedPerson();
                         String userName = userTemplate.getName();
                         UUID conversantsUUID = userTemplate.getId();
+                        List<Tag> tagList = userTemplate.getTags();
+                        StringBuilder stringBuilder =  new StringBuilder();
+                        for(Tag tag : tagList){
+                            stringBuilder.append(tag.toString());
+                            stringBuilder.append(", ");
+                        }
+                        stringBuilder.deleteCharAt(stringBuilder.length() -1);
+                        stringBuilder.deleteCharAt(stringBuilder.length() -2);
                         Bundle bundle = new Bundle();
                         bundle.putString(TextMessengerFragment.USERNAME_ARGUMENT, userName);
                         bundle.putString(TextMessengerFragment.UUID_ARGUMENT, conversantsUUID.toString());
-                        fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString());
+                        fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString());
                     }
 //                    PairingFragment sw = new PairingFragment();
 //                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
@@ -214,7 +224,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         }else{
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             LoggedInUserContainer.getInstance().getUser().setLocation(new Point(location.getLongitude(), location.getLatitude()));
-            Log.i("Location:", "Longitude: " + location.getLongitude() + " Latitude: " + location.getLatitude());
+            Log.i("Location:", "Longitude: " + -79.4492 + " Latitude: " + 43.7442);
             configureButton();
         }
     }
@@ -223,7 +233,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                LoggedInUserContainer.getInstance().getUser().setLocation(new Point(location.getLongitude(), location.getLatitude()));
+                LoggedInUserContainer.getInstance().getUser().setLocation(new Point(-79.4492, 43.7442));
 //                Log.i("BottomNavigationMenue", "Latitiude: " + location.getLatitude() +  " Longitude: " + location.getLongitude());
             }
 
@@ -253,10 +263,21 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 UserTemplate userTemplate = foundPartnerMessage.getPartner();
                 String userName = userTemplate.getName();
                 UUID conversantsUUID = userTemplate.getId();
+                List<Tag> tagList = userTemplate.getTags();
+                StringBuilder stringBuilder =  new StringBuilder();
+                for(Tag tag : tagList){
+                    stringBuilder.append(tag.toString());
+                    stringBuilder.append(", ");
+                }
+                stringBuilder.deleteCharAt(stringBuilder.length() -1);
+                stringBuilder.deleteCharAt(stringBuilder.length() -2);
+
+                Log.i("BottomNavFragment", stringBuilder.toString());
                 Bundle bundle = new Bundle();
                 bundle.putString(TextMessengerFragment.USERNAME_ARGUMENT, userName);
                 bundle.putString(TextMessengerFragment.UUID_ARGUMENT, conversantsUUID.toString());
-                Fragment fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString());
+                bundle.putString(TextMessengerFragment.TAGS_ARGUMENT , stringBuilder.toString());
+                Fragment fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString());
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
                 fragmentTransaction.replace(R.id.contentLayout, fragment).commit();
@@ -353,7 +374,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 
     @SuppressLint("MissingPermission")
     private void configureButton(){
-        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+        locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
     }
 
 
