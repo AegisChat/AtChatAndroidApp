@@ -161,7 +161,6 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_notifications);
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         //----------------------------------------------------------------------------------------------
         //Found Partner Message Broadcast Reciever
