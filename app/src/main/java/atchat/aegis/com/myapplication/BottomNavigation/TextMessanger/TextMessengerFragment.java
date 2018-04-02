@@ -28,6 +28,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -38,6 +40,7 @@ import application.Message.FriendRequestMessage;
 import application.Message.RecievedMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
+import application.Tag.Tag;
 import application.Users.LoggedInUserContainer;
 import atchat.aegis.com.myapplication.BottomNavigation.PairingFragment.PairingFragment;
 import atchat.aegis.com.myapplication.MessageListAdapter;
@@ -48,6 +51,7 @@ public class TextMessengerFragment extends Fragment {
 
     public static final String USERNAME_ARGUMENT = "com.aegis.atchat.TextMessageFragment.username";
     public static final String UUID_ARGUMENT = "com.aegis.atchat.TextMessageFragment.UUID";
+    public static final String TAGS_ARGUMENT = "com.aegis.atchat.TextMessageFragment.Tags";
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView mMessageRecycler;
@@ -58,11 +62,13 @@ public class TextMessengerFragment extends Fragment {
     private List<TextMessage> messageList;
     private BroadcastReceiver broadcastReceiver;
     private String website;
+    private String tagsListToString;
     private UUID conversant;
     private String username;
     private UUID uuid;
     private ImageButton cancelConversationImageButton;
     private ImageButton addFriendImageButton;
+    private TextView commonTagsText;
 
     public TextMessengerFragment() {
 
@@ -82,11 +88,12 @@ public class TextMessengerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public static TextMessengerFragment newInstance(String userName, String conversantsUUID){
+    public static TextMessengerFragment newInstance(String userName, String conversantsUUID, String tagsListToString){
         TextMessengerFragment fragment = new TextMessengerFragment();
         Bundle args = new Bundle();
         args.putString(USERNAME_ARGUMENT, userName);
         args.putString(UUID_ARGUMENT, conversantsUUID);
+        args.putString(TAGS_ARGUMENT, tagsListToString);
         fragment.setArguments(args);
         return fragment;
     }
@@ -104,6 +111,7 @@ public class TextMessengerFragment extends Fragment {
         conversantsNameTextView = (TextView) view.findViewById(R.id.user_template_name);
         cancelConversationImageButton = (ImageButton) view.findViewById(R.id.leave_conversation_button);
         addFriendImageButton = (ImageButton)  view.findViewById(R.id.add_friend_button);
+        commonTagsText = (TextView) view.findViewById(R.id.commonTags);
 
         addFriendImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +128,7 @@ public class TextMessengerFragment extends Fragment {
             public void onClick(View view) {
                 //logout();
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
-                builder2.setTitle("Are you sure you wish to leave this conversation? You will not be able to join this conversation again");
+                builder2.setTitle("Are you sure you wish to leave this conversation?");
 
                 builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -163,7 +171,33 @@ public class TextMessengerFragment extends Fragment {
         Bundle bundle = this.getArguments();
         conversant = UUID.fromString(getArguments().getString(UUID_ARGUMENT));
         username = bundle.getString(USERNAME_ARGUMENT);
+        tagsListToString = bundle.getString(TAGS_ARGUMENT);
         conversantsNameTextView.setText(username);
+
+
+
+        List<Tag> userTags = LoggedInUserContainer.getInstance().getUser().getTags();
+        String  currentUserTags = String.valueOf(LoggedInUserContainer.getInstance().getUser().getTags());
+        List<Tag> commonTags;
+        List<String> tempList = new ArrayList<String>();
+
+        List<String> userTagsList = Arrays.asList(currentUserTags.split(", "));
+        List<String> conversantTagsList = Arrays.asList(tagsListToString.split(", "));
+
+
+//        for (int i = 0; i < userTagsList.size(); i++) {
+//            for (int j = i+1; j < userTagsList.size(); j++) {
+//
+//
+//                // compare list.get(i) and list.get(j)
+//            }
+//        }
+
+
+//        if(tagsListToString.equals(userTags)){
+//        }
+
+        commonTagsText.setText(tagsListToString);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
