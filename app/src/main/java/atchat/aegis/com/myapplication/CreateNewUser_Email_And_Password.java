@@ -147,6 +147,9 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
                 else if((isProperEmail(emailAddressEditText.getText().toString()) == false)){
                     verifyEmailAddressTextView.setText("Please enter a valid email");
                 }
+                else if((checkPassword(passwordEditText.getText().toString()) == false)){
+                    verifyEmailAddressTextView.setText("Please enter a valid password");
+                }
 
                 else {
                     verifyEmailAddressTextView.setText("You can make an account");
