@@ -24,6 +24,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -66,6 +68,7 @@ public class TextMessengerFragment extends Fragment {
     private ImageButton cancelConversationImageButton;
     private ImageButton addFriendImageButton;
     private TextView commonTagsText;
+    private GoogleApiClient googleApiClient;
 
     public TextMessengerFragment() {
 

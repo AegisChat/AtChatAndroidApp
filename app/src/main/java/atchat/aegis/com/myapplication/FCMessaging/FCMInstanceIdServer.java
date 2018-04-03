@@ -26,7 +26,11 @@ public class FCMInstanceIdServer extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         website = getString(R.string.localhost);
         String refreshToken = FirebaseInstanceId.getInstance().getToken();
-        LoggedInUserContainer.getInstance().getUser().setFirebaseID(refreshToken);
+        try {
+            LoggedInUserContainer.getInstance().getUser().setFirebaseID(refreshToken);
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
         Log.i(TAG, refreshToken);
         updateUserFCMToken();
     }
@@ -40,15 +44,17 @@ public class FCMInstanceIdServer extends FirebaseInstanceIdService {
         @Override
         protected Void doInBackground(Void... voids) {
             final String url = website+"user/updateFirebaseID";
-            UpdateFirebaseIDMessage updateFirebaseIDMessage = new UpdateFirebaseIDMessage();
-            updateFirebaseIDMessage.setFirebaseID(FirebaseInstanceId.getInstance().getToken());
-            updateFirebaseIDMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            try{
-                restTemplate.postForObject(url, updateFirebaseIDMessage, Void.class);
-            }catch (Exception e){
+            if(LoggedInUserContainer.getInstance().getUser() != null) {
+                UpdateFirebaseIDMessage updateFirebaseIDMessage = new UpdateFirebaseIDMessage();
+                updateFirebaseIDMessage.setFirebaseID(FirebaseInstanceId.getInstance().getToken());
+                updateFirebaseIDMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                try {
+                    restTemplate.postForObject(url, updateFirebaseIDMessage, Void.class);
+                } catch (Exception e) {
 
+                }
             }
             return null;
         }
