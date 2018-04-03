@@ -28,8 +28,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -40,7 +38,6 @@ import application.Message.FriendRequestMessage;
 import application.Message.RecievedMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
-import application.Tag.Tag;
 import application.Users.LoggedInUserContainer;
 import atchat.aegis.com.myapplication.BottomNavigation.PairingFragment.PairingFragment;
 import atchat.aegis.com.myapplication.MessageListAdapter;
@@ -74,15 +71,6 @@ public class TextMessengerFragment extends Fragment {
 
     }
 
-//    public static TextMessengerFragment newInstance(String param1, String param2) {
-//        TextMessengerFragment fragment = new TextMessengerFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,60 +101,41 @@ public class TextMessengerFragment extends Fragment {
         addFriendImageButton = (ImageButton)  view.findViewById(R.id.add_friend_button);
         commonTagsText = (TextView) view.findViewById(R.id.commonTags);
 
-        addFriendImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("TextMessageFragment", "Add Friend Button has been hit");
-                new AddFriend().execute();
-            }
-        });
+        addFriendImageButton.setOnClickListener(addFriendImageButtonOnClickListener());
 
-        cancelConversationImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-
-
-            public void onClick(View view) {
-                //logout();
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
-                builder2.setTitle("Are you sure you wish to leave this conversation?");
-
-                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.i("TextMessageFragment", "User confirmed exit");
-                        try {
-                            new CancelPair().execute().get();
-                            LoggedInUserContainer.getInstance().getUser().setPaired(false);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                        closeTextMessageFragment();
-
-                    }
-                });
-                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder2.show();
-            }
+//        cancelConversationImageButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
 //            public void onClick(View view) {
-//                Log.i("TextMessageFragment", "Cancel Conversation Button has been hit");
-//                try {
-//                    new CancelPair().execute().get();
-//                    LoggedInUserContainer.getInstance().getUser().setPaired(false);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                }
-//                closeTextMessageFragment();
+//                AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
+//                builder2.setTitle("Are you sure you wish to leave this conversation?");
+//
+//                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        Log.i("TextMessageFragment", "User confirmed exit");
+//                        try {
+//                            new CancelPair().execute().get();
+//                            LoggedInUserContainer.getInstance().getUser().setPaired(false);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        } catch (ExecutionException e) {
+//                            e.printStackTrace();
+//                        }
+//                        closeTextMessageFragment();
+//
+//                    }
+//                });
+//                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//                builder2.show();
 //            }
-        });
+//        });
+
+        cancelConversationImageButton.setOnClickListener(cancelConversationImageButtonOnClickListner());
 
         Bundle bundle = this.getArguments();
         conversant = UUID.fromString(getArguments().getString(UUID_ARGUMENT));
@@ -174,47 +143,9 @@ public class TextMessengerFragment extends Fragment {
         tagsListToString = bundle.getString(TAGS_ARGUMENT);
         conversantsNameTextView.setText(username);
 
-
-
-        List<Tag> userTags = LoggedInUserContainer.getInstance().getUser().getTags();
-        String  currentUserTags = String.valueOf(LoggedInUserContainer.getInstance().getUser().getTags());
-        List<Tag> commonTags;
-        List<String> tempList = new ArrayList<String>();
-
-        List<String> userTagsList = Arrays.asList(currentUserTags.split(", "));
-        List<String> conversantTagsList = Arrays.asList(tagsListToString.split(", "));
-
-
-//        for (int i = 0; i < userTagsList.size(); i++) {
-//            for (int j = i+1; j < userTagsList.size(); j++) {
-//
-//
-//                // compare list.get(i) and list.get(j)
-//            }
-//        }
-
-
-//        if(tagsListToString.equals(userTags)){
-//        }
-
         commonTagsText.setText(tagsListToString);
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SentMessage newMessage = new SentMessage();
-                newMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
-                newMessage.setRecipient(conversant);
-                newMessage.setContext(messageInputEditText.getText().toString());
-                newMessage.setTime(System.currentTimeMillis());
-                addToMessageList(newMessage);
-                updateMessageAdapter(messageList);
-                mMessageRecycler.scrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
-                new Messanger().execute();
-                new InputMessageIntoDatabase(newMessage).execute();
-                messageInputEditText.setText("");
-            }
-        });
+        sendButton.setOnClickListener(sendButtonOnClickListener());
 
         try{
             if(messageList == null){
@@ -253,6 +184,11 @@ public class TextMessengerFragment extends Fragment {
                 new InputMessageIntoDatabase(textMessage).execute();
             }
         };
+
+        if(LoggedInUserContainer.getInstance().getUser().hasFriend(conversant)){
+            addFriendImageButton.setVisibility(View.GONE);
+            cancelConversationImageButton.setVisibility(View.GONE);
+        }
         // Inflate the layout for this fragment
         return view;
     }
@@ -272,6 +208,96 @@ public class TextMessengerFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
+    }
+
+    private View.OnClickListener addFriendImageButtonOnClickListener(){
+        View.OnClickListener viewOnClickListner = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SentMessage newMessage = new SentMessage();
+                newMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+                newMessage.setRecipient(conversant);
+                newMessage.setContext(messageInputEditText.getText().toString());
+                newMessage.setTime(System.currentTimeMillis());
+                addToMessageList(newMessage);
+                updateMessageAdapter(messageList);
+                mMessageRecycler.scrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
+                new Messanger().execute();
+                new InputMessageIntoDatabase(newMessage).execute();
+                messageInputEditText.setText("");
+            }
+        };
+        return viewOnClickListner;
+    }
+
+    private View.OnClickListener cancelConversationImageButtonOnClickListner(){
+        final View.OnClickListener viewOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
+                builder2.setTitle("Are you sure you wish to leave this conversation?");
+
+                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.i("TextMessageFragment", "User confirmed exit");
+                        try {
+                            new CancelPair().execute().get();
+                            LoggedInUserContainer.getInstance().getUser().setPaired(false);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        closeTextMessageFragment();
+
+                    }
+                });
+                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder2.show();
+            }
+        };
+        return  viewOnClickListener;
+    }
+
+    private View.OnClickListener sendButtonOnClickListener(){
+        View.OnClickListener viewOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
+                builder2.setTitle("Are you sure you wish to leave this conversation?");
+
+                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.i("TextMessageFragment", "User confirmed exit");
+                        try {
+                            new CancelPair().execute().get();
+                            LoggedInUserContainer.getInstance().getUser().setPaired(false);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        closeTextMessageFragment();
+
+                    }
+                });
+                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder2.show();
+            }
+        };
+        return viewOnClickListener;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
