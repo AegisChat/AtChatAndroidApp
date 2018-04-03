@@ -143,7 +143,15 @@ public class CreateNewUser_Email_And_Password extends AppCompatActivity {
 
                 if(aeam.isEmail()){
                     verifyEmailAddressTextView.setText("Email already exists");
-                }else {
+                }
+                else if((isProperEmail(emailAddressEditText.getText().toString()) == false)){
+                    verifyEmailAddressTextView.setText("Please enter a valid email");
+                }
+                else if((checkPassword(passwordEditText.getText().toString()) == false)){
+                    verifyEmailAddressTextView.setText("Please enter a valid password");
+                }
+
+                else {
                     verifyEmailAddressTextView.setText("You can make an account");
                     Intent intent = new Intent(context, CreateNewUser_Personal_Info.class);
                     intent.putExtra(INTENT_EMAIL, emailAddressEditText.getText().toString());
