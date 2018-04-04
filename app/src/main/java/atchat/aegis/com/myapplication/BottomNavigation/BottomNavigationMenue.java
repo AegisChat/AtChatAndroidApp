@@ -112,7 +112,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                         }
                         stringBuilder.deleteCharAt(stringBuilder.length() -1);
                         stringBuilder.deleteCharAt(stringBuilder.length() -2);
-                        fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString(), null);
+                        fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString(), (double)-1);
                     }
                     break;
                 case R.id.navigation_search:
@@ -279,8 +279,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                     stringBuilder.append(tag.toString());
                     stringBuilder.append(", ");
                 }
-                stringBuilder.deleteCharAt(stringBuilder.length() -1);
-                stringBuilder.deleteCharAt(stringBuilder.length() -2);
+//                stringBuilder.deleteCharAt(stringBuilder.length() -1);
+//                stringBuilder.deleteCharAt(stringBuilder.length() -2);
 
                 Log.i("BottomNavFragment", stringBuilder.toString());
                 Bundle bundle = new Bundle();

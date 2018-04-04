@@ -198,7 +198,7 @@ public class TextMessengerFragment extends Fragment {
             cancelConversationImageButton.setVisibility(View.GONE);
         }
 
-        if(distanceFromPartner != null) {
+        if(distanceFromPartner != (double)-1) {
             Toast.makeText(getContext(), username + " is " + distanceFromPartner + " away from you", Toast.LENGTH_LONG).show();
         }
         // Inflate the layout for this fragment

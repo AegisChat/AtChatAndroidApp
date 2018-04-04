@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
             loginCred.setEmail(emailInput.getText().toString());
             loginCred.setPassword(passwordInput.getText().toString());
         }
+//
         new HttpRequestTask(loginCred).execute();
     }
 
