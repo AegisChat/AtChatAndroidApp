@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         createAccountButton = (Button) findViewById(R.id.createAccount);
 
-
         Intent createdUserIntent = getIntent();
         if(createdUserIntent != null){
             if(createdUserIntent.getStringExtra(CreateNewUser_Personal_Info.INTENT_CREATE_USER_ID) == null) {
@@ -198,6 +197,27 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(context, BottomNavigationMenue.class);
                 startActivity(intent);
             }
+        }
+    }
+
+    private class UpdateToken extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final String url = website+"user/updateFirebaseID";
+            if(LoggedInUserContainer.getInstance().getUser() != null) {
+                UpdateFirebaseIDMessage updateFirebaseIDMessage = new UpdateFirebaseIDMessage();
+                updateFirebaseIDMessage.setFirebaseID(FirebaseInstanceId.getInstance().getToken());
+                updateFirebaseIDMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                try {
+                    restTemplate.postForObject(url, updateFirebaseIDMessage, Void.class);
+                } catch (Exception e) {
+
+                }
+            }
+            return null;
         }
     }
 //

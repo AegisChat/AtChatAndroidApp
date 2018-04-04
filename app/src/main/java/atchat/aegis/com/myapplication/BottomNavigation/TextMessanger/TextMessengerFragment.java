@@ -281,32 +281,17 @@ public class TextMessengerFragment extends Fragment {
         View.OnClickListener viewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
-                builder2.setTitle("Are you sure you wish to leave this conversation?");
-
-                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.i("TextMessageFragment", "User confirmed exit");
-                        try {
-                            new CancelPair().execute().get();
-                            LoggedInUserContainer.getInstance().getUser().setPaired(false);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                        closeTextMessageFragment();
-
-                    }
-                });
-                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder2.show();
+                SentMessage newMessage = new SentMessage();
+                newMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+                newMessage.setRecipient(conversant);
+                newMessage.setContext(messageInputEditText.getText().toString());
+                newMessage.setTime(System.currentTimeMillis());
+                addToMessageList(newMessage);
+                updateMessageAdapter(messageList);
+                mMessageRecycler.scrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
+                new Messanger().execute();
+                new InputMessageIntoDatabase(newMessage).execute();
+                messageInputEditText.setText("");
             }
         };
         return viewOnClickListener;
