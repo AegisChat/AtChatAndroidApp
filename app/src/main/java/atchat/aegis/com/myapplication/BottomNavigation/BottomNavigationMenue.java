@@ -1,21 +1,25 @@
 package atchat.aegis.com.myapplication.BottomNavigation;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +28,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -59,9 +65,10 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         TagListFragment.OnFragmentInteractionListener,
         PairingFragment.OnFragmentInteractionListener,
         onSettingsFragmentInteractionListener,
-        ContactMessageListFragment.OnContactMessageListFragmentInteractionListener {
+        ContactMessageListFragment.OnContactMessageListFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String PAIRING_FRAGMENT_KEY = "PairingState";
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     private UserTemplate userTemplate;
     private OnFoundPartnerListener onFoundPartnerListener;
@@ -71,7 +78,10 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     private AlertDialog.Builder alertDialogBuilder;
     private String website;
 
+    private GoogleApiClient googleApiClient;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationCallback locationCallback;
+    private LocationRequest locationRequest;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -83,20 +93,9 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     fragment = TagListFragment.newInstance();
-//                    fragment = TagListFragment.
-//                    TagListFragment tlf = new TagListFragment();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tlf).commit();
-//                    return true;
                     break;
                 case R.id.navigation_dashboard:
                     fragment = ContactListFragment.newInstance();
-//                    fragment = TextMessengerFragment.newInstance();
-//                    TextMessengerFragment tmf = new TextMessengerFragment();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
-//                    UserTemplateTestListFragment t = new UserTemplateTestListFragment();
-//                    FragmentManager manager = getSupportFragmentManager();
-//                    manager.beginTransaction().replace(R.id.contentLayout, t).commit();
-//                    return true;
                     break;
                 case R.id.navigation_notifications:
                     if(!LoggedInUserContainer.getInstance().getUser().isPaired())
@@ -118,21 +117,12 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                         bundle.putString(TextMessengerFragment.UUID_ARGUMENT, conversantsUUID.toString());
                         fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString());
                     }
-//                    PairingFragment sw = new PairingFragment();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, sw).commit();
-//                    TextMessengerFragment tmf = new TextMessengerFragment();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, tmf).commit();
-//                    return true;
                     break;
                 case R.id.navigation_search:
                     fragment = ContactMessageListFragment.newInstance();
-//                    return true;
                     break;
                 case R.id.navigation_Email:
                     fragment = SettingsFragment.newInstance();
-//                    SettingsFragment settingsFragment = new SettingsFragment();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.contentLayout, settingsFragment, settingsFragment.getTag()).commit();
-//                    return true;
                     break;
             }
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -143,71 +133,26 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     };
 
     @Override
-    public void onStart(){
-        super.onStart();
-        registerForLocationUpdates();
-    }
-
-    @SuppressLint("MissingPermission")
-    private void registerForLocationUpdates() {
-        FusedLocationProviderClient locationProviderClient = getFusedLocationProviderClient();
-        LocationRequest locationRequest = LocationRequest.create();
-        Looper looper = Looper.myLooper();
-        locationProviderClient.requestLocationUpdates(locationRequest, locationCallback, looper);
-    }
-
-    private LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
-            Location lastLocation = locationResult.getLastLocation();
-            updatePosition(lastLocation);
-        }
-    };
-
-    private void updatePosition(Location lastLocation) {
-        LoggedInUserContainer.getInstance().getUser().setLocation(new Point(lastLocation.getLongitude(), lastLocation.getLatitude()));
-        Log.i("BottomNavMenue", "Longitude: " + lastLocation.getLongitude() + " Lattitude: "  + lastLocation.getLatitude());
-    }
-
-    private FusedLocationProviderClient getFusedLocationProviderClient() {
-        if(fusedLocationProviderClient == null){
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        }
-        return fusedLocationProviderClient;
-    }
-
-    private void unregisterForLocationUpdates() {
-        if (fusedLocationProviderClient != null) {
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("FoundPartnerMessage"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(cancelMessageBroadcastReceiver, new IntentFilter("CancelPairMessage"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(addFriendBroadcastReciever, new IntentFilter("FriendRequestMessage"));
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(cancelMessageBroadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(addFriendBroadcastReciever);
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        unregisterForLocationUpdates();
-        super.onStop();
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+//        locationRequest = LocationRequest.create();
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000)
+                .setFastestInterval(5000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        locationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                Log.i("BottomNavMenu", "onLocationResult");
+                Location location = locationResult.getLastLocation();
+                updatePosition(location);
+            }
+        };
 
         website = getString(R.string.localhost);
 
@@ -248,12 +193,81 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 friendRequestAlertBox(friendRequestMessage);
             }
         };
-
-//            LoggedInUserContainer.getInstance().getUser().setLocation(new Point(location.getLongitude(), location.getLatitude()));
-//            Log.i("Location:", "Longitude: " + location.getLongitude() + " Latitude: " + location.getLatitude());
-
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(googleApiClient != null && fusedLocationProviderClient != null){
+            registerForLocationUpdates();
+            Log.i("BottomNavMenu", "onResume: registerForLocationUpdates");
+        }else{
+            buildGoogleApiClient();
+            Log.i("BottomNavMenu", "onResume: BuildGoogleApiClient started");
+        }
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("FoundPartnerMessage"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(cancelMessageBroadcastReceiver, new IntentFilter("CancelPairMessage"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(addFriendBroadcastReciever, new IntentFilter("FriendRequestMessage"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(cancelMessageBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(addFriendBroadcastReciever);
+        if (fusedLocationProviderClient != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        registerForLocationUpdates();
+                    }
+                }
+            }
+        }
+    }
+
+    private void updatePosition(Location lastLocation) {
+        LoggedInUserContainer.getInstance().getUser().setLocation(new Point(lastLocation.getLongitude(), lastLocation.getLatitude()));
+        Log.i("BottomNavMenue", "Longitude: " + lastLocation.getLongitude() + " Latitude: "  + lastLocation.getLatitude());
+    }
+
+    private void registerForLocationUpdates() {
+        Log.i("BottomNavMenu", "RegisterForLocationUpdates");
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+            Log.i("BottomNavMenu", "Location Request" + locationRequest.toString());
+            Log.i("BottomNavMenu", "Location Callback" + locationCallback.toString());
+            Log.i("BottomNavMenu", "Permission granted");
+        }else{
+            Log.i("BottomNavMenu", "Permission denied");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+        }
+    }
+
+    private void unregisterForLocationUpdates() {
+        if (fusedLocationProviderClient != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        }
+    }
 
     public void startTextMessageFragment(final FoundPartnerMessage foundPartnerMessage){
         runOnUiThread(new Runnable() {
@@ -331,6 +345,15 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         return onClickListener;
     }
 
+    protected synchronized void buildGoogleApiClient(){
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        googleApiClient.connect();
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
@@ -360,6 +383,22 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         sharedPreferencesEditor.putInt(PAIRING_FRAGMENT_KEY, 1);
         sharedPreferencesEditor.commit();
         super.onDestroy();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        registerForLocationUpdates();
+        Log.i("BottomNavMenu","onConnection");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i("BottomNavMenu","onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.i("BottomNavMenu","onConnectionFailed");
     }
 
     public class AcceptFriendRequest extends AsyncTask<Void, Void, Void>{
