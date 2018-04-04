@@ -226,17 +226,8 @@ public class TextMessengerFragment extends Fragment {
         View.OnClickListener viewOnClickListner = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SentMessage newMessage = new SentMessage();
-                newMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
-                newMessage.setRecipient(conversant);
-                newMessage.setContext(messageInputEditText.getText().toString());
-                newMessage.setTime(System.currentTimeMillis());
-                addToMessageList(newMessage);
-                updateMessageAdapter(messageList);
-                mMessageRecycler.scrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
-                new Messanger().execute();
-                new InputMessageIntoDatabase(newMessage).execute();
-                messageInputEditText.setText("");
+                Log.i("TextMessageFragment", "Add Friend Button has been hit");
+                new AddFriend().execute();
             }
         };
         return viewOnClickListner;
