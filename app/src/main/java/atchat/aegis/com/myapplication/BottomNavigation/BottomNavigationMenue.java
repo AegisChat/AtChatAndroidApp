@@ -112,10 +112,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                         }
                         stringBuilder.deleteCharAt(stringBuilder.length() -1);
                         stringBuilder.deleteCharAt(stringBuilder.length() -2);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TextMessengerFragment.USERNAME_ARGUMENT, userName);
-                        bundle.putString(TextMessengerFragment.UUID_ARGUMENT, conversantsUUID.toString());
-                        fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString());
+                        fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString(), null);
                     }
                     break;
                 case R.id.navigation_search:
@@ -138,10 +135,9 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-//        locationRequest = LocationRequest.create();
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000)
-                .setFastestInterval(5000)
+        locationRequest.setInterval(60 * 1000)
+                .setFastestInterval(10*1000)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         locationCallback = new LocationCallback(){
@@ -165,7 +161,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         navigation.setSelectedItemId(R.id.navigation_notifications);
 
         //----------------------------------------------------------------------------------------------
-        //Found Partner Message Broadcast Reciever
+        //Found Partner Message Broadcast Receiver
         //----------------------------------------------------------------------------------------------
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -176,7 +172,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         };
 
         //----------------------------------------------------------------------------------------------
-        //Cancel TextMessageFragment Broadcast Reciever
+        //Cancel TextMessageFragment Broadcast Receiver
         //----------------------------------------------------------------------------------------------
         cancelMessageBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -247,7 +243,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 
     private void updatePosition(Location lastLocation) {
         LoggedInUserContainer.getInstance().getUser().setLocation(new Point(lastLocation.getLongitude(), lastLocation.getLatitude()));
-        Log.i("BottomNavMenue", "Longitude: " + lastLocation.getLongitude() + " Latitude: "  + lastLocation.getLatitude());
+        Log.i("BottomNavMenu", "Longitude: " + lastLocation.getLongitude() + " Latitude: "  + lastLocation.getLatitude());
     }
 
     private void registerForLocationUpdates() {
@@ -278,6 +274,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 UUID conversantsUUID = userTemplate.getId();
                 List<Tag> tagList = userTemplate.getTags();
                 StringBuilder stringBuilder =  new StringBuilder();
+                double distanceFromPartner = foundPartnerMessage.getDistanceToPartner();
                 for(Tag tag : tagList){
                     stringBuilder.append(tag.toString());
                     stringBuilder.append(", ");
@@ -290,7 +287,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 bundle.putString(TextMessengerFragment.USERNAME_ARGUMENT, userName);
                 bundle.putString(TextMessengerFragment.UUID_ARGUMENT, conversantsUUID.toString());
                 bundle.putString(TextMessengerFragment.TAGS_ARGUMENT , stringBuilder.toString());
-                Fragment fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString());
+                bundle.putDouble(TextMessengerFragment.DISTANCE_ARGUMENT, distanceFromPartner);
+                Fragment fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString(), distanceFromPartner);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
                 fragmentTransaction.replace(R.id.contentLayout, fragment).commit();

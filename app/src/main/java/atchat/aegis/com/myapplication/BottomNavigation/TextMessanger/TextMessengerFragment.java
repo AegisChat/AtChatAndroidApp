@@ -51,6 +51,7 @@ public class TextMessengerFragment extends Fragment {
     public static final String USERNAME_ARGUMENT = "com.aegis.atchat.TextMessageFragment.username";
     public static final String UUID_ARGUMENT = "com.aegis.atchat.TextMessageFragment.UUID";
     public static final String TAGS_ARGUMENT = "com.aegis.atchat.TextMessageFragment.Tags";
+    public static final String DISTANCE_ARGUMENT = "com.aegis.atchat.TextMessageFragment.Distance";
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView mMessageRecycler;
@@ -69,6 +70,7 @@ public class TextMessengerFragment extends Fragment {
     private ImageButton addFriendImageButton;
     private TextView commonTagsText;
     private GoogleApiClient googleApiClient;
+    private Double distanceFromPartner;
 
     public TextMessengerFragment() {
 
@@ -79,12 +81,13 @@ public class TextMessengerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public static TextMessengerFragment newInstance(String userName, String conversantsUUID, String tagsListToString){
+    public static TextMessengerFragment newInstance(String userName, String conversantsUUID, String tagsListToString, Double distance){
         TextMessengerFragment fragment = new TextMessengerFragment();
         Bundle args = new Bundle();
         args.putString(USERNAME_ARGUMENT, userName);
         args.putString(UUID_ARGUMENT, conversantsUUID);
         args.putString(TAGS_ARGUMENT, tagsListToString);
+        args.putDouble(DISTANCE_ARGUMENT, distance);
         fragment.setArguments(args);
         return fragment;
     }
@@ -144,6 +147,8 @@ public class TextMessengerFragment extends Fragment {
         conversant = UUID.fromString(getArguments().getString(UUID_ARGUMENT));
         username = bundle.getString(USERNAME_ARGUMENT);
         tagsListToString = bundle.getString(TAGS_ARGUMENT);
+        distanceFromPartner = bundle.getDouble(DISTANCE_ARGUMENT);
+
         conversantsNameTextView.setText(username);
 
         commonTagsText.setText(tagsListToString);
@@ -191,6 +196,10 @@ public class TextMessengerFragment extends Fragment {
         if(LoggedInUserContainer.getInstance().getUser().hasFriend(conversant)){
             addFriendImageButton.setVisibility(View.GONE);
             cancelConversationImageButton.setVisibility(View.GONE);
+        }
+
+        if(distanceFromPartner != null) {
+            Toast.makeText(getContext(), username + " is " + distanceFromPartner + " away from you", Toast.LENGTH_LONG).show();
         }
         // Inflate the layout for this fragment
         return view;
@@ -367,6 +376,13 @@ public class TextMessengerFragment extends Fragment {
             recievedMessage.setContext(textMessage.getContext());
             recievedMessage.setTime(textMessage.getTime());
             return recievedMessage;
+        }
+    }
+
+    public void acceptedFriendRequest(){
+        if(LoggedInUserContainer.getInstance().getUser().hasFriend(conversant)){
+            addFriendImageButton.setVisibility(View.GONE);
+            cancelConversationImageButton.setVisibility(View.GONE);
         }
     }
 
