@@ -138,16 +138,17 @@ public class BottomNavigationMenue extends AppCompatActivity implements
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        locationRequest = LocationRequest.create();
-//        locationRequest = new LocationRequest();
-//        locationRequest.setInterval(10000)
-//                .setFastestInterval(5000)
-//                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        locationRequest = LocationRequest.create();
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000)
+                .setFastestInterval(5000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         locationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
+                Log.i("BottomNavMenu", "onLocationResult");
                 Location location = locationResult.getLastLocation();
                 updatePosition(location);
             }
@@ -253,6 +254,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         Log.i("BottomNavMenu", "RegisterForLocationUpdates");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+            Log.i("BottomNavMenu", "Location Request" + locationRequest.toString());
+            Log.i("BottomNavMenu", "Location Callback" + locationCallback.toString());
             Log.i("BottomNavMenu", "Permission granted");
         }else{
             Log.i("BottomNavMenu", "Permission denied");
