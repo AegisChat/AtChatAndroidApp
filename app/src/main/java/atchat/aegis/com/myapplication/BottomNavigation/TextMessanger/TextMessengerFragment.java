@@ -199,7 +199,7 @@ public class TextMessengerFragment extends Fragment {
         }
 
         if(distanceFromPartner != (double)-1) {
-            Toast.makeText(getContext(), username + " is " + distanceFromPartner + " away from you", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), username + " is " + (int)Math.ceil(distanceFromPartner) + " away from you", Toast.LENGTH_LONG).show();
         }
         // Inflate the layout for this fragment
         return view;
