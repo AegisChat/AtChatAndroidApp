@@ -51,6 +51,7 @@ import application.Users.LoggedInUserContainer;
 import application.Users.Point;
 import application.Users.UserTemplate;
 import atchat.aegis.com.myapplication.BottomNavigation.ContactListFragment.ContactListFragment;
+import atchat.aegis.com.myapplication.BottomNavigation.ContactListFragment.ContactListProfileFragment;
 import atchat.aegis.com.myapplication.BottomNavigation.ContactMessageListFragment.ContactMessageListFragment;
 import atchat.aegis.com.myapplication.BottomNavigation.PairingFragment.PairingFragment;
 import atchat.aegis.com.myapplication.BottomNavigation.TagListFragment.TagListFragment;
@@ -65,7 +66,10 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         TagListFragment.OnFragmentInteractionListener,
         PairingFragment.OnFragmentInteractionListener,
         onSettingsFragmentInteractionListener,
-        ContactMessageListFragment.OnContactMessageListFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        ContactMessageListFragment.OnContactMessageListFragmentInteractionListener,
+        ContactListProfileFragment.OnFragmentInteractionListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final String PAIRING_FRAGMENT_KEY = "PairingState";
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -110,8 +114,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                             stringBuilder.append(tag.toString());
                             stringBuilder.append(", ");
                         }
-                        stringBuilder.deleteCharAt(stringBuilder.length() -1);
-                        stringBuilder.deleteCharAt(stringBuilder.length() -2);
+//                        stringBuilder.deleteCharAt(stringBuilder.length() -1);
+//                        stringBuilder.deleteCharAt(stringBuilder.length() -2);
                         fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString(), (double)-1);
                     }
                     break;
@@ -144,7 +148,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                Log.i("BottomNavMenu", "onLocationResult");
+                    Log.i("BottomNavMenu", "onLocationResult");
                 Location location = locationResult.getLastLocation();
                 updatePosition(location);
             }
