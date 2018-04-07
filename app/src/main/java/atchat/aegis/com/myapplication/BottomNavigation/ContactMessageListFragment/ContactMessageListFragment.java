@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.GetConversationListMessage;
@@ -52,23 +51,26 @@ public class ContactMessageListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //TEMP
-        TextMessage textMessage = new TextMessage();
-        textMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
-        textMessage.setRecipient(UUID.fromString("8091a4cd-e968-4b41-be8b-30703a526e8d"));
-        textMessage.setContext("This is the most recent message");
-        textMessage.setTime(System.currentTimeMillis());
-        final TextMessageDatabaseHelper textMessageDatabaseHelper1 = new TextMessageDatabaseHelper(getContext());
-        textMessageDatabaseHelper1.insertMessageEntry(textMessage);
-        LoggedInUserContainer.getInstance().getUser().addToConversationList(UUID.fromString("8091a4cd-e968-4b41-be8b-30703a526e8d"));
+//        //TEMP
+//        TextMessage textMessage = new TextMessage();
+//        textMessage.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+//        textMessage.setRecipient(UUID.fromString("8091a4cd-e968-4b41-be8b-30703a526e8d"));
+//        textMessage.setContext("This is the most recent message");
+//        textMessage.setTime(System.currentTimeMillis());
+//        final TextMessageDatabaseHelper textMessageDatabaseHelper1 = new TextMessageDatabaseHelper(getContext());
+//        textMessageDatabaseHelper1.insertMessageEntry(textMessage);
+//        LoggedInUserContainer.getInstance().getUser().addToConversationList(UUID.fromString("8091a4cd-e968-4b41-be8b-30703a526e8d"));
 
+        LoggedInUserContainer.getInstance().getUser().addToConversationList(LoggedInUserContainer.getInstance().getUser().getFriends().get(0).getFriendID());
         //DELETE LATER
 
         website = getString(R.string.localhost);
         View view = inflater.inflate(R.layout.fragment_contact_message_list, container, false);
         mRecycler = (RecyclerView) view.findViewById(R.id.reyclerview_contact_message_list);
 
+
         conversants = new ArrayList<ConversationTemplate>();
+
 
         if(conversants.isEmpty()){
             Log.i("ContactMessageListFrag", "is empty");
@@ -85,7 +87,7 @@ public class ContactMessageListFragment extends Fragment {
                 Log.i("ContactMessageList", "Add Conversation Button has been hit");
             }
         });
-        new GetConversationListReciever().execute();
+        new GetConversationListReceiver().execute();
         return view;
     }
 
@@ -98,7 +100,7 @@ public class ContactMessageListFragment extends Fragment {
        mRecycler.setAdapter(new ContactMessageListAdapter(mRecycler.getContext(), userTemplates));
     }
 
-    private class GetConversationListReciever extends AsyncTask<Void, Void, ArrayList<ConversationTemplate>> {
+    private class GetConversationListReceiver extends AsyncTask<Void, Void, ArrayList<ConversationTemplate>> {
         @Override
         protected ArrayList<ConversationTemplate> doInBackground(Void... voids) {
             final String url = website+"user/getConversationList";
@@ -121,8 +123,8 @@ public class ContactMessageListFragment extends Fragment {
                 Iterator<UserTemplate> userTemplateIterator = newMessages.iterator();
                 while(userTemplateIterator.hasNext()){
                     UserTemplate userTemplate = userTemplateIterator.next();
-                    Log.i("ConversationReciever", "User name: " + userTemplate.getName());
-                    Log.i("ConversationReciever", "User id: " + userTemplate.getId());
+                    Log.i("ConversationReceiver", "User name: " + userTemplate.getName());
+                    Log.i("ConversationReceiver", "User id: " + userTemplate.getId());
                     TextMessage textMessage = textMessageDatabaseHelper.getMostRecentMessage(userTemplate.getId());
                     conversationTemplates.add(new ConversationTemplate(userTemplate, textMessage));
                 }

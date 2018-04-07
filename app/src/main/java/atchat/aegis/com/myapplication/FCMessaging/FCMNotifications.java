@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
+import application.Message.AcceptFriendRequestMessage;
 import application.Message.CancelPairMessage;
 import application.Message.FoundPartnerMessage;
 import application.Message.FriendRequestMessage;
@@ -95,6 +96,9 @@ public class FCMNotifications extends FirebaseMessagingService {
                         FriendRequestMessage friendRequestMessage = (FriendRequestMessage) message;
                         Intent intent = new Intent("FriendRequestMessage");
                         intent.putExtra("FriendRequestMessage", friendRequestMessage);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    } else if(message instanceof AcceptFriendRequestMessage){
+                        Intent intent = new Intent("AcceptedFriendRequestMessage");
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }
                 }

@@ -62,6 +62,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         contentValues.put(MESSAGE, message);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
+        db.close();
         if(result == -1)
             return false;
         else
@@ -78,6 +79,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
             hasMessage = false;
         }
         res.close();
+        db.close();
         return hasMessage;
     }
 
@@ -93,6 +95,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         long result = -1;
         if(hasMessage(message.getId()))
             result = db.insert(TABLE_NAME, null, contentValues);
+        db.close();
         if(result == -1)
             return false;
         else
@@ -103,14 +106,16 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
     public Cursor getAllData(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " +TABLE_NAME,null);
+        db.close();
         return res;
     }
 
     public List<TextMessage> getMessagesForUniqueConversation(UUID id){
         List<TextMessage> messages = new ArrayList<TextMessage>();
         SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = null;
         try {
-            Cursor res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '" + id.toString() + "' OR " + RECIEVER + " = '" + id.toString() + "'  ORDER BY " + TIME_STAMP + " ASC", null);
+             res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '" + id.toString() + "' OR " + RECIEVER + " = '" + id.toString() + "'  ORDER BY " + TIME_STAMP + " ASC", null);
             while (res.moveToNext()) {
                 if (res.getString(1).equals(userID.toString())) {
                     SentMessage sentMessage = new SentMessage();
@@ -134,7 +139,8 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         }catch(SQLiteException e){
 
         }
-
+        res.close();
+        db.close();
         return messages;
     }
 
@@ -167,6 +173,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
             }
         }
         res.close();
+        sqLiteDatabase.close();
         return textMessage;
     }
 

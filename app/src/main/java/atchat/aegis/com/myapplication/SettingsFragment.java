@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.ExecutionException;
 
+import application.DatabaseHelpers.TagDatabaseHelper;
 import application.Message.UpdateAliasMessage;
 import application.Message.UpdatePairingDistanceMessage;
 import application.Message.UpdatePasswordMessage;
@@ -33,24 +34,27 @@ import application.Users.User;
 
 public class SettingsFragment extends Fragment {
 
+    private static final String FileSettingsName = "LogInFile";
+
     private onSettingsFragmentInteractionListener mListener;
 
     private static SeekBar Distance_Slider;
     private static TextView Distance_Text;
     private User user;
     private String website;
-    EditText changedName;
-    TextView chname;
-    Button applyName;
-    Button changenameButtonClick;
-    Button changePasswordButtonClick;
-    EditText text11;
-    EditText text22;
-    Button logoutButton;
+    private SharedPreferences settings;
+    private EditText changedName;
+    private TextView chname;
+    private Button applyName;
+    private Button changenameButtonClick;
+    private Button changePasswordButtonClick;
+    private EditText text11;
+    private EditText text22;
+    private Button logoutButton;
+
     public SettingsFragment() {
         // Required empty public constructor
     }
-
 
     public static SettingsFragment newInstance(){
         SettingsFragment fragment = new SettingsFragment();
@@ -65,12 +69,12 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
         website = getString(R.string.localhost);
         user = LoggedInUserContainer.getInstance().getUser();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        settings = getContext().getSharedPreferences(FileSettingsName, Context.MODE_PRIVATE);
 
        //changedName = (EditText) view.findViewById(R.id.changeAlias);
       //  changedName.setHint("Change Name ("+(String)LoggedInUserContainer.getInstance().getUser().getAlias() + ")");
@@ -227,8 +231,6 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
-
-
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
     }
@@ -313,7 +315,6 @@ public class SettingsFragment extends Fragment {
 
         private String changedPassword;
 
-
         private UpdatePassword(String changedPassword){
         this.changedPassword = changedPassword;
 
@@ -333,7 +334,28 @@ public class SettingsFragment extends Fragment {
     }
 
     public void logout(){
-        Intent logoutIntent = new Intent(getActivity(), MainActivity.class);
+        final SharedPreferences.Editor tempEditor = settings.edit();
+        tempEditor.putString("loginEmail", null);
+        tempEditor.putString("password", null);
+        tempEditor.commit();
+        new DumpDatabase(getContext()).execute();
+        Intent logoutIntent = new Intent(getContext(), MainActivity.class);
         startActivity(logoutIntent);
+    }
+
+    private class DumpDatabase extends AsyncTask<Void, Void, Void>{
+
+        private Context context;
+
+        public DumpDatabase(Context context){
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            TagDatabaseHelper tdb = new TagDatabaseHelper(context);
+            tdb.dumpTable();
+            return null;
+        }
     }
 }

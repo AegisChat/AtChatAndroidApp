@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import application.Message.GetFriendsListMessage;
 import application.Users.LoggedInUserContainer;
@@ -49,14 +49,10 @@ public class ContactListFragment extends Fragment {
         user = LoggedInUserContainer.getInstance().getUser();
         website = getString(R.string.localhost);
         mRecycler = (RecyclerView) view.findViewById(R.id.contact_list);
-        try {
-            contactListUserTemplate = new ArrayList<UserTemplate>();
-            contactListUserTemplate = new GetFriendsListUserTemplate().execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+
+        contactListUserTemplate = new ArrayList<UserTemplate>();
+        new GetFriendsListUserTemplate().execute();
+
         mContactListAdapter = new ContactListAdapter(getContext(), contactListUserTemplate);
 
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -89,9 +85,17 @@ public class ContactListFragment extends Fragment {
         mListener = null;
     }
 
+    public void updateList(List<UserTemplate> userTemplateList){
+        mRecycler.setAdapter(null);
+        mRecycler.setAdapter(new ContactListAdapter(getContext(), userTemplateList));
+        for (UserTemplate userTemplate : userTemplateList){
+            Log.i("ContactListFragment","Friend: " + userTemplate.getName());
+        }
+    }
+
     private class GetFriendsListUserTemplate extends AsyncTask<Void, Void, List<UserTemplate>>{
 
-        private GetFriendsListMessage gfm;
+        private List<UserTemplate> ans;
 
         @Override
         protected List<UserTemplate> doInBackground(Void... voids) {
@@ -102,7 +106,14 @@ public class ContactListFragment extends Fragment {
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             GetFriendsListMessage response = restTemplate.postForObject(url, gfm, GetFriendsListMessage.class);
+            ans = response.getFriends();
             return response.getFriends();
+        }
+
+        @Override
+        protected void onPostExecute(List<UserTemplate> userTemplateList) {
+            super.onPostExecute(userTemplateList);
+            updateList(ans);
         }
     }
 

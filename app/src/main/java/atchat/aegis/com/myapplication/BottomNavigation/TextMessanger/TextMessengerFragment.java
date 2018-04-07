@@ -71,6 +71,7 @@ public class TextMessengerFragment extends Fragment {
     private TextView commonTagsText;
     private GoogleApiClient googleApiClient;
     private Double distanceFromPartner;
+    private int friendRequestsSent;
 
     public TextMessengerFragment() {
 
@@ -96,6 +97,7 @@ public class TextMessengerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        friendRequestsSent = 0;
         website = getString(R.string.localhost);
         View view = inflater.inflate(R.layout.fragment_text_message_list, container, false);
 
@@ -226,8 +228,14 @@ public class TextMessengerFragment extends Fragment {
         View.OnClickListener viewOnClickListner = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("TextMessageFragment", "Add Friend Button has been hit");
-                new AddFriend().execute();
+                if(friendRequestsSent == 0) {
+                    Log.i("TextMessageFragment", "Add Friend Button has been hit");
+                    new AddFriend().execute();
+                    Toast.makeText(getContext(), "Friend Request has been sent!", Toast.LENGTH_SHORT).show();
+                    friendRequestsSent++;
+                }else{
+                    Toast.makeText(getContext(), "You have already sent a friend request", Toast.LENGTH_SHORT).show();
+                }
             }
         };
         return viewOnClickListner;
