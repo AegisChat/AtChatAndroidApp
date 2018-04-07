@@ -38,9 +38,7 @@ public final class User implements Serializable{
 
 	private Point location;
 
-
 	private String emailAddress;
-
 
 	private long timeStampEpoch;
 
