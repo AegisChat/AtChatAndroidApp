@@ -334,6 +334,7 @@ public class SettingsFragment extends Fragment {
     }
 
     public void logout(){
+        //proper loggout
         final SharedPreferences.Editor tempEditor = settings.edit();
         tempEditor.putString("loginEmail", null);
         tempEditor.putString("password", null);
