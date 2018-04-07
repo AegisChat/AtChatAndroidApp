@@ -116,7 +116,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                             stringBuilder.append(", ");
                         }
                         stringBuilder.deleteCharAt(stringBuilder.length() -1);
-                        stringBuilder.deleteCharAt(stringBuilder.length() -2);
+                        stringBuilder.deleteCharAt(stringBuilder.length() -1);
                         fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString(), (double)-1);
                     }
                     break;
@@ -304,8 +304,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                     stringBuilder.append(tag.toString());
                     stringBuilder.append(", ");
                 }
-//                stringBuilder.deleteCharAt(stringBuilder.length() -1);
-//                stringBuilder.deleteCharAt(stringBuilder.length() -2);
+                stringBuilder.deleteCharAt(stringBuilder.length() -1);
+                stringBuilder.deleteCharAt(stringBuilder.length() -1);
 
                 Log.i("BottomNavFragment", stringBuilder.toString());
                 Bundle bundle = new Bundle();
