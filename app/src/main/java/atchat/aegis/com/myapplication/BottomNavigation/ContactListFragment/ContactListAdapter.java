@@ -1,6 +1,8 @@
 package atchat.aegis.com.myapplication.BottomNavigation.ContactListFragment;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import application.Users.UserTemplate;
+import atchat.aegis.com.myapplication.BottomNavigation.BottomNavigationMenue;
 import atchat.aegis.com.myapplication.R;
 
 /**
@@ -61,9 +64,11 @@ public class ContactListAdapter extends RecyclerView.Adapter{
             mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-
-
+//                    Toast.makeText(view.getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+                    Fragment fragment = ContactListProfileFragment.newInstance(mItem);
+                    FragmentTransaction fragmentTransaction = ((BottomNavigationMenue) mContext).getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                    fragmentTransaction.replace(R.id.contentLayout, fragment).commit();
                 }
             });
         }

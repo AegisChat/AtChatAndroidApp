@@ -51,6 +51,7 @@ import application.Users.LoggedInUserContainer;
 import application.Users.Point;
 import application.Users.UserTemplate;
 import atchat.aegis.com.myapplication.BottomNavigation.ContactListFragment.ContactListFragment;
+import atchat.aegis.com.myapplication.BottomNavigation.ContactListFragment.ContactListProfileFragment;
 import atchat.aegis.com.myapplication.BottomNavigation.ContactMessageListFragment.ContactMessageListFragment;
 import atchat.aegis.com.myapplication.BottomNavigation.PairingFragment.PairingFragment;
 import atchat.aegis.com.myapplication.BottomNavigation.TagListFragment.TagListFragment;
@@ -65,21 +66,19 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         TagListFragment.OnFragmentInteractionListener,
         PairingFragment.OnFragmentInteractionListener,
         onSettingsFragmentInteractionListener,
-        ContactMessageListFragment.OnContactMessageListFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        ContactMessageListFragment.OnContactMessageListFragmentInteractionListener,
+        ContactListProfileFragment.OnFragmentInteractionListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final String PAIRING_FRAGMENT_KEY = "PairingState";
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
-    private Context context;
-
     private UserTemplate userTemplate;
     private OnFoundPartnerListener onFoundPartnerListener;
-
     private BroadcastReceiver broadcastReceiver;
     private BroadcastReceiver cancelMessageBroadcastReceiver;
     private BroadcastReceiver addFriendBroadcastReciever;
-    private BroadcastReceiver acceptedFriendRequestReciever;
-
     private AlertDialog.Builder alertDialogBuilder;
     private String website;
 
@@ -115,8 +114,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                             stringBuilder.append(tag.toString());
                             stringBuilder.append(", ");
                         }
-                        stringBuilder.deleteCharAt(stringBuilder.length() -1);
-                        stringBuilder.deleteCharAt(stringBuilder.length() -1);
+//                        stringBuilder.deleteCharAt(stringBuilder.length() -1);
+//                        stringBuilder.deleteCharAt(stringBuilder.length() -2);
                         fragment = TextMessengerFragment.newInstance(userName, conversantsUUID.toString(), stringBuilder.toString(), (double)-1);
                     }
                     break;
@@ -138,8 +137,6 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        context = this;
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         locationRequest = new LocationRequest();
@@ -151,7 +148,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                Log.i("BottomNavMenu", "onLocationResult");
+                    Log.i("BottomNavMenu", "onLocationResult");
                 Location location = locationResult.getLastLocation();
                 updatePosition(location);
             }
@@ -188,28 +185,12 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             }
         };
 
-        //----------------------------------------------------------------------------------------------
-        //Add TextMessageFragment Broadcast Receiver
-        //----------------------------------------------------------------------------------------------
-
         addFriendBroadcastReciever = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.i("BottomNavigationMenue", "Friend broadcast recieved");
                 FriendRequestMessage friendRequestMessage = (FriendRequestMessage) intent.getSerializableExtra("FriendRequestMessage");
                 friendRequestAlertBox(friendRequestMessage);
-            }
-        };
-
-        //----------------------------------------------------------------------------------------------
-        //Accept TextMessageFragment Broadcast Receiver
-        //----------------------------------------------------------------------------------------------
-
-        acceptedFriendRequestReciever = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Toast.makeText(context, "Your friend request was accepted", Toast.LENGTH_LONG).show();
-                LoggedInUserContainer.getInstance().getUser().setPaired(false);
             }
         };
     }
@@ -227,7 +208,6 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("FoundPartnerMessage"));
         LocalBroadcastManager.getInstance(this).registerReceiver(cancelMessageBroadcastReceiver, new IntentFilter("CancelPairMessage"));
         LocalBroadcastManager.getInstance(this).registerReceiver(addFriendBroadcastReciever, new IntentFilter("FriendRequestMessage"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(acceptedFriendRequestReciever, new IntentFilter("AcceptedFriendRequestMessage"));
     }
 
     @Override
@@ -236,7 +216,6 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(cancelMessageBroadcastReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(addFriendBroadcastReciever);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(acceptedFriendRequestReciever);
         if (fusedLocationProviderClient != null) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         }
@@ -304,8 +283,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                     stringBuilder.append(tag.toString());
                     stringBuilder.append(", ");
                 }
-                stringBuilder.deleteCharAt(stringBuilder.length() -1);
-                stringBuilder.deleteCharAt(stringBuilder.length() -1);
+//                stringBuilder.deleteCharAt(stringBuilder.length() -1);
+//                stringBuilder.deleteCharAt(stringBuilder.length() -2);
 
                 Log.i("BottomNavFragment", stringBuilder.toString());
                 Bundle bundle = new Bundle();
@@ -424,7 +403,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         Log.i("BottomNavMenu","onConnectionFailed");
     }
 
-    private class AcceptFriendRequest extends AsyncTask<Void, Void, Void>{
+    public class AcceptFriendRequest extends AsyncTask<Void, Void, Void>{
 
         private FriendRequestMessage friendRequestMessage;
 
@@ -450,7 +429,7 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         }
     }
 
-    private class DenyFriendRequest extends AsyncTask<Void, Void, Void>{
+    public class DenyFriendRequest extends AsyncTask<Void, Void, Void>{
 
         private FriendRequestMessage friendRequestMessage;
 
@@ -472,24 +451,6 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 restTemplate.postForObject(url, denyFriendRequestMessage, Boolean.class);
             }catch (Exception e){
 
-            }
-            return null;
-        }
-    }
-
-    private class AddToConversationListRequest extends AsyncTask<Void, Void, Void>{
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            final String url = website+"user/addToConversationList";
-
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            try {
-//                restTemplate.postForObject(url, denyFriendRequestMessage, Boolean.class);
-            }catch (Exception e) {
-
-                return null;
             }
             return null;
         }
