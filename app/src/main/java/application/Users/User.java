@@ -456,6 +456,14 @@ public final class User implements Serializable{
 		}
 	}
 
+	public void addToConversationList(List<UUID> uuids){
+		Iterator<UUID> uuidIterator = uuids.iterator();
+		while (uuidIterator.hasNext()){
+			UUID uuid = uuidIterator.next();
+			addToConversationList(uuid);
+		}
+	}
+
 	public ArrayList<Tag> getTags() {
 		return tags;
 	}
