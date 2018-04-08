@@ -62,7 +62,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         contentValues.put(MESSAGE, message);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
-        db.close();
+//        db.close();
         if(result == -1)
             return false;
         else
@@ -79,7 +79,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
             hasMessage = false;
         }
         res.close();
-        db.close();
+//        db.close();
         return hasMessage;
     }
 
@@ -95,7 +95,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         long result = -1;
         if(hasMessage(message.getId()))
             result = db.insert(TABLE_NAME, null, contentValues);
-        db.close();
+//        db.close();
         if(result == -1)
             return false;
         else
@@ -106,7 +106,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
     public Cursor getAllData(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " +TABLE_NAME,null);
-        db.close();
+//        db.close();
         return res;
     }
 
@@ -140,7 +140,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
 
         }
         res.close();
-        db.close();
+//        db.close();
         return messages;
     }
 
@@ -173,7 +173,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
             }
         }
         res.close();
-        sqLiteDatabase.close();
+//        sqLiteDatabase.close();
         return textMessage;
     }
 
