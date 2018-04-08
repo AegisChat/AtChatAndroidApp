@@ -72,6 +72,7 @@ public class TextMessengerFragment extends Fragment {
     private GoogleApiClient googleApiClient;
     private Double distanceFromPartner;
     private int friendRequestsSent;
+    private View viewLineSide;
 
     public TextMessengerFragment() {
 
@@ -110,6 +111,8 @@ public class TextMessengerFragment extends Fragment {
         commonTagsText = (TextView) view.findViewById(R.id.commonTags);
 
         addFriendImageButton.setOnClickListener(addFriendImageButtonOnClickListener());
+
+         viewLineSide = (View) view.findViewById(R.id.view_line_side);
 
 //        cancelConversationImageButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -198,6 +201,7 @@ public class TextMessengerFragment extends Fragment {
         if(LoggedInUserContainer.getInstance().getUser().hasFriend(conversant)){
             addFriendImageButton.setVisibility(View.GONE);
             cancelConversationImageButton.setVisibility(View.GONE);
+            viewLineSide.setVisibility(View.GONE);
         }
 
         if(distanceFromPartner != (double)-1) {

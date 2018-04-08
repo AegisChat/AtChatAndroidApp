@@ -28,7 +28,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
     public static final String TABLE_NAME = "messages_table";
     public static final String MESSAGE_ID = "messageID";
     public static final String SENDER = "sender";
-    public static final String RECIEVER = "receiver";
+    public static final String RECEIVER = "receiver";
     public static final String TIME_STAMP = "timeStamp";
     public static final String MESSAGE = "message";
 
@@ -57,7 +57,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         ContentValues contentValues = new ContentValues();
         contentValues.put(MESSAGE_ID, messageID);
         contentValues.put(SENDER, sender);
-        contentValues.put(RECIEVER, receiver);
+        contentValues.put(RECEIVER, receiver);
         contentValues.put(TIME_STAMP, timeStamp);
         contentValues.put(MESSAGE, message);
 
@@ -88,12 +88,12 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         ContentValues contentValues = new ContentValues();
         contentValues.put(MESSAGE_ID, message.getId().toString());
         contentValues.put(SENDER, message.getSender().toString());
-        contentValues.put(RECIEVER, message.getRecipient().toString());
+        contentValues.put(RECEIVER, message.getRecipient().toString());
         contentValues.put(TIME_STAMP, message.getTime());
         contentValues.put(MESSAGE, message.getContext().toString());
 
         long result = -1;
-        if(hasMessage(message.getId()))
+        if(!hasMessage(message.getId()))
             result = db.insert(TABLE_NAME, null, contentValues);
         db.close();
         if(result == -1)
@@ -115,7 +115,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = null;
         try {
-             res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '" + id.toString() + "' OR " + RECIEVER + " = '" + id.toString() + "'  ORDER BY " + TIME_STAMP + " ASC", null);
+             res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '" + id.toString() + "' OR " + RECEIVER + " = '" + id.toString() + "'  ORDER BY " + TIME_STAMP + " ASC", null);
             while (res.moveToNext()) {
                 if (res.getString(1).equals(userID.toString())) {
                     SentMessage sentMessage = new SentMessage();
@@ -146,7 +146,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
 
     public TextMessage getMostRecentMessage(UUID id){
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '"  + id.toString() + "' OR " + RECIEVER + " = '" + id.toString() + "' ORDER BY " + TIME_STAMP + " DESC LIMIT 1";
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '"  + id.toString() + "' OR " + RECEIVER + " = '" + id.toString() + "' ORDER BY " + TIME_STAMP + " DESC LIMIT 1";
         Cursor res = sqLiteDatabase.rawQuery(query, null);
         TextMessage textMessage = new TextMessage();
         while(res.moveToNext()){
