@@ -71,7 +71,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
 
     public boolean hasMessage(UUID messageID){
         boolean hasMessage = false;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery(" SELECT * FROM " + TABLE_NAME + " WHERE " + MESSAGE_ID + " = '"  + messageID +"' ", null);
         if (res.getCount() <= 0){
             hasMessage = true;
@@ -93,7 +93,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         contentValues.put(MESSAGE, message.getContext().toString());
 
         long result = -1;
-        if(!hasMessage(message.getId()))
+        if(hasMessage(message.getId()))
             result = db.insert(TABLE_NAME, null, contentValues);
         db.close();
         if(result == -1)
@@ -145,7 +145,7 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
     }
 
     public TextMessage getMostRecentMessage(UUID id){
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + SENDER + " = '"  + id.toString() + "' OR " + RECEIVER + " = '" + id.toString() + "' ORDER BY " + TIME_STAMP + " DESC LIMIT 1";
         Cursor res = sqLiteDatabase.rawQuery(query, null);
         TextMessage textMessage = new TextMessage();
