@@ -63,18 +63,6 @@ public class ContactMessageListFragment extends Fragment {
 //        textMessageDatabaseHelper1.insertMessageEntry(textMessage);
 //        LoggedInUserContainer.getInstance().getUser().addToConversationList(UUID.fromString("8091a4cd-e968-4b41-be8b-30703a526e8d"));
 
-        //Get every friends UUID
-        List<FriendHasSharedInfoPair> friendHasSharedInfoPairs = LoggedInUserContainer.getInstance().getUser().getFriends();
-        List<UUID> uuids = new ArrayList<UUID>();
-        Iterator<FriendHasSharedInfoPair> friendHasSharedInfoPairIterator = friendHasSharedInfoPairs.iterator();
-        while (friendHasSharedInfoPairIterator.hasNext()){
-            FriendHasSharedInfoPair friendHasSharedInfoPair = friendHasSharedInfoPairIterator.next();
-            uuids.add(friendHasSharedInfoPair.getFriendID());
-            Log.i("ContactMessageList", "Friend: " + friendHasSharedInfoPair.getFriendID());
-        }
-        //add all friends to conversation list
-        LoggedInUserContainer.getInstance().getUser().addToConversationList(uuids);
-
         website = getString(R.string.localhost);
         View view = inflater.inflate(R.layout.fragment_contact_message_list, container, false);
         mRecycler = (RecyclerView) view.findViewById(R.id.reyclerview_contact_message_list);
@@ -99,6 +87,21 @@ public class ContactMessageListFragment extends Fragment {
         });
         new GetConversationListReceiver().execute();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //Get every friends UUID
+        List<FriendHasSharedInfoPair> friendHasSharedInfoPairs = LoggedInUserContainer.getInstance().getUser().getFriends();
+        List<UUID> uuids = new ArrayList<UUID>();
+        Iterator<FriendHasSharedInfoPair> friendHasSharedInfoPairIterator = friendHasSharedInfoPairs.iterator();
+        while (friendHasSharedInfoPairIterator.hasNext()){
+            FriendHasSharedInfoPair friendHasSharedInfoPair = friendHasSharedInfoPairIterator.next();
+            uuids.add(friendHasSharedInfoPair.getFriendID());
+            Log.i("ContactMessageList", "Friend: " + friendHasSharedInfoPair.getFriendID());
+        }
+        updateConversationListNames(uuids);
     }
 
     public interface OnContactMessageListFragmentInteractionListener{
