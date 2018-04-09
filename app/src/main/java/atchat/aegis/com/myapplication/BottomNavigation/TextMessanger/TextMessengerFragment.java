@@ -37,6 +37,7 @@ import java.util.concurrent.ExecutionException;
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.CancelPairMessage;
 import application.Message.FriendRequestMessage;
+import application.Message.HasFriendMessage;
 import application.Message.RecievedMessage;
 import application.Message.SentMessage;
 import application.Message.TextMessage;
@@ -170,6 +171,7 @@ public class TextMessengerFragment extends Fragment {
         if(distanceFromPartner != (double)-1) {
             Toast.makeText(getContext(), username + " is " + (int)Math.ceil(distanceFromPartner) + " away from you", Toast.LENGTH_LONG).show();
         }
+        new HasFriend().execute();
         // Inflate the layout for this fragment
         return view;
     }
@@ -455,4 +457,32 @@ public class TextMessengerFragment extends Fragment {
             return null;
         }
     }
+
+    private class HasFriend extends AsyncTask<Void,Void,Boolean>{
+
+        private boolean hasFriend;
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            final String url = website+"user/hasFriend";
+            HasFriendMessage hfm = new HasFriendMessage();
+            hfm.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            Boolean result = restTemplate.postForObject(url, hfm, Boolean.class);
+            hasFriend = result;
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if(hasFriend){
+                addFriendImageButton.setVisibility(View.GONE);
+                cancelConversationImageButton.setVisibility(View.GONE);
+                viewLineSide.setVisibility(View.GONE);
+            }
+        }
+    }
+
 }
