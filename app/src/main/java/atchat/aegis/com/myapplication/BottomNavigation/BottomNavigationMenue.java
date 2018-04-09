@@ -449,6 +449,13 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         }
     }
 
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
+
+    }
     public class DenyFriendRequest extends AsyncTask<Void, Void, Void>{
 
         private FriendRequestMessage friendRequestMessage;
