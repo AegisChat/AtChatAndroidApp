@@ -101,6 +101,8 @@ public class FCMNotifications extends FirebaseMessagingService {
                     } else if(message instanceof AcceptFriendRequestMessage){
                         Intent intent = new Intent("AcceptedFriendRequestMessage");
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                        AcceptFriendRequestMessage acceptFriendRequestMessage = (AcceptFriendRequestMessage)message;
+                        LoggedInUserContainer.getInstance().getUser().addFriend(acceptFriendRequestMessage.getSender());
                     } else if(message instanceof RemoveFriendMessage){
                         RemoveFriendMessage removeFriendMessage = (RemoveFriendMessage) message;
                         Intent intent = new Intent("RemovedFriendRequestMessage");

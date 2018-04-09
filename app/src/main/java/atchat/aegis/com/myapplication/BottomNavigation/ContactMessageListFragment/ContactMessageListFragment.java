@@ -70,6 +70,7 @@ public class ContactMessageListFragment extends Fragment {
         while (friendHasSharedInfoPairIterator.hasNext()){
             FriendHasSharedInfoPair friendHasSharedInfoPair = friendHasSharedInfoPairIterator.next();
             uuids.add(friendHasSharedInfoPair.getFriendID());
+            Log.i("ContactMessageList", "Friend: " + friendHasSharedInfoPair.getFriendID());
         }
         //add all friends to conversation list
         LoggedInUserContainer.getInstance().getUser().addToConversationList(uuids);

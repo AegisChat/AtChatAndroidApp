@@ -25,7 +25,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -352,8 +351,6 @@ public class BottomNavigationMenue extends AppCompatActivity implements
                 new AcceptFriendRequest(message).execute();
                 String toastMessage = "You are now friends with " + message.getName();
                 Toast toast = Toast.makeText(context, toastMessage, toastMessage.length());
-                View view = toast.getView();
-                view.setBackgroundColor(getResources().getColor(R.color.AtChatYellow));
                 toast.show();
             }
         };
