@@ -123,7 +123,13 @@ public final class User implements Serializable{
 		if(!hasFriend(removeFriend)){
 			return false;
 		}else {
-			friends.remove(removeFriend);
+			Iterator<FriendHasSharedInfoPair> iterator = friends.iterator();
+			while(iterator.hasNext()){
+				FriendHasSharedInfoPair friendHasSharedInfoPair = iterator.next();
+				if(friendHasSharedInfoPair.getFriendID().equals(removeFriend)){
+					iterator.remove();
+				}
+			}
 			return true;
 		}
 	}

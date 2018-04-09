@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BottomNavigation.PairingFragment.PairingFragment"
-    android:background="@drawable/backgroundtest">
+    android:background="@drawable/poonie">
 
 
     <ImageView
@@ -14,7 +14,7 @@
         android:layout_height="140dp"
         android:layout_marginTop="320dp"
         app:srcCompat="@drawable/ic_actrion_swipeup"
-        android:tint="@color/AtChatYellow"
+        android:tint="@color/AtChatDarkGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +25,7 @@
         android:layout_height="140dp"
         android:layout_marginTop="350dp"
         app:srcCompat="@drawable/ic_actrion_swipeup"
-        android:tint="@color/AtChatYellow"
+        android:tint="@color/AtChatDarkGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
         android:layout_height="140dp"
         android:layout_marginTop="380dp"
         app:srcCompat="@drawable/ic_actrion_swipeup"
-        android:tint="@color/AtChatYellow"
+        android:tint="@color/AtChatDarkGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

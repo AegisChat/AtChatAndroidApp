@@ -24,6 +24,7 @@ import application.Message.FriendRequestMessage;
 import application.Message.GetNewMessagesMessage;
 import application.Message.Message;
 import application.Message.MessageInterface;
+import application.Message.RemoveFriendMessage;
 import application.Message.TextMessage;
 import application.Users.LoggedInUserContainer;
 import atchat.aegis.com.myapplication.R;
@@ -99,6 +100,11 @@ public class FCMNotifications extends FirebaseMessagingService {
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     } else if(message instanceof AcceptFriendRequestMessage){
                         Intent intent = new Intent("AcceptedFriendRequestMessage");
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    } else if(message instanceof RemoveFriendMessage){
+                        RemoveFriendMessage removeFriendMessage = (RemoveFriendMessage) message;
+                        Intent intent = new Intent("RemovedFriendRequestMessage");
+                        intent.putExtra("RemovedFriendUUID", removeFriendMessage.getFriendUuid());
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }
                 }

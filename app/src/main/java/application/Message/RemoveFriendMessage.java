@@ -4,20 +4,20 @@ import java.util.UUID;
 
 public class RemoveFriendMessage extends Message{
 
-    private UUID uuid;
+    private UUID friendUuid;
     public RemoveFriendMessage(){
 
     }
 
     public RemoveFriendMessage(UUID uuid){
-        this.uuid = uuid;
+        this.friendUuid = uuid;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getFriendUuid() {
+        return friendUuid;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setFriendUuid(UUID friendUuid) {
+        this.friendUuid = friendUuid;
     }
 }

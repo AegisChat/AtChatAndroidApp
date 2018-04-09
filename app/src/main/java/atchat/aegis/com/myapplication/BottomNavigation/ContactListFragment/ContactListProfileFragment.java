@@ -13,13 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-import org.w3c.dom.Text;
 
 import java.util.Iterator;
 import java.util.UUID;
@@ -91,8 +88,10 @@ public class ContactListProfileFragment extends Fragment {
             stringBuilder.append(tag.toString());
             stringBuilder.append(", ");
         }
-        stringBuilder.deleteCharAt(stringBuilder.length()-1);
-        stringBuilder.deleteCharAt(stringBuilder.length()-1);
+        if (stringBuilder.length() > 2) {
+            stringBuilder.deleteCharAt(stringBuilder.length()-1);
+            stringBuilder.deleteCharAt(stringBuilder.length()-1);
+        }
 
         tagsList.setText(stringBuilder.toString());
 
@@ -178,6 +177,8 @@ public class ContactListProfileFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             RemoveFriendMessage rfm = new RemoveFriendMessage();
             rfm.setSender(LoggedInUserContainer.getInstance().getUser().getId());
+            rfm.setFriendUuid(id);
+            LoggedInUserContainer.getInstance().getUser().removeFriend(id);
             final String url = website+"userActions/removeFriend";
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());

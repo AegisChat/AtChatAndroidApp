@@ -78,7 +78,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
     private OnFoundPartnerListener onFoundPartnerListener;
     private BroadcastReceiver broadcastReceiver;
     private BroadcastReceiver cancelMessageBroadcastReceiver;
-    private BroadcastReceiver addFriendBroadcastReciever;
+    private BroadcastReceiver addFriendBroadcastReceiver;
+    private BroadcastReceiver removeFriendBroadcastReceiver;
     private AlertDialog.Builder alertDialogBuilder;
     private String website;
 
@@ -185,14 +186,34 @@ public class BottomNavigationMenue extends AppCompatActivity implements
             }
         };
 
-        addFriendBroadcastReciever = new BroadcastReceiver() {
+        //----------------------------------------------------------------------------------------------
+        //Add TextMessage Broadcast Receiver
+        //----------------------------------------------------------------------------------------------
+        addFriendBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.i("BottomNavigationMenue", "Friend broadcast recieved");
+                Log.i("BottomNavigationMenue", "Friend broadcast received");
                 FriendRequestMessage friendRequestMessage = (FriendRequestMessage) intent.getSerializableExtra("FriendRequestMessage");
                 friendRequestAlertBox(friendRequestMessage);
             }
         };
+
+        //----------------------------------------------------------------------------------------------
+        //Remove Friend Broadcast Receiver
+        //----------------------------------------------------------------------------------------------
+
+        removeFriendBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.i("BottomNavigationMenue", "Removed friend received");
+                UUID uuid = (UUID)intent.getSerializableExtra("RemovedFriendUUID");
+                removeFriend(uuid);
+            }
+        };
+    }
+
+    private void removeFriend(UUID uuid) {
+        LoggedInUserContainer.getInstance().getUser().removeFriend(uuid);
     }
 
     @Override
@@ -207,7 +228,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("FoundPartnerMessage"));
         LocalBroadcastManager.getInstance(this).registerReceiver(cancelMessageBroadcastReceiver, new IntentFilter("CancelPairMessage"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(addFriendBroadcastReciever, new IntentFilter("FriendRequestMessage"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(addFriendBroadcastReceiver, new IntentFilter("FriendRequestMessage"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(removeFriendBroadcastReceiver, new IntentFilter("RemovedFriendRequestMessage"));
     }
 
     @Override
@@ -215,7 +237,8 @@ public class BottomNavigationMenue extends AppCompatActivity implements
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(cancelMessageBroadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(addFriendBroadcastReciever);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(addFriendBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(removeFriendBroadcastReceiver);
         if (fusedLocationProviderClient != null) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         }
