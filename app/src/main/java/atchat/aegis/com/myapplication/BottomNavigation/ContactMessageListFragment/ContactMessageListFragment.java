@@ -71,9 +71,7 @@ public class ContactMessageListFragment extends Fragment {
 
         conversants = new ArrayList<ConversationTemplate>();
 
-
-
-       mContactMessageListAdapter = new ContactMessageListAdapter(mRecycler.getContext(), conversants);
+        mContactMessageListAdapter = new ContactMessageListAdapter(mRecycler.getContext(), conversants);
 
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecycler.setAdapter(mContactMessageListAdapter);

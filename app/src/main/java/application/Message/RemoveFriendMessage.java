@@ -5,6 +5,7 @@ import java.util.UUID;
 public class RemoveFriendMessage extends Message{
 
     private UUID friendUuid;
+
     public RemoveFriendMessage(){
 
     }

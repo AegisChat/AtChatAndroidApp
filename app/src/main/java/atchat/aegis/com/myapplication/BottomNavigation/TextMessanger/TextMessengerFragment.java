@@ -112,7 +112,7 @@ public class TextMessengerFragment extends Fragment {
 
         addFriendImageButton.setOnClickListener(addFriendImageButtonOnClickListener());
 
-         viewLineSide = (View) view.findViewById(R.id.view_line_side);
+        viewLineSide = (View) view.findViewById(R.id.view_line_side);
 
         cancelConversationImageButton.setOnClickListener(cancelConversationImageButtonOnClickListner());
 
@@ -149,7 +149,6 @@ public class TextMessengerFragment extends Fragment {
                         @Override
                         public void run(){
                             mMessageRecycler.smoothScrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
-//                            mMessageRecycler.smoothScrollToPosition(0);
                         }
                     },100);
                 }
