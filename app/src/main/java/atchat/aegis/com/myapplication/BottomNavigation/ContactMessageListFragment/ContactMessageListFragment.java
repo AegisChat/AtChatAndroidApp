@@ -21,12 +21,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.GetConversationListMessage;
 import application.Message.TextMessage;
-import application.Users.FriendHasSharedInfoPair;
 import application.Users.LoggedInUserContainer;
 import application.Users.UserTemplate;
 import atchat.aegis.com.myapplication.R;
@@ -85,22 +83,6 @@ public class ContactMessageListFragment extends Fragment {
         });
         new GetConversationListReceiver().execute();
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //Get every friends UUID
-        List<FriendHasSharedInfoPair> friendHasSharedInfoPairs = LoggedInUserContainer.getInstance().getUser().getFriends();
-        List<UUID> uuids = new ArrayList<UUID>();
-        Iterator<FriendHasSharedInfoPair> friendHasSharedInfoPairIterator = friendHasSharedInfoPairs.iterator();
-        while (friendHasSharedInfoPairIterator.hasNext()){
-            FriendHasSharedInfoPair friendHasSharedInfoPair = friendHasSharedInfoPairIterator.next();
-            uuids.add(friendHasSharedInfoPair.getFriendID());
-            Log.i("ContactMessageList", "Friend: " + friendHasSharedInfoPair.getFriendID());
-        }
-        LoggedInUserContainer.getInstance().getUser().addToConversationList(uuids);
-        new GetConversationListReceiver().execute();
     }
 
     public interface OnContactMessageListFragmentInteractionListener{
