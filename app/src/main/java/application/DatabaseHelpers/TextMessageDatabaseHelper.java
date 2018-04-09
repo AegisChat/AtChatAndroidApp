@@ -41,6 +41,11 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
         userID = LoggedInUserContainer.getInstance().getUser().getId();
     }
 
+    public void dumpTable(){
+        getWritableDatabase().execSQL("drop table if exists "+TABLE_NAME);
+        onCreate(getWritableDatabase());
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME +" (messageID text primary key unique, sender text, receiver text, timeStamp real, message text) ");

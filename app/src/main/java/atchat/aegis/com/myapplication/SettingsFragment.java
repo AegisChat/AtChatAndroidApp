@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.ExecutionException;
 
 import application.DatabaseHelpers.TagDatabaseHelper;
+import application.DatabaseHelpers.TextMessageDatabaseHelper;
 import application.Message.UpdateAliasMessage;
 import application.Message.UpdatePairingDistanceMessage;
 import application.Message.UpdatePasswordMessage;
@@ -340,6 +341,7 @@ public class SettingsFragment extends Fragment {
         tempEditor.putString("password", null);
         tempEditor.commit();
         new DumpDatabase(getContext()).execute();
+        new DumpTextMessageDatabase(getContext()).execute();
         Intent logoutIntent = new Intent(getContext(), MainActivity.class);
         startActivity(logoutIntent);
     }
@@ -355,6 +357,22 @@ public class SettingsFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             TagDatabaseHelper tdb = new TagDatabaseHelper(context);
+            tdb.dumpTable();
+            return null;
+        }
+    }
+
+    private class DumpTextMessageDatabase extends  AsyncTask<Void, Void, Void>{
+
+        private Context context;
+
+        public DumpTextMessageDatabase(Context context){
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            TextMessageDatabaseHelper tdb = new TextMessageDatabaseHelper(context);
             tdb.dumpTable();
             return null;
         }
