@@ -63,6 +63,8 @@ public class ContactMessageListFragment extends Fragment {
 //        textMessageDatabaseHelper1.insertMessageEntry(textMessage);
 //        LoggedInUserContainer.getInstance().getUser().addToConversationList(UUID.fromString("8091a4cd-e968-4b41-be8b-30703a526e8d"));
 
+        //add all friends to conversation list
+
         website = getString(R.string.localhost);
         View view = inflater.inflate(R.layout.fragment_contact_message_list, container, false);
         mRecycler = (RecyclerView) view.findViewById(R.id.reyclerview_contact_message_list);
@@ -70,9 +72,7 @@ public class ContactMessageListFragment extends Fragment {
         conversants = new ArrayList<ConversationTemplate>();
 
 
-        if(conversants.isEmpty()){
-            Log.i("ContactMessageListFrag", "is empty");
-        }
+
        mContactMessageListAdapter = new ContactMessageListAdapter(mRecycler.getContext(), conversants);
 
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -101,7 +101,8 @@ public class ContactMessageListFragment extends Fragment {
             uuids.add(friendHasSharedInfoPair.getFriendID());
             Log.i("ContactMessageList", "Friend: " + friendHasSharedInfoPair.getFriendID());
         }
-        updateConversationListNames(uuids);
+        LoggedInUserContainer.getInstance().getUser().addToConversationList(uuids);
+        new GetConversationListReceiver().execute();
     }
 
     public interface OnContactMessageListFragmentInteractionListener{

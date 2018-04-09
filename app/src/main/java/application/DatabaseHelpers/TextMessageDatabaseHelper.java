@@ -42,8 +42,9 @@ public class TextMessageDatabaseHelper extends SQLiteOpenHelper{
     }
 
     public void dumpTable(){
-        getWritableDatabase().execSQL("drop table if exists "+TABLE_NAME);
-        onCreate(getWritableDatabase());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("drop table if exists "+TABLE_NAME);
+        onCreate(this.getWritableDatabase());
     }
 
     @Override

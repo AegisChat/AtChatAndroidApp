@@ -26,6 +26,7 @@ import application.Message.Message;
 import application.Message.MessageInterface;
 import application.Message.RemoveFriendMessage;
 import application.Message.TextMessage;
+import application.Users.FriendHasSharedInfoPair;
 import application.Users.LoggedInUserContainer;
 import atchat.aegis.com.myapplication.R;
 
@@ -103,6 +104,14 @@ public class FCMNotifications extends FirebaseMessagingService {
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                         AcceptFriendRequestMessage acceptFriendRequestMessage = (AcceptFriendRequestMessage)message;
                         LoggedInUserContainer.getInstance().getUser().addFriend(acceptFriendRequestMessage.getSender());
+                        LoggedInUserContainer.getInstance().getUser().setPaired(false);
+                        LoggedInUserContainer.getInstance().getUser().setQueueState(false);
+                        List<FriendHasSharedInfoPair> friendHasSharedInfoPairs = LoggedInUserContainer.getInstance().getUser().getFriends();
+                        Iterator<FriendHasSharedInfoPair> friendHasSharedInfoPairIterator = friendHasSharedInfoPairs.iterator();
+                        while (friendHasSharedInfoPairIterator.hasNext()){
+                            FriendHasSharedInfoPair friendHasSharedInfoPair = friendHasSharedInfoPairIterator.next();
+                            Log.i("FCMNotifications", "Friend: " + friendHasSharedInfoPair.getFriendID());
+                        }
                     } else if(message instanceof RemoveFriendMessage){
                         RemoveFriendMessage removeFriendMessage = (RemoveFriendMessage) message;
                         Intent intent = new Intent("RemovedFriendRequestMessage");

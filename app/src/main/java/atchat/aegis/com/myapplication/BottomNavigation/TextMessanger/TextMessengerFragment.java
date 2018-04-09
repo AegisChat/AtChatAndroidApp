@@ -114,38 +114,6 @@ public class TextMessengerFragment extends Fragment {
 
          viewLineSide = (View) view.findViewById(R.id.view_line_side);
 
-//        cancelConversationImageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
-//                builder2.setTitle("Are you sure you wish to leave this conversation?");
-//
-//                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        Log.i("TextMessageFragment", "User confirmed exit");
-//                        try {
-//                            new CancelPair().execute().get();
-//                            LoggedInUserContainer.getInstance().getUser().setPaired(false);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        } catch (ExecutionException e) {
-//                            e.printStackTrace();
-//                        }
-//                        closeTextMessageFragment();
-//
-//                    }
-//                });
-//                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//                builder2.show();
-//            }
-//        });
-
         cancelConversationImageButton.setOnClickListener(cancelConversationImageButtonOnClickListner());
 
         Bundle bundle = this.getArguments();
@@ -169,7 +137,8 @@ public class TextMessengerFragment extends Fragment {
         }
         mMessageRecycler = (RecyclerView) view.findViewById(R.id.reyclerview_message_list);
         mMessageAdapter = new MessageListAdapter(mMessageRecycler.getContext(), messageList);
-        mMessageRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mMessageRecycler.setLayoutManager(layoutManager);
         mMessageRecycler.setAdapter(mMessageAdapter);
 
         mMessageRecycler.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -180,6 +149,7 @@ public class TextMessengerFragment extends Fragment {
                         @Override
                         public void run(){
                             mMessageRecycler.smoothScrollToPosition(mMessageRecycler.getAdapter().getItemCount() - 1);
+//                            mMessageRecycler.smoothScrollToPosition(0);
                         }
                     },100);
                 }
@@ -198,12 +168,6 @@ public class TextMessengerFragment extends Fragment {
             }
         };
 
-        if(LoggedInUserContainer.getInstance().getUser().hasFriend(conversant)){
-            addFriendImageButton.setVisibility(View.GONE);
-            cancelConversationImageButton.setVisibility(View.GONE);
-            viewLineSide.setVisibility(View.GONE);
-        }
-
         if(distanceFromPartner != (double)-1) {
             Toast.makeText(getContext(), username + " is " + (int)Math.ceil(distanceFromPartner) + " away from you", Toast.LENGTH_LONG).show();
         }
@@ -214,6 +178,12 @@ public class TextMessengerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(LoggedInUserContainer.getInstance().getUser().hasFriend(conversant)){
+            Log.i("TextMessageFragment", "Has Friend");
+            addFriendImageButton.setVisibility(View.GONE);
+            cancelConversationImageButton.setVisibility(View.GONE);
+            viewLineSide.setVisibility(View.GONE);
+        }
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("TextMessage" + conversant.toString()));
     }
 
@@ -371,6 +341,7 @@ public class TextMessengerFragment extends Fragment {
         if(LoggedInUserContainer.getInstance().getUser().hasFriend(conversant)){
             addFriendImageButton.setVisibility(View.GONE);
             cancelConversationImageButton.setVisibility(View.GONE);
+            viewLineSide.setVisibility(View.GONE);
         }
     }
 
