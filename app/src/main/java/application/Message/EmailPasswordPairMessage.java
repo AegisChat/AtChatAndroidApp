@@ -1,9 +1,12 @@
 package application.Message;
 
+import application.Users.User;
+
 public class EmailPasswordPairMessage extends Message{
 
 	private String email;
 	private String password;
+	private User user;
 	
 	public EmailPasswordPairMessage() {
 	}
@@ -22,5 +25,13 @@ public class EmailPasswordPairMessage extends Message{
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class HttpRequestTask extends AsyncTask<Void, Void, User>{
         private User user;
+        private EmailPasswordPairMessage result;
         private EmailPasswordPairMessage loginCred;
         public HttpRequestTask (EmailPasswordPairMessage epp){
             loginCred = epp;
@@ -147,9 +148,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected User doInBackground(Void... voids) {
             try {
+                result = new EmailPasswordPairMessage();
                 System.out.println(loginCred.getEmail());
                 final String url = website+"user/login";
-                user = restTemplate.postForObject(url, loginCred, User.class);
+                result = restTemplate.postForObject(url, loginCred, EmailPasswordPairMessage.class);
+                user = result.getUser();
                 user.setFirebaseID(FirebaseInstanceId.getInstance().getToken());
 //                File file = new File(context.getFilesDir(), USER_FILE_NAME);
 //                FileOutputStream fileOutputStream;

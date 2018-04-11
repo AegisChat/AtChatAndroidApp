@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +55,12 @@ public class SettingsFragment extends Fragment {
     private EditText text11;
     private EditText text22;
     private Button logoutButton;
+    private TextView passwordPrerequisiteLengthTextView;
+    private TextView passwordPrerequisiteNumberTextView;
+    private TextView passwordPrerequisiteUpperTextView;
+    private TextView passwordPrerequisiteLowerTextView;
 
+    private final int PASSWORD_LENGTH_REQUIREMENT = 6;
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -117,7 +125,21 @@ public class SettingsFragment extends Fragment {
                 builder.show();
             }
         });
-//CHANGE PASSWORD BUTTON --------------------------------
+
+        //-----------------------------------------------------------
+//CHANGE PASSWORD BUTTON -------------------------------
+        //-------------------------------------------------------
+
+//        passwordPrerequisiteLengthTextView = (TextView) view.findViewById(R.id.password_not_long_enough);
+//        passwordPrerequisiteNumberTextView = (TextView) view.findViewById(R.id.password_needs_number);
+//        passwordPrerequisiteUpperTextView = (TextView) view.findViewById(R.id.password_needs_upper_case);
+//        passwordPrerequisiteLowerTextView = (TextView) view.findViewById(R.id.password_needs_lower_case);
+//
+//        passwordPrerequisiteLengthTextView.setText("Must be at least "+ PASSWORD_LENGTH_REQUIREMENT + " characters long");
+//        passwordPrerequisiteNumberTextView.setText("Must contain at least one number");
+//        passwordPrerequisiteUpperTextView.setText("Must contain at least 1 upper case");
+//        passwordPrerequisiteLowerTextView.setText("Must contain at least 1 lower case");
+
 
         changePasswordButtonClick = (Button) view.findViewById(R.id.changePasswordButton);
         changePasswordButtonClick.setOnClickListener(new View.OnClickListener() {
